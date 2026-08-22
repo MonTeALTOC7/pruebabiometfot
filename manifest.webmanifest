@@ -1,0 +1,32 @@
+{
+  "name": "Estimador TCH CASUR",
+  "short_name": "TCH CASUR",
+  "description": "Biometría TCH y visitas de campo con fotografías etiquetadas, GPS e historial Excel.",
+  "lang": "es-NI",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#edf7f0",
+  "theme_color": "#075e2d",
+  "icons": [
+    {
+      "src": "./assets/icons/tch-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icons/tch-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/icons/tch-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

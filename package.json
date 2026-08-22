@@ -1,0 +1,14 @@
+{
+  "name": "estimador-tch-casur-pwa",
+  "version": "2.5.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "test": "node --test tests/formulas.test.mjs",
+    "validate": "node tests/validate-static.mjs && node --test tests/formulas.test.mjs"
+  },
+  "devDependencies": {
+    "vite": "^7.1.2"
+  }
+}
