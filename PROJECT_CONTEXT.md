@@ -2,9 +2,9 @@
 
 ## Estado actual
 
-Versión de trabajo: **v2.5.0**.
+Versión de trabajo: **v2.5.1**.
 
-Versión: **2.5.0**
+Versión: **2.5.1**
 Destino normal: repositorio existente `MonTeALTOC7/Estimado_TCH_APP_CT`.
 Publicación: GitHub Pages / Android PWA.
 
@@ -61,10 +61,10 @@ Pesaje por tallo:
 No borrar IndexedDB. Stores actuales:
 `master`, `biometries`, `weighings`, `harvests`, `visits`, `audit`, `settings`.
 
-## Visitas de campo v2.5
+## Visitas de campo v2.5.1
 
 - Módulo principal independiente de la biometría.
-- Requiere suerte, técnico, 1–3 fotografías y GPS para guardar evidencia georreferenciada.
+- Requiere suerte, técnico, al menos una fotografía y GPS para guardar evidencia georreferenciada; no existe máximo artificial de fotos.
 - El TCH es opcional y su fuente se registra explícitamente.
 - La exportación ZIP crea carpetas por hacienda/productor con PNG etiquetados, originales sin rótulo para IA e historial XLSX.
 - Las fotografías se optimizan antes de IndexedDB para controlar uso de almacenamiento.

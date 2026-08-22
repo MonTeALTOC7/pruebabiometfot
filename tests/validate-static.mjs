@@ -43,6 +43,9 @@ assert.doesNotMatch(source, /id="installApp"/);
 assert.match(source, /renderVisits/);
 assert.match(source, /saveVisit/);
 assert.match(source, /createVisitsPackageBlob/);
+assert.match(source, /snapshotPhotoFiles\(visitCameraFile\.files\)/, "Cámara debe copiar FileList antes de limpiar el input");
+assert.match(source, /snapshotPhotoFiles\(visitGalleryFile\.files\)/, "Galería debe copiar FileList antes de limpiar el input");
+assert.doesNotMatch(source, /máximo de 3 fotografías|3 - state\.visit\.photos\.length|slice\(0, remaining\)/, "Visitas no debe limitar la cantidad de fotos");
 
 const storageSource = fs.readFileSync(path.join(root, "js/storage.js"), "utf8");
 assert.match(storageSource, /DB_VERSION = 3/);
@@ -52,6 +55,7 @@ const visitSource = fs.readFileSync(path.join(root, "js/visit-evidence.js"), "ut
 assert.match(visitSource, /createLabeledVisitPhotoBlob/);
 assert.match(visitSource, /Originales_para_IA/);
 assert.match(visitSource, /Historial_Visitas_Campo_CASUR\.xlsx/);
+assert.match(visitSource, /export function snapshotPhotoFiles/);
 
 const masterSource = fs.readFileSync(path.join(root, "js/master.js"), "utf8");
 assert.match(masterSource, /reporte/);
@@ -75,4 +79,4 @@ const producers = JSON.parse(fs.readFileSync(path.join(root, "data/productores.j
 assert.equal(producers.length, 262, "productores.json se conserva como compatibilidad de Zona 5");
 assert.ok(producers.every((row) => row.zona === "5-Productores"));
 
-console.log("Estructura estática PWA v2.5.0 validada.");
+console.log("Estructura estática PWA v2.5.1 validada.");

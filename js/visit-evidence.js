@@ -28,6 +28,24 @@ function canvasBlob(canvas, type = "image/png", quality) {
   ));
 }
 
+function blobDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error || new Error("No se pudo leer la fotografía."));
+    reader.readAsDataURL(blob);
+  });
+}
+
+function imageElement(source) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error("No se pudo abrir la fotografía."));
+    image.src = source;
+  });
+}
+
 async function loadImage(source) {
   if (source instanceof Blob && globalThis.createImageBitmap) {
     try {
@@ -36,19 +54,26 @@ async function loadImage(source) {
   }
   const url = source instanceof Blob ? URL.createObjectURL(source) : source;
   try {
-    return await new Promise((resolve, reject) => {
-      const image = new Image();
-      image.onload = () => resolve(image);
-      image.onerror = () => reject(new Error("No se pudo abrir la fotografía."));
-      image.src = url;
-    });
+    return await imageElement(url);
+  } catch (error) {
+    if (!(source instanceof Blob)) throw error;
+    // Algunos WebView Android no decodifican de forma estable una URL blob
+    // recién creada. FileReader ofrece una segunda ruta compatible.
+    return imageElement(await blobDataUrl(source));
   } finally {
     if (source instanceof Blob) setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 }
 
+export function snapshotPhotoFiles(fileList) {
+  // FileList puede ser una colección viva: hay que copiarla antes de limpiar
+  // el input, especialmente después de volver desde la cámara en Android.
+  return Array.from(fileList || []);
+}
+
 export async function prepareVisitPhoto(file, maxEdge = 1600) {
-  if (!file?.type?.startsWith("image/")) throw new Error("Seleccioná un archivo de imagen válido.");
+  if (!file) throw new Error("No se recibió ninguna fotografía.");
+  if (file.type && !file.type.startsWith("image/")) throw new Error("Seleccioná un archivo de imagen válido.");
   const image = await loadImage(file);
   const sourceWidth = image.width || image.naturalWidth;
   const sourceHeight = image.height || image.naturalHeight;
@@ -60,6 +85,7 @@ export async function prepareVisitPhoto(file, maxEdge = 1600) {
   canvas.width = width;
   canvas.height = height;
   const context = canvas.getContext("2d", { alpha: false });
+  if (!context) throw new Error("El teléfono no pudo preparar la fotografía.");
   context.fillStyle = "#ffffff";
   context.fillRect(0, 0, width, height);
   context.drawImage(image, 0, 0, width, height);
@@ -67,12 +93,7 @@ export async function prepareVisitPhoto(file, maxEdge = 1600) {
   const blob = await canvasBlob(canvas, "image/jpeg", 0.84);
   return {
     id: `photo_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`,
-    dataUrl: await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(reader.error || new Error("No se pudo preparar la fotografía."));
-      reader.readAsDataURL(blob);
-    }),
+    dataUrl: await blobDataUrl(blob),
     width,
     height,
     sizeBytes: blob.size,

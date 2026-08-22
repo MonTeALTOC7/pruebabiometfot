@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2.5.1 — 2026-08-21
+
+### Corrección de fotografías en visitas
+- Se copia la selección de cámara o galería antes de limpiar el input, evitando que Android entregue un `FileList` vacío.
+- Se agrega una segunda ruta de decodificación con `FileReader` para WebView/navegadores que fallen con URL temporales.
+- Se elimina el máximo artificial de tres fotos; la visita admite todas las necesarias y sigue exigiendo al menos una.
+- Se muestra el progreso de preparación y se bloquea Guardar únicamente mientras las imágenes se están procesando.
+- Si IndexedDB no puede guardar, la visita y sus fotos permanecen en pantalla para reintentar.
+- Caché PWA incrementada a v2.5.1 para forzar la actualización en el teléfono.
+
 ## 2.5.0 — 2026-08-20
 
 ### Visitas de campo

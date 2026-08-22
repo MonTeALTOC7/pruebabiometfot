@@ -12,7 +12,7 @@ import { downloadBlob, downloadWorkbook } from "./excel.js";
 import { createResultImageBlob } from "./result-image.js";
 import {
   createVisitsPackageBlob, createVisitsWorkbookBlob, prepareVisitPhoto,
-  visitPackageFilename, visitsExcelFilename,
+  snapshotPhotoFiles, visitPackageFilename, visitsExcelFilename,
 } from "./visit-evidence.js";
 
 const app = document.querySelector("#app");
@@ -304,6 +304,9 @@ function resetVisit() {
     capturedAt: "",
     notes: "",
     photos: [],
+    photoProcessing: false,
+    photoProgress: "",
+    saving: false,
   };
 }
 
@@ -375,7 +378,7 @@ function renderHome() {
     </section>
     <section class="module-grid">
       <button class="module-card primary-module" data-route="biometry"><span class="module-icon">🌱</span><span><small>OPERACIÓN PRINCIPAL</small><strong>Nueva Biometría</strong><p>Iniciá con P01 y agregá solamente los puntos que necesités.</p></span><b>›</b></button>
-      <button class="module-card visit-main-module" data-route="visits"><span class="module-icon blue">📷</span><span><small>EVIDENCIA PRINCIPAL</small><strong>Visita de campo</strong><p>1–3 fotos, GPS, condición agronómica, PNG etiquetado y Excel.</p></span><b>›</b></button>
+      <button class="module-card visit-main-module" data-route="visits"><span class="module-icon blue">📷</span><span><small>EVIDENCIA PRINCIPAL</small><strong>Visita de campo</strong><p>Fotos libres, GPS, condición agronómica, PNG etiquetado y Excel.</p></span><b>›</b></button>
       <button class="module-card" data-route="history"><span class="module-icon gold">▤</span><span><small>CONSULTA</small><strong>Historial</strong><p>Biometrías, contrastes por peso, pesajes anteriores y TCH real.</p></span><b>›</b></button>
       <button class="module-card" data-route="analytics"><span class="module-icon blue">◫</span><span><small>ANÁLISIS</small><strong>Estimados y avance</strong><p>Consolidado de última evaluación por hacienda y área.</p></span><b>›</b></button>
       <button class="module-card" data-route="export"><span class="module-icon">⇩</span><span><small>ADMINISTRACIÓN</small><strong>Exportar y respaldar</strong><p>XLSX general, JSON de respaldo e información técnica.</p></span><b>›</b></button>
@@ -679,12 +682,14 @@ function renderVisitTabs() {
 function renderVisitPhotos() {
   const photos = state.visit.photos || [];
   const totalMb = photos.reduce((sum, photo) => sum + finiteNumber(photo.sizeBytes), 0) / 1024 / 1024;
+  const busy = Boolean(state.visit.photoProcessing);
   return `<div class="visit-photo-grid">${photos.map((photo, index) => `<figure class="visit-photo">
     <img src="${photo.dataUrl}" alt="Fotografía ${index + 1} de la visita">
     <figcaption><b>Foto ${String(index + 1).padStart(2, "0")}</b><small>${formatNumber(photo.sizeBytes / 1024, 0)} KB</small></figcaption>
     <button type="button" data-remove-visit-photo="${escapeHtml(photo.id)}" aria-label="Quitar fotografía">×</button>
-  </figure>`).join("")}${photos.length < 3 ? `<button class="visit-photo-add" id="takeVisitPhoto" type="button"><b>＋</b><strong>${photos.length ? "Otra fotografía" : "Tomar fotografía"}</strong><small>${photos.length}/3 capturadas</small></button>` : ""}</div>
-  <div class="photo-actions"><button class="btn btn-light" id="chooseVisitPhotos" ${photos.length >= 3 ? "disabled" : ""}>▧ Elegir de galería</button><span>${photos.length} foto(s) · ${formatNumber(totalMb, 2)} MB optimizados</span></div>`;
+  </figure>`).join("")}<button class="visit-photo-add" id="takeVisitPhoto" type="button" ${busy ? "disabled" : ""}><b>${busy ? "…" : "＋"}</b><strong>${busy ? "Procesando fotos" : photos.length ? "Otra fotografía" : "Tomar fotografía"}</strong><small>${busy ? escapeHtml(state.visit.photoProgress || "Preparando…") : "Agregá las que necesités"}</small></button></div>
+  <div class="photo-actions"><button class="btn btn-light" id="chooseVisitPhotos" ${busy ? "disabled" : ""}>▧ Elegir de galería</button><span>${photos.length} foto(s) · ${formatNumber(totalMb, 2)} MB optimizados</span></div>
+  ${busy ? `<div class="photo-processing" role="status"><span></span><b>${escapeHtml(state.visit.photoProgress || "Procesando fotografías…")}</b></div>` : ""}`;
 }
 
 function renderVisitNew() {
@@ -720,7 +725,7 @@ function renderVisitNew() {
       </div></div>
     </section>
     <section class="card visit-camera-card">
-      <div class="card-head"><span class="step">4</span><div><strong>Fotografías de evidencia</strong><small>Tomá entre 1 y 3 fotos. La app conserva el original limpio para la futura IA y genera una copia PNG etiquetada para compartir.</small></div></div>
+      <div class="card-head"><span class="step">4</span><div><strong>Fotografías de evidencia</strong><small>Tomá o elegí todas las fotos necesarias. La app las optimiza, conserva una copia limpia para la futura IA y genera PNG etiquetados para compartir.</small></div></div>
       <div class="card-body">${renderVisitPhotos()}</div>
     </section>
     <section class="card">
@@ -728,7 +733,7 @@ function renderVisitNew() {
       <div class="card-body">
         <button class="gps-button ${visit.latitude ? "captured" : ""}" id="visitGps">${visit.latitude ? `✓ GPS capturado · ${Number(visit.latitude).toFixed(6)}, ${Number(visit.longitude).toFixed(6)} · ±${formatNumber(visit.gpsAccuracyM, 0)} m` : "⌖ CAPTURAR GPS DE LA VISITA"}</button>
         ${field("Observación técnica", `<textarea id="visitNotes" placeholder="Describí la condición de la caña, uniformidad, espacios, sequía, acame, malezas, plagas o cualquier detalle relevante.">${escapeHtml(visit.notes)}</textarea>`)}
-        <div class="visit-save-actions"><button class="btn btn-green" id="saveVisit">▣ Guardar visita</button><button class="btn btn-gold" id="saveExportVisit">⇩ Guardar + carpeta ZIP</button></div>
+        <div class="visit-save-actions"><button class="btn btn-green" id="saveVisit" ${visit.photoProcessing || visit.saving ? "disabled" : ""}>${visit.saving ? "… Guardando" : "▣ Guardar visita"}</button><button class="btn btn-gold" id="saveExportVisit" ${visit.photoProcessing || visit.saving ? "disabled" : ""}>⇩ Guardar + carpeta ZIP</button></div>
       </div>
     </section>`;
 }
@@ -766,6 +771,8 @@ async function exportVisits(visits) {
 
 async function saveVisit(exportAfter = false) {
   const visit = state.visit;
+  if (visit.photoProcessing) return notify("Esperá a que terminen de cargar las fotografías.");
+  if (visit.saving) return;
   if (!state.selectedLot) return notify("Seleccioná una suerte antes de guardar.");
   if (!visit.technician.trim()) return notify("Ingresá el técnico responsable.");
   if (!visit.photos.length) return notify("Tomá por lo menos una fotografía de evidencia.");
@@ -806,7 +813,19 @@ async function saveVisit(exportAfter = false) {
     photos: visit.photos,
     datasetVersion: "visit-photos-v1",
   };
-  await repository.put("visits", record);
+  visit.saving = true;
+  render();
+  try {
+    await repository.put("visits", record);
+  } catch (error) {
+    visit.saving = false;
+    render();
+    const quota = error?.name === "QuotaExceededError" || /quota|storage|espacio/i.test(error?.message || "");
+    notify(quota
+      ? "No hay espacio suficiente en el teléfono. Retirá algunas fotos o exportá visitas anteriores."
+      : "No se pudo guardar la visita. Las fotos siguen cargadas para volver a intentar.");
+    return;
+  }
   state.visits.push(record);
   if (exportAfter) {
     try { await exportVisits([record]); } catch (error) { notify(error?.message || "La visita se guardó, pero no se pudo exportar."); }
@@ -1237,12 +1256,12 @@ document.addEventListener("click", async (event) => {
   }
 
   if (button.id === "takeVisitPhoto") {
-    if (state.visit.photos.length >= 3) return notify("La visita admite un máximo de 3 fotografías.");
+    if (state.visit.photoProcessing) return notify("Esperá a que terminen de cargar las fotografías.");
     visitCameraFile.click();
   }
 
   if (button.id === "chooseVisitPhotos") {
-    if (state.visit.photos.length >= 3) return notify("La visita admite un máximo de 3 fotografías.");
+    if (state.visit.photoProcessing) return notify("Esperá a que terminen de cargar las fotografías.");
     visitGalleryFile.click();
   }
 
@@ -1716,29 +1735,40 @@ document.addEventListener("change", (event) => {
 });
 
 async function handleVisitPhotoFiles(fileList) {
-  const remaining = Math.max(0, 3 - state.visit.photos.length);
-  const files = [...(fileList || [])].slice(0, remaining);
+  const files = snapshotPhotoFiles(fileList);
   if (!files.length) return;
+  state.visit.photoProcessing = true;
+  state.visit.photoProgress = `Preparando 1 de ${files.length}…`;
+  render();
   notify(`Optimizando ${files.length} fotografía(s)…`);
-  for (const file of files) {
+  let added = 0;
+  let failed = 0;
+  for (let index = 0; index < files.length; index += 1) {
+    const file = files[index];
+    state.visit.photoProgress = `Preparando ${index + 1} de ${files.length}…`;
+    render();
     try {
       state.visit.photos.push(await prepareVisitPhoto(file));
+      added += 1;
     } catch (error) {
-      notify(error?.message || "No se pudo procesar una fotografía.");
+      failed += 1;
     }
   }
+  state.visit.photoProcessing = false;
+  state.visit.photoProgress = "";
   render();
-  notify(`${state.visit.photos.length} de 3 fotografía(s) listas.`);
+  if (!added) return notify("No se pudo cargar la fotografía. Probá tomarla nuevamente o elegir otra de la galería.");
+  notify(`${added} fotografía(s) agregada(s). ${state.visit.photos.length} lista(s) en total${failed ? ` · ${failed} no compatible(s)` : ""}.`);
 }
 
 visitCameraFile.addEventListener("change", async () => {
-  const files = visitCameraFile.files;
+  const files = snapshotPhotoFiles(visitCameraFile.files);
   visitCameraFile.value = "";
   await handleVisitPhotoFiles(files);
 });
 
 visitGalleryFile.addEventListener("change", async () => {
-  const files = visitGalleryFile.files;
+  const files = snapshotPhotoFiles(visitGalleryFile.files);
   visitGalleryFile.value = "";
   await handleVisitPhotoFiles(files);
 });

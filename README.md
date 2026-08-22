@@ -1,11 +1,12 @@
-# Estimador TCH CASUR — v2.5.0
+# Estimador TCH CASUR — v2.5.1
 
 PWA estática para GitHub Pages orientada a trabajo de campo de Negocios de Caña CASUR.
 
 ## Nuevo módulo principal: Visitas de campo
 
 - Selección desde el Maestro General.
-- Captura de 1 a 3 fotografías desde cámara o galería.
+- Captura libre de las fotografías necesarias desde cámara o galería, optimizadas antes de guardarse.
+- Corrección Android/WebView: la selección se copia antes de limpiar cámara o galería para que las imágenes sí lleguen a la visita.
 - GPS, técnico, motivo y condición agronómica.
 - TCH opcional identificado como visual, aforo o biometría; una visita puede guardarse sin estimar TCH.
 - PNG etiquetado con hacienda, suerte, fecha, condición, coordenadas y observación.
