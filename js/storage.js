@@ -1,6 +1,24 @@
 const DB_NAME = "casur-estimador-tch";
 const DB_VERSION = 3;
 
+function blobDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error || new Error("No se pudo incluir una fotografía en el respaldo."));
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function serializableVisits(visits) {
+  return Promise.all(visits.map(async (visit) => ({
+    ...visit,
+    photos: await Promise.all((visit.photos || []).map(async (photo) => photo.blob instanceof Blob
+      ? { ...photo, blob: undefined, dataUrl: await blobDataUrl(photo.blob) }
+      : photo)),
+  })));
+}
+
 function requestPromise(request) {
   return new Promise((resolve, reject) => {
     request.onsuccess = () => resolve(request.result);
@@ -98,7 +116,10 @@ export class LocalRepository {
   async exportAll() {
     const stores = ["master", "biometries", "weighings", "harvests", "visits", "audit", "settings"];
     const payload = { format: "CASUR-TCH-BACKUP", version: 3, exportedAt: new Date().toISOString() };
-    for (const store of stores) payload[store] = await this.all(store);
+    for (const store of stores) {
+      const rows = await this.all(store);
+      payload[store] = store === "visits" ? await serializableVisits(rows) : rows;
+    }
     return payload;
   }
 

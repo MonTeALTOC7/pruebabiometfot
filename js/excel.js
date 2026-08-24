@@ -75,13 +75,13 @@ export function buildWorkbook({ master = [], biometries = [], weighings = [], ha
     lot.zone, lot.tenureCode, lot.tenureLabel, lot.farmCode, lot.producer, lot.lot, lot.id, lot.area,
     lot.variety, lot.referenceAge, lot.rowSpacingM, lot.cutNumber, lot.texture, lot.distanceKm,
     lot.plantingDate, lot.lastCutDate, lot.destination, lot.cropType, lot.irrigation, lot.erp,
-    lot.historicalTch, lot.latestSeasonTch,
+    lot.historicalTch, lot.latestSeasonTch, lot.estimatedTch2627, lot.estimatedTch2627UpdatedAt,
   ]);
   addSheet(wb, "Maestro General", "CASUR · MAESTRO GENERAL DE SUERTES", "Zonas operativas 1, 2, 3 y 5. Zona 0 / Sucuya excluida.", [
     "Zona", "Tn", "Tenencia", "Código hacienda", "Hacienda", "Suerte", "Código suerte", "Área (ha)",
     "Variedad", "Edad referencia", "Surco (m)", "# Corte", "Textura", "Distancia (km)", "F. Siembra",
-    "F. Último corte", "Destino", "Tipo cultivo", "Riego", "ERP", "TCH histórico promedio", "TCH 25/26",
-  ], masterRows, [16, 8, 17, 15, 32, 10, 15, 12, 18, 14, 12, 10, 14, 14, 13, 15, 16, 20, 16, 25, 21, 15]);
+    "F. Último corte", "Destino", "Tipo cultivo", "Riego", "ERP", "TCH histórico promedio", "TCH 25/26", "TCH estimado 26/27", "Fecha fuente 26/27",
+  ], masterRows, [16, 8, 17, 15, 32, 10, 15, 12, 18, 14, 12, 10, 14, 14, 13, 15, 16, 20, 16, 25, 21, 15, 20, 18]);
 
   const byFarm = new Map();
   estimates.forEach((record) => {
@@ -110,22 +110,25 @@ export function buildWorkbook({ master = [], biometries = [], weighings = [], ha
   addSheet(wb, "Estimados por Suerte", "CASUR · ESTIMADOS POR SUERTE", "El TCH proyectado por biometría es el resultado principal; peso e históricos son contrastes.", [
     "Fecha", "Zona", "Tn", "Tenencia", "Código finca", "Hacienda", "Suerte", "Código suerte", "Área (ha)", "Variedad",
     "Edad actual", "Edad referencia", "TCHe biométrico", "TCH peso contraste", "Puntos con peso", "Ajuste (%)", "Motivo ajuste",
-    "TCH proyectado", "Toneladas", "TCH histórico promedio", "TCH zafra 25/26", "CV (%)", "Calidad", "Validado", "Validado por", "Técnico",
+    "TCH proyectado", "Toneladas", "TCH histórico promedio", "TCH zafra 25/26", "TCH estimado 26/27", "Dif. proy. vs 26/27 (%)", "CV (%)", "Calidad", "Validado", "Validado por", "Técnico",
   ], estimates.map((r) => [
     r.date, r.zone, r.tenureCode, r.tenureLabel, r.farmCode, r.producer, r.lot, r.lotId, r.area, r.variety,
     r.currentAgeMonths, r.targetAgeMonths, r.biometricTch, r.weightTch, r.weightPointCount, r.adjustmentPct, r.adjustmentReason,
-    r.projectedTch, r.projectedTons, r.historicalTch, r.latestSeasonTch, r.cvPct, r.quality, r.validated ? "Sí" : "No", r.validatedBy, r.technician,
-  ]), [12, 16, 8, 17, 13, 32, 9, 14, 11, 18, 13, 14, 15, 18, 15, 12, 24, 16, 16, 21, 18, 11, 11, 10, 22, 22]);
+    r.projectedTch, r.projectedTons, r.historicalTch, r.latestSeasonTch, r.estimatedTch2627,
+    r.estimatedTch2627 ? ((r.projectedTch - r.estimatedTch2627) / r.estimatedTch2627) * 100 : null,
+    r.cvPct, r.quality, r.validated ? "Sí" : "No", r.validatedBy, r.technician,
+  ]), [12, 16, 8, 17, 13, 32, 9, 14, 11, 18, 13, 14, 15, 18, 15, 12, 24, 16, 16, 21, 18, 20, 22, 11, 11, 10, 22, 22]);
 
   addSheet(wb, "Biometrías", "CASUR · BIOMETRÍAS", "Todas las evaluaciones guardadas, incluidas versiones anteriores.", [
     "ID", "Fecha", "Hora", "Técnico", "Código suerte", "Hacienda", "Suerte", "Zona", "Tenencia",
     "Edad actual", "Edad referencia", "Ajuste (%)", "Motivo", "TCHe actual", "TCH peso contraste", "TCH proyectado",
-    "Toneladas", "Puntos", "Puntos con peso", "Tramo común (m)", "Mínimo", "Máximo", "Desv. estándar", "CV (%)",
+    "Toneladas", "TCH estimado 26/27", "Dif. proy. vs 26/27 (%)", "Puntos", "Puntos con peso", "Tramo común (m)", "Mínimo", "Máximo", "Desv. estándar", "CV (%)",
     "Calidad", "Validado", "Fecha validación", "Validado por", "Observaciones",
   ], biometries.map((r) => [
     r.id, r.date, r.time, r.technician, r.lotId, r.producer, r.lot, r.zone, r.tenureLabel || r.tenureCode,
     r.currentAgeMonths, r.targetAgeMonths, r.adjustmentPct, r.adjustmentReason, r.biometricTch, r.weightTch, r.projectedTch,
-    r.projectedTons, r.pointCount, r.weightPointCount || 0, r.sampleLengthM, r.minTch, r.maxTch, r.sdTch, r.cvPct,
+    r.projectedTons, r.estimatedTch2627, r.estimatedTch2627 ? ((r.projectedTch - r.estimatedTch2627) / r.estimatedTch2627) * 100 : null,
+    r.pointCount, r.weightPointCount || 0, r.sampleLengthM, r.minTch, r.maxTch, r.sdTch, r.cvPct,
     r.quality, r.validated ? "Sí" : "No", r.validatedAt, r.validatedBy, r.notes,
   ]), [24, 12, 10, 22, 14, 30, 9, 16, 17, 13, 13, 12, 24, 14, 18, 16, 16, 10, 15, 17, 12, 12, 15, 11, 11, 10, 22, 22, 38]);
 
@@ -158,13 +161,14 @@ export function buildWorkbook({ master = [], biometries = [], weighings = [], ha
     const historicalDelta = r.historicalTch ? ((r.projectedTch - r.historicalTch) / r.historicalTch) * 100 : null;
     const realError = harvest?.tchReal ? ((r.projectedTch - harvest.tchReal) / harvest.tchReal) * 100 : null;
     const latestSeasonDelta = r.latestSeasonTch ? ((r.projectedTch - r.latestSeasonTch) / r.latestSeasonTch) * 100 : null;
-    return [r.lotId, r.producer, r.lot, r.zone, r.tenureLabel || r.tenureCode, r.historicalTch, r.latestSeasonTch, r.biometricTch, r.projectedTch, weightTch, harvest?.tchReal || null, historicalDelta, latestSeasonDelta, realError];
+    const estimateDelta = r.estimatedTch2627 ? ((r.projectedTch - r.estimatedTch2627) / r.estimatedTch2627) * 100 : null;
+    return [r.lotId, r.producer, r.lot, r.zone, r.tenureLabel || r.tenureCode, r.historicalTch, r.latestSeasonTch, r.estimatedTch2627, r.biometricTch, r.projectedTch, weightTch, harvest?.tchReal || null, historicalDelta, latestSeasonDelta, estimateDelta, realError];
   });
   addSheet(wb, "Comparativo Histórico", "CASUR · COMPARATIVO", "Histórico, TCHe, proyección, peso opcional y cosecha real", [
-    "Código suerte", "Hacienda", "Suerte", "Zona", "Tenencia", "TCH histórico promedio", "TCH zafra 25/26",
+    "Código suerte", "Hacienda", "Suerte", "Zona", "Tenencia", "TCH histórico promedio", "TCH zafra 25/26", "TCH estimado 26/27",
     "TCHe biométrico", "TCH proyectado", "TCH peso contraste", "TCH real", "Dif. proy. vs histórico (%)",
-    "Dif. proy. vs 25/26 (%)", "Error proy. vs real (%)",
-  ], historicalRows, [14, 32, 9, 16, 17, 21, 18, 16, 16, 18, 13, 24, 22, 22]);
+    "Dif. proy. vs 25/26 (%)", "Dif. proy. vs 26/27 (%)", "Error proy. vs real (%)",
+  ], historicalRows, [14, 32, 9, 16, 17, 21, 18, 20, 16, 16, 18, 13, 24, 22, 22, 22]);
 
   const methodology = [
     ["Parámetro", "Definición / fórmula"],

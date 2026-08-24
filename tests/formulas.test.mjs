@@ -6,6 +6,7 @@ import {
 } from "../js/tch-engine.js";
 import {
   isOperationalLot, masterFingerprint, masterSuggestions, masterToEmbeddedRows, normalizeEmbeddedMaster,
+  parseSeasonEstimateWorkbook,
 } from "../js/master.js";
 
 test("fórmula oficial H(m) y D(mm) reproduce 162.916 TCH", () => {
@@ -106,6 +107,7 @@ test("maestro publicado conserva campos y detecta cambios por huella", async () 
     codigoHacienda: "993", productor: "Pansaco", suerte: "01", hacSue: "9931", area: 19,
     variedad: "CP 72-2086", surco: 1.65, tipoRiego: "Gravedad", tchHistorico: 63.66,
     tchHistoricoPromedio: 70.14, tchZafra2526: 63.66, tenenciaCode: "PR", zona: "5-Productores",
+    tchEstimado2627: 65, tchEstimado2627Fecha: "2026-07-17", tchEstimado2627Fuente: "Fuente oficial",
   }]);
   const published = masterToEmbeddedRows(master);
   assert.equal(published[0].codigoHacienda, "993");
@@ -114,7 +116,31 @@ test("maestro publicado conserva campos y detecta cambios por huella", async () 
   assert.equal(published[0].tenenciaCode, "PR");
   assert.equal(published[0].tchHistoricoPromedio, 70.14);
   assert.equal(published[0].tchZafra2526, 63.66);
+  assert.equal(published[0].tchEstimado2627, 65);
+  assert.equal(published[0].tchEstimado2627Fecha, "2026-07-17");
   const originalFingerprint = await masterFingerprint(master);
   master[0].area = 20;
   assert.notEqual(await masterFingerprint(master), originalFingerprint);
+});
+
+test("actualizador 26/27 vincula por código hacienda + suerte normalizada", async () => {
+  const originalXlsx = globalThis.XLSX;
+  const matrix = [
+    ["Reporte preliminar"],
+    ["Zona", "CodHacienda", "NomHacienda", "Suerte", "hac-sue", "Destino", "TCH_Est_170726"],
+    ["5-Productores", "993", "Pansaco", "2", "9932", "Molienda", 65],
+  ];
+  globalThis.XLSX = {
+    read: () => ({ SheetNames: ["Productores_V3"], Sheets: { Productores_V3: matrix } }),
+    utils: { sheet_to_json: (sheet, options) => options?.header === 1 ? sheet : [] },
+  };
+  try {
+    const current = normalizeEmbeddedMaster([{ codigoHacienda: "993", productor: "Pansaco", suerte: "02", area: 9.87, zona: "5-Productores" }]);
+    const result = await parseSeasonEstimateWorkbook({ name: "fuente.xlsx", arrayBuffer: async () => new ArrayBuffer(0) }, current);
+    assert.equal(result.report.matched, 1);
+    assert.equal(result.report.withEstimate, 1);
+    assert.equal(result.report.canApply, true);
+    assert.equal(result.lots[0].estimatedTch2627, 65);
+    assert.equal(result.lots[0].estimatedTch2627UpdatedAt, "2026-07-17");
+  } finally { globalThis.XLSX = originalXlsx; }
 });

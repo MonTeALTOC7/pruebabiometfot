@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 2.6.0 — 2026-08-24
+
+### Estimado oficial 26/27
+- Integración de 262 suertes de Productores desde `Productores_V3`; 245 valores y 17 vacíos oficiales.
+- Vinculación sin ambigüedad por Código hacienda + Suerte normalizada, con trazabilidad de archivo, hoja, columna y fecha.
+- Importador protegido que valida duplicados y claves desconocidas antes de aplicar solo el campo 26/27.
+- Nueva jerarquía visual y comparativos 26/27 en biometría, PNG ejecutivo, visitas y XLSX.
+
+### Evidencias fotográficas
+- Panel de datos externo a la foto, sin franjas oscuras, sin hora ni título redundante.
+- Fecha `dd-mmm-aaaa` y contenido dinámico: no imprime valores vacíos, “No evaluado” ni TCH inexistente.
+- Guardado separado de la exportación; descarga PNG y compartir por menú del dispositivo desde el historial.
+- ZIP masivo configurable por filtro o selección, con etiquetadas, originales y/o Excel.
+- Nuevas fotos en Blob con compatibilidad de lectura y respaldo para Base64 legado.
+- Metadatos locales preparados para futura sincronización, sin activar servicios de nube.
+
 ## 2.5.1 — 2026-08-21
 
 ### Corrección de fotografías en visitas

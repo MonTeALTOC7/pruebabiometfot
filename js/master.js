@@ -12,6 +12,7 @@ const aliases = {
   cutNumber: ["de corte", "numero de corte", "corte", "num corte"],
   historicalTch: ["tch historico promedio", "promedio historico", "tch promedio historico", "tch historico", "tch"],
   latestSeasonTch: ["tch 25 26", "tch zafra 25 26", "tch ultima zafra", "ultimo tch 25 26"],
+  estimatedTch2627: ["tch estimado 26 27", "tch est 26 27", "tch est 170726", "tch estimado zafra 26 27"],
   texture: ["nombre textura", "textura"],
   distanceKm: ["distancia km", "km", "distancia"],
   initialTch: ["tch inic", "tch inicial"],
@@ -85,6 +86,9 @@ function normalizeLot(row, map, index) {
     cutNumber: text(row[map.cutNumber]),
     historicalTch: finiteNumber(row[map.historicalTch]) || null,
     latestSeasonTch: finiteNumber(row[map.latestSeasonTch]) || null,
+    estimatedTch2627: finiteNumber(row[map.estimatedTch2627]) || null,
+    estimatedTch2627UpdatedAt: "",
+    estimatedTch2627Source: "",
     texture: text(row[map.texture]),
     distanceKm: finiteNumber(row[map.distanceKm]) || null,
     initialTch: finiteNumber(row[map.initialTch]) || null,
@@ -128,6 +132,9 @@ export function normalizeEmbeddedMaster(rows) {
         Object.hasOwn(row, "tchZafra2526") ? row.tchZafra2526 :
         Object.hasOwn(row, "tchHistorico") ? row.tchHistorico : row.latestSeasonTch
       ) || null,
+      estimatedTch2627: finiteNumber(row.tchEstimado2627 ?? row.estimatedTch2627) || null,
+      estimatedTch2627UpdatedAt: text(row.tchEstimado2627Fecha ?? row.estimatedTch2627UpdatedAt),
+      estimatedTch2627Source: text(row.tchEstimado2627Fuente ?? row.estimatedTch2627Source),
       texture: text(row.textura ?? row.texture),
       distanceKm: finiteNumber(row.km ?? row.distanceKm) || null,
       initialTch: finiteNumber(row.tchInicial ?? row.initialTch) || null,
@@ -171,6 +178,9 @@ export function masterToEmbeddedRows(lots) {
       tchHistorico: finiteNumber(lot.latestSeasonTch) || null,
       tchHistoricoPromedio: finiteNumber(lot.historicalTch) || null,
       tchZafra2526: finiteNumber(lot.latestSeasonTch) || null,
+      tchEstimado2627: finiteNumber(lot.estimatedTch2627) || null,
+      tchEstimado2627Fecha: text(lot.estimatedTch2627UpdatedAt),
+      tchEstimado2627Fuente: text(lot.estimatedTch2627Source),
       textura: text(lot.texture),
       km: finiteNumber(lot.distanceKm) || null,
       tchInicial: finiteNumber(lot.initialTch) || null,
@@ -232,6 +242,9 @@ export async function parseMasterWorkbook(file, currentMaster = []) {
     const previous = current.get(lot.id);
     if (!lot.historicalTch && previous?.historicalTch) lot.historicalTch = previous.historicalTch;
     if (!lot.latestSeasonTch && previous?.latestSeasonTch) lot.latestSeasonTch = previous.latestSeasonTch;
+    if (!lot.estimatedTch2627 && previous?.estimatedTch2627) lot.estimatedTch2627 = previous.estimatedTch2627;
+    if (!lot.estimatedTch2627UpdatedAt && previous?.estimatedTch2627UpdatedAt) lot.estimatedTch2627UpdatedAt = previous.estimatedTch2627UpdatedAt;
+    if (!lot.estimatedTch2627Source && previous?.estimatedTch2627Source) lot.estimatedTch2627Source = previous.estimatedTch2627Source;
     if (!lot.initialTch && previous?.initialTch) lot.initialTch = previous.initialTch;
     if (!lot.currentMasterTch && previous?.currentMasterTch) lot.currentMasterTch = previous.currentMasterTch;
   });
@@ -259,6 +272,116 @@ export async function parseMasterWorkbook(file, currentMaster = []) {
       excluded: excluded.length,
       excludedReason: reportSheet ? "Zona 0 / Sucuya" : "",
       producers: uniqueLots.filter((lot) => normalizeText(lot.zone) === "5 productores").length,
+    },
+  };
+}
+
+function seasonEstimateSourceDate(header) {
+  const digits = normalizeText(header).replace(/\D/g, "");
+  const match = digits.match(/(\d{2})(\d{2})(\d{2})$/);
+  if (!match) return "";
+  const [, day, month, year] = match;
+  return `20${year}-${month}-${day}`;
+}
+
+function seasonEstimateSheet(workbook) {
+  const candidates = workbook.SheetNames.map((sheetName) => {
+    const matrix = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: "", raw: true });
+    const headerRowIndex = matrix.slice(0, 20).findIndex((row) => {
+      const headers = row.map(normalizeText);
+      return headers.includes("codhacienda") && headers.includes("suerte") && headers.some((header) => header.startsWith("tch est"));
+    });
+    if (headerRowIndex < 0) return null;
+    const headers = matrix[headerRowIndex].map((value) => text(value));
+    const normalized = headers.map(normalizeText);
+    const estimateIndexes = normalized.map((header, index) => ({ header, index }))
+      .filter(({ header }) => header.startsWith("tch est"))
+      .sort((a, b) => Number(b.header.includes("170726")) - Number(a.header.includes("170726")) ||
+        Number(b.header.includes("26 27")) - Number(a.header.includes("26 27")));
+    return { sheetName, matrix, headerRowIndex, headers, normalized, estimateIndex: estimateIndexes[0]?.index ?? -1 };
+  }).filter(Boolean);
+  return candidates.find((candidate) => normalizeText(candidate.sheetName) === "productores v3") || candidates[0] || null;
+}
+
+export async function parseSeasonEstimateWorkbook(file, currentMaster = []) {
+  if (!globalThis.XLSX) throw new Error("No se cargó el componente Excel.");
+  const workbook = XLSX.read(await file.arrayBuffer(), { type: "array", cellDates: true });
+  const selected = seasonEstimateSheet(workbook);
+  if (!selected) throw new Error("No se encontró una hoja con CodHacienda, Suerte y TCH estimado.");
+  const { sheetName, matrix, headerRowIndex, headers, normalized, estimateIndex } = selected;
+  const indexOf = (...choices) => normalized.findIndex((header) => choices.includes(header));
+  const farmIndex = indexOf("codhacienda", "cod hacienda", "codigo hacienda");
+  const lotIndex = indexOf("suerte", "lote");
+  const suppliedIdIndex = indexOf("hac sue", "hac-sue", "hacsue");
+  const producerIndex = indexOf("nomhacienda", "nombre hacienda", "hacienda", "productor");
+  const destinationIndex = indexOf("destino");
+  if (farmIndex < 0 || lotIndex < 0 || estimateIndex < 0) throw new Error("La fuente no contiene las columnas mínimas para vincular el TCH 26/27.");
+
+  const lots = currentMaster.map((lot) => ({ ...lot }));
+  const byId = new Map(lots.map((lot) => [lot.id, lot]));
+  const seen = new Map();
+  const duplicates = [];
+  const unknown = [];
+  const rows = matrix.slice(headerRowIndex + 1).filter((row) => row.some((value) => value !== "" && value !== null));
+  const sourceColumn = headers[estimateIndex];
+  const sourceDate = seasonEstimateSourceDate(sourceColumn) || new Date().toISOString().slice(0, 10);
+  const importedAt = new Date().toISOString();
+  let matched = 0;
+  let updated = 0;
+  let unchanged = 0;
+  let withEstimate = 0;
+  let withoutEstimate = 0;
+  let seedWithoutEstimate = 0;
+
+  rows.forEach((row, rowOffset) => {
+    const farmCode = text(row[farmIndex]);
+    const lotCode = normalizedLotNumber(row[lotIndex]);
+    const canonicalId = farmCode && lotCode ? `${farmCode}${lotCode}` : text(row[suppliedIdIndex]);
+    const suppliedId = suppliedIdIndex >= 0 ? text(row[suppliedIdIndex]) : "";
+    if (!canonicalId) return;
+    if (seen.has(canonicalId)) {
+      duplicates.push({ id: canonicalId, rows: [seen.get(canonicalId), headerRowIndex + rowOffset + 2] });
+      return;
+    }
+    seen.set(canonicalId, headerRowIndex + rowOffset + 2);
+    const target = byId.get(canonicalId);
+    if (!target) {
+      unknown.push({ id: canonicalId, suppliedId, producer: text(row[producerIndex]), lot: lotCode, row: headerRowIndex + rowOffset + 2 });
+      return;
+    }
+    matched += 1;
+    const nextEstimate = finiteNumber(row[estimateIndex]) || null;
+    const destination = destinationIndex >= 0 ? text(row[destinationIndex]) : "";
+    if (nextEstimate) withEstimate += 1;
+    else {
+      withoutEstimate += 1;
+      if (/semilla/i.test(destination)) seedWithoutEstimate += 1;
+    }
+    if (Number(target.estimatedTch2627 || 0) === Number(nextEstimate || 0)) unchanged += 1;
+    else updated += 1;
+    target.estimatedTch2627 = nextEstimate;
+    target.estimatedTch2627UpdatedAt = sourceDate;
+    target.estimatedTch2627Source = `${file.name} · ${sheetName} · ${sourceColumn}`;
+  });
+
+  return {
+    lots,
+    report: {
+      sheetName,
+      sourceColumn,
+      sourceDate,
+      importedAt,
+      analyzed: rows.length,
+      matched,
+      updated,
+      unchanged,
+      withEstimate,
+      withoutEstimate,
+      seedWithoutEstimate,
+      withoutEstimateOther: withoutEstimate - seedWithoutEstimate,
+      duplicates,
+      unknown,
+      canApply: duplicates.length === 0 && unknown.length === 0 && matched > 0,
     },
   };
 }

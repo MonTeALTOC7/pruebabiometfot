@@ -25,7 +25,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-085-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 30,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -53,7 +56,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-081-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -81,7 +87,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 80,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -109,7 +118,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 85,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -137,7 +149,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 65,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -165,7 +180,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-005",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -193,7 +211,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-017",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -221,7 +242,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-006",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -249,7 +273,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-007",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 90,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -277,7 +304,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-008",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 85,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -305,7 +335,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-009",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 80,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -333,7 +366,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-010",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 80,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -361,7 +397,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-011",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 90,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -389,7 +428,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-012",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -417,7 +459,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-013",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -445,7 +490,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-015",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "908",
@@ -473,7 +521,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-081-016",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "904",
@@ -501,7 +552,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-073-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 64.295275,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "904",
@@ -529,7 +583,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-073-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 41.20919000000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "186",
@@ -557,7 +614,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-096-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 70,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "186",
@@ -573,7 +633,7 @@
     "tchHistoricoPromedio": 79.7346,
     "tchZafra2526": 77.599,
     "textura": "Liviano",
-    "km": 4.0,
+    "km": 4,
     "tchInicial": 73.79,
     "tchActualMaestro": 0,
     "fechaSiembra": "2024-06-15",
@@ -585,7 +645,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-096-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 72.55506500000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "186",
@@ -613,7 +676,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-096-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 73.65182000000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "186",
@@ -641,7 +707,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-096-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 74.82711500000002,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "561",
@@ -669,7 +738,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-042-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 76.741995,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "561",
@@ -697,7 +769,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-042-008",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 84.26968000000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "561",
@@ -725,7 +800,10 @@
     "tipoRiego": "Aspersion",
     "nr": "2.8000000000000003",
     "erp": "1-1-3-1-042-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 73,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "561",
@@ -753,7 +831,10 @@
     "tipoRiego": "Aspersion",
     "nr": "2.1",
     "erp": "1-1-3-1-042-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 73,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "561",
@@ -781,7 +862,10 @@
     "tipoRiego": "Aspersion",
     "nr": "1.4000000000000001",
     "erp": "1-1-3-1-042-005",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 80,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "561",
@@ -809,7 +893,10 @@
     "tipoRiego": "Aspersion",
     "nr": "2.8000000000000003",
     "erp": "1-1-3-1-042-006",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 80,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "7",
@@ -837,7 +924,10 @@
     "tipoRiego": "Ventana",
     "nr": "",
     "erp": "1-1-3-1-086-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 70,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "7",
@@ -865,7 +955,10 @@
     "tipoRiego": "Ventana",
     "nr": "",
     "erp": "1-1-3-1-086-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 70,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "7",
@@ -893,7 +986,10 @@
     "tipoRiego": "Ventana",
     "nr": "",
     "erp": "1-1-3-1-086-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "7",
@@ -921,7 +1017,10 @@
     "tipoRiego": "Ventana",
     "nr": "",
     "erp": "1-1-3-1-086-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 80,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "7",
@@ -949,7 +1048,10 @@
     "tipoRiego": "Ventana",
     "nr": "",
     "erp": "1-1-3-1-086-005",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 80,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "190",
@@ -977,7 +1079,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-028-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 57.142525000000006,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "190",
@@ -1005,7 +1110,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-028-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 66.926365,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "190",
@@ -1033,7 +1141,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-028-013",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60.908705000000005,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "190",
@@ -1061,7 +1172,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-028-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 47.79159000000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "190",
@@ -1089,7 +1203,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-028-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 45,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "190",
@@ -1117,7 +1234,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-028-012",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 57.608155000000004,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "190",
@@ -1145,7 +1265,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-028-014",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 49.699925,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "190",
@@ -1173,7 +1296,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-028-015",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 74.07818000000002,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "190",
@@ -1201,7 +1327,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-028-010",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75.20766,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "190",
@@ -1229,7 +1358,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-028-011",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 87.05691500000002,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "252",
@@ -1257,7 +1389,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-105-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 70,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "25",
@@ -1285,7 +1420,10 @@
     "tipoRiego": "Gravedad",
     "nr": "4",
     "erp": "1-1-3-1-003-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 65,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "25",
@@ -1313,7 +1451,10 @@
     "tipoRiego": "Gravedad",
     "nr": "5.2",
     "erp": "1-1-3-1-003-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 70,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "25",
@@ -1341,7 +1482,10 @@
     "tipoRiego": "Gravedad",
     "nr": "3.4",
     "erp": "1-1-3-1-003-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 65,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "26",
@@ -1357,7 +1501,7 @@
     "tchHistoricoPromedio": 55.4108,
     "tchZafra2526": 24.84,
     "textura": "Liviano",
-    "km": 5.0,
+    "km": 5,
     "tchInicial": 63.95,
     "tchActualMaestro": 0,
     "fechaSiembra": "2025-06-25",
@@ -1369,7 +1513,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-092-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 40,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "26",
@@ -1385,7 +1532,7 @@
     "tchHistoricoPromedio": 57.7638,
     "tchZafra2526": 29.306,
     "textura": "Liviano",
-    "km": 5.0,
+    "km": 5,
     "tchInicial": 68.87,
     "tchActualMaestro": 0,
     "fechaSiembra": "2025-06-27",
@@ -1397,7 +1544,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-092-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 45,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "295",
@@ -1425,7 +1575,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-038-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 46.61162000000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "97",
@@ -1453,7 +1606,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-016-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 41.049305000000004,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "95",
@@ -1481,7 +1637,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-014-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 73.83882000000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "72",
@@ -1509,7 +1668,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-010-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 85.20094000000002,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "72",
@@ -1537,7 +1699,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-010-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "292",
@@ -1565,7 +1730,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-037-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 48,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "292",
@@ -1593,7 +1761,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-037-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "857",
@@ -1621,7 +1792,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-051-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 33.294415,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "857",
@@ -1649,7 +1823,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-051-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 35.130755,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "857",
@@ -1677,7 +1854,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-051-007",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 47.049200000000006,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "857",
@@ -1705,7 +1885,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-051-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 56.57685,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "857",
@@ -1733,7 +1916,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-051-008",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 42.772510000000004,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "857",
@@ -1761,7 +1947,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-051-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 35,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "857",
@@ -1789,7 +1978,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-051-005",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50.955630000000006,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "857",
@@ -1817,7 +2009,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-051-009",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 55.707300000000004,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "857",
@@ -1845,7 +2040,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-051-006",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 39.104505,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "752",
@@ -1873,7 +2071,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-049-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 70.76360500000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "911",
@@ -1901,7 +2102,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-097-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 33.075625,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "911",
@@ -1929,7 +2133,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-097-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 41.412085000000005,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "911",
@@ -1957,7 +2164,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-097-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 41.33728500000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "63",
@@ -1985,7 +2195,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-110-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 40,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "63",
@@ -2013,7 +2226,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-110-011",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "63",
@@ -2041,7 +2257,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-110-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "63",
@@ -2069,7 +2288,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-110-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "63",
@@ -2097,7 +2319,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-110-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "63",
@@ -2125,7 +2350,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-110-005",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "63",
@@ -2153,7 +2381,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-110-009",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "63",
@@ -2181,7 +2412,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-110-006",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "63",
@@ -2209,7 +2443,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-110-007",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "63",
@@ -2237,7 +2474,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-110-008",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "98",
@@ -2253,7 +2493,7 @@
     "tchHistoricoPromedio": 49.4454,
     "tchZafra2526": 30.122,
     "textura": "Liviano",
-    "km": 3.0,
+    "km": 3,
     "tchInicial": 49.19,
     "tchActualMaestro": 30.2,
     "fechaSiembra": "",
@@ -2265,7 +2505,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-017-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 30,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "56",
@@ -2293,7 +2536,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-009-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60.55434000000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "56",
@@ -2321,7 +2567,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-009-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 72.43258,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "251",
@@ -2349,7 +2598,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-033-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 80,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "907",
@@ -2377,7 +2629,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-079-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50.56199500000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "907",
@@ -2405,7 +2660,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-079-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "907",
@@ -2433,7 +2691,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-079-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "305",
@@ -2461,7 +2722,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-040-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 65,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "113",
@@ -2489,7 +2753,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-019-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 80,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "113",
@@ -2517,7 +2784,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-019-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 80,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "113",
@@ -2545,7 +2815,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-019-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 80,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "113",
@@ -2573,7 +2846,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-019-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 85,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "113",
@@ -2601,7 +2877,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-019-009",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 80,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "6",
@@ -2629,7 +2908,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-001-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 78.36609000000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "6",
@@ -2657,7 +2939,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-001-006",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "6",
@@ -2685,7 +2970,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-001-005",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 80,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "6",
@@ -2713,7 +3001,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-001-009",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 70,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "6",
@@ -2741,7 +3032,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-001-010",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 45,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "6",
@@ -2769,7 +3063,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-001-007",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "233",
@@ -2797,7 +3094,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-031-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 36.57159000000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "29",
@@ -2825,7 +3125,10 @@
     "tipoRiego": "Ventana",
     "nr": "",
     "erp": "1-1-3-1-103-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "29",
@@ -2853,7 +3156,10 @@
     "tipoRiego": "Ventana",
     "nr": "",
     "erp": "1-1-3-1-103-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "29",
@@ -2881,7 +3187,10 @@
     "tipoRiego": "Ventana",
     "nr": "",
     "erp": "1-1-3-1-103-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "29",
@@ -2909,7 +3218,10 @@
     "tipoRiego": "Ventana",
     "nr": "",
     "erp": "1-1-3-1-103-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "902",
@@ -2937,7 +3249,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-070-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 53.26134000000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "903",
@@ -2965,7 +3280,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-072-009",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 110,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "903",
@@ -2993,7 +3311,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-072-010",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 105,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "903",
@@ -3002,7 +3323,7 @@
     "hacSue": "90311",
     "area": 14.13,
     "variedad": "NA 85-1602",
-    "edadReferencia": 8.0,
+    "edadReferencia": 8,
     "surco": 1.65,
     "corte": "8",
     "tchHistorico": 105.86800000000001,
@@ -3021,7 +3342,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-072-011",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 98,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "903",
@@ -3030,7 +3354,7 @@
     "hacSue": "90312",
     "area": 14.1,
     "variedad": "NA 85-1602",
-    "edadReferencia": 8.0,
+    "edadReferencia": 8,
     "surco": 1.65,
     "corte": "8",
     "tchHistorico": 104.22200000000001,
@@ -3049,7 +3373,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-072-012",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 97,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "903",
@@ -3058,7 +3385,7 @@
     "hacSue": "90313",
     "area": 6.22,
     "variedad": "NA 85-1602",
-    "edadReferencia": 8.0,
+    "edadReferencia": 8,
     "surco": 1.65,
     "corte": "8",
     "tchHistorico": 100.78800000000001,
@@ -3077,7 +3404,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-072-013",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 95,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "903",
@@ -3105,7 +3435,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-072-014",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 100,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "759",
@@ -3133,7 +3466,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-083-006",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 90,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "759",
@@ -3161,7 +3497,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-083-026",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "759",
@@ -3189,7 +3528,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-083-007",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "759",
@@ -3217,7 +3559,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-083-008",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 55,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "759",
@@ -3245,7 +3590,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-083-009",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 71,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "759",
@@ -3273,7 +3621,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-083-010",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 55,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "759",
@@ -3301,7 +3652,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-083-011",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 70,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "759",
@@ -3329,7 +3683,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-083-012",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 65,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "759",
@@ -3357,7 +3714,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-083-013",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 45,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "759",
@@ -3385,7 +3745,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-083-017",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "751",
@@ -3413,7 +3776,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-048-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 56.22622500000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "751",
@@ -3441,7 +3807,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-048-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 65,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3469,7 +3838,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-021-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 65,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3497,7 +3869,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-021-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 65,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3525,7 +3900,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-021-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 65,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3553,7 +3931,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-021-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75.133795,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3581,7 +3962,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-021-016",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 44.10675500000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3609,7 +3993,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-021-007",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 74.29977500000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3637,7 +4024,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-021-008",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 79.146815,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3665,7 +4055,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-021-009",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 59.342580000000005,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3693,7 +4086,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-021-017",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 69.59485500000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3721,7 +4117,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-021-021",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 41.154025000000004,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3749,7 +4148,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-021-010",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 35.9414,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3777,7 +4179,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-021-011",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3805,7 +4210,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-021-012",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3833,7 +4241,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-021-013",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3861,7 +4272,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-021-020",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3889,7 +4303,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-021-014",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 63.047985000000004,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "125",
@@ -3917,7 +4334,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-021-015",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 20,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "909",
@@ -3945,7 +4365,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-082-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 33.49637500000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "909",
@@ -3973,7 +4396,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-082-007",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 49.44186500000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "909",
@@ -4001,7 +4427,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-082-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "909",
@@ -4029,7 +4458,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-082-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 25,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "909",
@@ -4057,7 +4489,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-082-008",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 25,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "494",
@@ -4085,7 +4520,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-041-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 74.14363,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "494",
@@ -4113,7 +4551,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-041-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 70.31293500000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "494",
@@ -4141,7 +4582,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-041-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 70,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "494",
@@ -4150,7 +4594,7 @@
     "hacSue": "49403A",
     "area": 1.4,
     "variedad": "B 82-333",
-    "edadReferencia": 5.0,
+    "edadReferencia": 5,
     "surco": 1.8,
     "corte": "6",
     "tchHistorico": 57.986000000000004,
@@ -4169,7 +4613,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-041-005",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 54.216910000000006,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "494",
@@ -4197,7 +4644,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-041-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 72.28111,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "494",
@@ -4225,7 +4675,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-041-006",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4253,7 +4706,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4281,7 +4737,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 45.19701521514527,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4309,7 +4768,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 62.971831224248724,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4325,7 +4787,7 @@
     "tchHistoricoPromedio": 87.1243,
     "tchZafra2526": 44.797,
     "textura": "Liviano",
-    "km": 8.0,
+    "km": 8,
     "tchInicial": 73.79,
     "tchActualMaestro": 0,
     "fechaSiembra": "2017-05-20",
@@ -4337,7 +4799,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-005",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 32.117555371079675,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4365,7 +4830,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-006",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 39.64632847980811,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4393,7 +4861,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-007",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 69.01197388235082,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4421,7 +4892,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-008",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 53.21260262163836,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4449,7 +4923,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-010",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 40.73036856555208,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4477,7 +4954,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-013",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 38.33998549019489,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4505,7 +4985,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-043",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 38.33998549019489,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4533,7 +5016,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-014",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 38.33998549019489,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4561,7 +5047,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-016",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 54.504560448695656,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4589,7 +5078,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-017",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 69.01197388235082,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4617,7 +5109,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-018",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 53.16384949608903,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4645,7 +5140,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-020",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 52.8612933345917,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4673,7 +5171,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-021",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 53.49938571310503,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4701,7 +5202,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-022",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 57.524386401839564,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4729,7 +5233,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-023",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 54.202004287198335,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4757,7 +5264,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-024",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 55.837384866286946,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4785,7 +5295,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-025",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 53.19969738252236,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4813,7 +5326,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-027",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 43.86347383982532,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4841,7 +5357,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-028",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 66.0138828669813,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4869,7 +5388,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-029",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 36.9233230263322,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4897,7 +5419,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-030",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 40.272949534662764,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4925,7 +5450,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-031",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 52.11924208542173,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4953,7 +5481,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-032",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 51.27681675423842,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -4981,7 +5512,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-033",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 32.91337844989966,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -5009,7 +5543,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-034",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 54.11095065565767,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -5037,7 +5574,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-035",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 51.8661560072024,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -5065,7 +5605,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-037",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 56.29050215080427,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -5093,7 +5636,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-038",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 53.76394311498301,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -5121,7 +5667,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-039",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 52.30995284124705,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
@@ -5133,9 +5682,9 @@
     "edadReferencia": null,
     "surco": 1.65,
     "corte": "11",
-    "tchHistorico": 85.0,
+    "tchHistorico": 85,
     "tchHistoricoPromedio": 101.0299,
-    "tchZafra2526": 85.0,
+    "tchZafra2526": 85,
     "textura": "Liviano",
     "km": 8.58,
     "tchInicial": 59.03,
@@ -5149,14 +5698,17 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-041",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60.94140693666479,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "184",
     "productor": "Leyla Román de Arguello",
     "suerte": "40A",
     "hacSue": "18440A",
-    "area": 4.0,
+    "area": 4,
     "variedad": "CP 72-2086",
     "edadReferencia": 5.466666666666667,
     "surco": 1.65,
@@ -5177,7 +5729,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-027-042",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 45.91253902835458,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "64",
@@ -5193,7 +5748,7 @@
     "tchHistoricoPromedio": null,
     "tchZafra2526": null,
     "textura": "Liviano",
-    "km": 48.0,
+    "km": 48,
     "tchInicial": 0,
     "tchActualMaestro": 0,
     "fechaSiembra": "2025-06-26",
@@ -5205,7 +5760,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-111-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "64",
@@ -5221,7 +5779,7 @@
     "tchHistoricoPromedio": null,
     "tchZafra2526": null,
     "textura": "Liviano",
-    "km": 49.0,
+    "km": 49,
     "tchInicial": 0,
     "tchActualMaestro": 0,
     "fechaSiembra": "2025-06-23",
@@ -5233,7 +5791,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-111-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 40,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "64",
@@ -5249,7 +5810,7 @@
     "tchHistoricoPromedio": null,
     "tchZafra2526": null,
     "textura": "Liviano",
-    "km": 50.0,
+    "km": 50,
     "tchInicial": 0,
     "tchActualMaestro": 0,
     "fechaSiembra": "2025-06-20",
@@ -5261,7 +5822,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-111-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 45,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "62",
@@ -5289,7 +5853,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-109-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 55,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "62",
@@ -5317,7 +5884,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-109-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 65,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "62",
@@ -5345,7 +5915,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-109-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 55.73348000000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "62",
@@ -5373,7 +5946,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-109-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "62",
@@ -5401,7 +5977,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-109-005",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "62",
@@ -5429,7 +6008,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-109-006",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 65,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "871",
@@ -5457,7 +6039,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-054-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50.29739000000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "244",
@@ -5485,7 +6070,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-032-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 68.04275500000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "244",
@@ -5513,7 +6101,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-032-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 56.603030000000004,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "24",
@@ -5529,7 +6120,7 @@
     "tchHistoricoPromedio": 61.643,
     "tchZafra2526": 66.362,
     "textura": "Liviano",
-    "km": 5.0,
+    "km": 5,
     "tchInicial": 44.27,
     "tchActualMaestro": 66.7,
     "fechaSiembra": "2018-06-17",
@@ -5541,7 +6132,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-091-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "24",
@@ -5557,7 +6151,7 @@
     "tchHistoricoPromedio": 64.5682,
     "tchZafra2526": 54.094,
     "textura": "Liviano",
-    "km": 5.0,
+    "km": 5,
     "tchInicial": 73.79,
     "tchActualMaestro": 53.7,
     "fechaSiembra": "2018-06-18",
@@ -5569,7 +6163,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-091-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50.577890000000004,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "880",
@@ -5597,14 +6194,17 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-062-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 45,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
     "productor": "Pansaco",
     "suerte": "01",
     "hacSue": "9931",
-    "area": 19.0,
+    "area": 19,
     "variedad": "CP 72-2086",
     "edadReferencia": 8.433333333333334,
     "surco": 1.65,
@@ -5625,7 +6225,10 @@
     "tipoRiego": "Gravedad",
     "nr": "4.9",
     "erp": "1-1-3-1-090-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 65,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -5653,7 +6256,10 @@
     "tipoRiego": "Gravedad",
     "nr": "8.1",
     "erp": "1-1-3-1-090-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 65,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -5681,7 +6287,10 @@
     "tipoRiego": "Gravedad",
     "nr": "7.5",
     "erp": "1-1-3-1-090-054",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -5709,7 +6318,10 @@
     "tipoRiego": "Gravedad",
     "nr": "5.6000000000000005",
     "erp": "1-1-3-1-090-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -5737,7 +6349,10 @@
     "tipoRiego": "Gravedad",
     "nr": "5",
     "erp": "1-1-3-1-090-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 42.29544,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -5765,7 +6380,10 @@
     "tipoRiego": "Gravedad",
     "nr": "4.9",
     "erp": "1-1-3-1-090-005",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 47.3748,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -5793,7 +6411,10 @@
     "tipoRiego": "Gravedad",
     "nr": "2.8000000000000003",
     "erp": "1-1-3-1-090-006",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50.46712,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -5821,7 +6442,10 @@
     "tipoRiego": "Gravedad",
     "nr": "3.6",
     "erp": "1-1-3-1-090-007",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 48.76872,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -5849,7 +6473,10 @@
     "tipoRiego": "Gravedad",
     "nr": "4.4",
     "erp": "1-1-3-1-090-008",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 55,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -5877,7 +6504,10 @@
     "tipoRiego": "Gravedad",
     "nr": "5.2",
     "erp": "1-1-3-1-090-009",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 52.323040000000006,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -5905,7 +6535,10 @@
     "tipoRiego": "Gravedad",
     "nr": "6",
     "erp": "1-1-3-1-090-010",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 55.05368,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -5933,7 +6566,10 @@
     "tipoRiego": "Gravedad",
     "nr": "10.3",
     "erp": "1-1-3-1-090-011",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 53.26200000000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -5961,7 +6597,10 @@
     "tipoRiego": "Gravedad",
     "nr": "4.8",
     "erp": "1-1-3-1-090-012",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 40,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -5989,7 +6628,10 @@
     "tipoRiego": "Gravedad",
     "nr": "7.6000000000000005",
     "erp": "1-1-3-1-090-013",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6017,7 +6659,10 @@
     "tipoRiego": "Gravedad",
     "nr": "5.7",
     "erp": "1-1-3-1-090-014",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6045,7 +6690,10 @@
     "tipoRiego": "Gravedad",
     "nr": "7.8",
     "erp": "1-1-3-1-090-015",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6073,7 +6721,10 @@
     "tipoRiego": "Gravedad",
     "nr": "6.5",
     "erp": "1-1-3-1-090-016",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 46.1868,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6101,7 +6752,10 @@
     "tipoRiego": "Gravedad",
     "nr": "5.6000000000000005",
     "erp": "1-1-3-1-090-017",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 65,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6129,7 +6783,10 @@
     "tipoRiego": "Gravedad",
     "nr": "3.9",
     "erp": "1-1-3-1-090-018",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 55,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6157,7 +6814,10 @@
     "tipoRiego": "Gravedad",
     "nr": "6.1000000000000005",
     "erp": "1-1-3-1-090-019",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 70,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6185,7 +6845,10 @@
     "tipoRiego": "Gravedad",
     "nr": "4.2",
     "erp": "1-1-3-1-090-020",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 54,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6213,7 +6876,10 @@
     "tipoRiego": "Gravedad",
     "nr": "1.5",
     "erp": "1-1-3-1-090-021",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6241,7 +6907,10 @@
     "tipoRiego": "Gravedad",
     "nr": "1.6",
     "erp": "1-1-3-1-090-022",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 45,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6269,7 +6938,10 @@
     "tipoRiego": "Gravedad",
     "nr": "1.6",
     "erp": "1-1-3-1-090-073",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6297,7 +6969,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-090-023",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6325,7 +7000,10 @@
     "tipoRiego": "Gravedad",
     "nr": "4.7",
     "erp": "1-1-3-1-090-024",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6353,7 +7031,10 @@
     "tipoRiego": "Gravedad",
     "nr": "2.7",
     "erp": "1-1-3-1-090-025",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 55,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6381,7 +7062,10 @@
     "tipoRiego": "Gravedad",
     "nr": "3.1",
     "erp": "1-1-3-1-090-026",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6409,7 +7093,10 @@
     "tipoRiego": "Gravedad",
     "nr": "1.5",
     "erp": "1-1-3-1-090-027",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 40,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6437,7 +7124,10 @@
     "tipoRiego": "Gravedad",
     "nr": "1.7",
     "erp": "1-1-3-1-090-028",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6465,7 +7155,10 @@
     "tipoRiego": "Gravedad",
     "nr": "1.3",
     "erp": "1-1-3-1-090-029",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6493,7 +7186,10 @@
     "tipoRiego": "Gravedad",
     "nr": "1.9000000000000001",
     "erp": "1-1-3-1-090-030",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 45,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6521,7 +7217,10 @@
     "tipoRiego": "Gravedad",
     "nr": "4.4",
     "erp": "1-1-3-1-090-033",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6549,7 +7248,10 @@
     "tipoRiego": "Gravedad",
     "nr": "5.3",
     "erp": "1-1-3-1-090-034",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6577,7 +7279,10 @@
     "tipoRiego": "Aspersion",
     "nr": "4.4",
     "erp": "1-1-3-1-090-035",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6605,7 +7310,10 @@
     "tipoRiego": "Gravedad",
     "nr": "3",
     "erp": "1-1-3-1-090-036",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 55,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6633,7 +7341,10 @@
     "tipoRiego": "Gravedad",
     "nr": "2.9",
     "erp": "1-1-3-1-090-037",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6661,7 +7372,10 @@
     "tipoRiego": "Gravedad",
     "nr": "2.5",
     "erp": "1-1-3-1-090-038",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 30,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6689,7 +7403,10 @@
     "tipoRiego": "Gravedad",
     "nr": "2.6",
     "erp": "1-1-3-1-090-040",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6717,7 +7434,10 @@
     "tipoRiego": "Gravedad",
     "nr": "2.3000000000000003",
     "erp": "1-1-3-1-090-041",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 45,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6745,7 +7465,10 @@
     "tipoRiego": "Gravedad",
     "nr": "2.5",
     "erp": "1-1-3-1-090-042",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 30,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6773,7 +7496,10 @@
     "tipoRiego": "Gravedad",
     "nr": "2.4",
     "erp": "1-1-3-1-090-043",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 30,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6801,7 +7527,10 @@
     "tipoRiego": "Gravedad",
     "nr": "2",
     "erp": "1-1-3-1-090-046",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": null,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6829,7 +7558,10 @@
     "tipoRiego": "Gravedad",
     "nr": "2",
     "erp": "1-1-3-1-090-047",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 30,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6857,7 +7589,10 @@
     "tipoRiego": "Gravedad",
     "nr": "3.5",
     "erp": "1-1-3-1-090-062",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 30,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6885,7 +7620,10 @@
     "tipoRiego": "Gravedad",
     "nr": "3.3000000000000003",
     "erp": "1-1-3-1-090-049",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6913,7 +7651,10 @@
     "tipoRiego": "Gravedad",
     "nr": "4.2",
     "erp": "1-1-3-1-090-050",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 50,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6941,7 +7682,10 @@
     "tipoRiego": "Gravedad",
     "nr": "5",
     "erp": "1-1-3-1-090-051",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 55,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "993",
@@ -6969,7 +7713,10 @@
     "tipoRiego": "Gravedad",
     "nr": "0.8",
     "erp": "1-1-3-1-090-052",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 40,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "96",
@@ -6997,7 +7744,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-015-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 35,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "99",
@@ -7025,7 +7775,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-018-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 35,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "54",
@@ -7041,7 +7794,7 @@
     "tchHistoricoPromedio": 60.5662,
     "tchZafra2526": 56.015,
     "textura": "Liviano",
-    "km": 3.0,
+    "km": 3,
     "tchInicial": 39.35,
     "tchActualMaestro": 0,
     "fechaSiembra": "",
@@ -7053,7 +7806,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-100-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 60,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "54",
@@ -7081,7 +7837,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-100-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 70,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "119",
@@ -7109,7 +7868,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-020-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "119",
@@ -7137,7 +7899,10 @@
     "tipoRiego": "Aspersion",
     "nr": "",
     "erp": "1-1-3-1-020-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 70,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "50",
@@ -7165,7 +7930,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-107-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 48.17400500000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "50",
@@ -7193,7 +7961,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-107-003",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 38.73705,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "50",
@@ -7202,7 +7973,7 @@
     "hacSue": "504",
     "area": 9.04,
     "variedad": "CP 72-2086",
-    "edadReferencia": 6.0,
+    "edadReferencia": 6,
     "surco": 1.5,
     "corte": "3",
     "tchHistorico": 50.049,
@@ -7221,7 +7992,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-107-004",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 46.795815000000005,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "53",
@@ -7249,7 +8023,10 @@
     "tipoRiego": "Secano",
     "nr": "",
     "erp": "1-1-3-1-008-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 47.340920000000004,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "882",
@@ -7277,7 +8054,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-063-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 31.950820000000007,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "211",
@@ -7293,7 +8073,7 @@
     "tchHistoricoPromedio": 78.5952,
     "tchZafra2526": 84.425,
     "textura": "Liviano",
-    "km": 2.0,
+    "km": 2,
     "tchInicial": 78.71000000000001,
     "tchActualMaestro": 0,
     "fechaSiembra": "2024-05-30",
@@ -7305,7 +8085,10 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-084-001",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 75,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   },
   {
     "codigoHacienda": "211",
@@ -7321,7 +8104,7 @@
     "tchHistoricoPromedio": 57.9084,
     "tchZafra2526": 58.391,
     "textura": "Liviano",
-    "km": 2.0,
+    "km": 2,
     "tchInicial": 59.03,
     "tchActualMaestro": 0,
     "fechaSiembra": "2024-06-03",
@@ -7333,6 +8116,9 @@
     "tipoRiego": "Gravedad",
     "nr": "",
     "erp": "1-1-3-1-084-002",
-    "zona": "5-Productores"
+    "zona": "5-Productores",
+    "tchEstimado2627": 54.59558500000001,
+    "tchEstimado2627Fecha": "2026-07-17",
+    "tchEstimado2627Fuente": "PROD_EstimadosPn_Z26_27_v03_20260717_GA_CHATg(1).xlsx · Productores_V3 · TCH_Est_170726"
   }
 ]

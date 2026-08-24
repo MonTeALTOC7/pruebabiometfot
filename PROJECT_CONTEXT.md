@@ -2,9 +2,9 @@
 
 ## Estado actual
 
-Versión de trabajo: **v2.5.1**.
+Versión de trabajo: **v2.6.0**.
 
-Versión: **2.5.1**
+Versión: **2.6.0**
 Destino normal: repositorio existente `MonTeALTOC7/Estimado_TCH_APP_CT`.
 Publicación: GitHub Pages / Android PWA.
 
@@ -61,13 +61,22 @@ Pesaje por tallo:
 No borrar IndexedDB. Stores actuales:
 `master`, `biometries`, `weighings`, `harvests`, `visits`, `audit`, `settings`.
 
-## Visitas de campo v2.5.1
+## TCH estimado 26/27
+
+- Fuente auditada: `Productores_V3`, columna `TCH_Est_170726`.
+- Vinculación canónica: `CodHacienda + Suerte normalizada`.
+- 262 filas vinculadas; 245 con TCH y 17 vacías en la fuente.
+- La actualización es protegida, independiente y solo modifica la referencia 26/27.
+
+## Visitas de campo v2.6.0
 
 - Módulo principal independiente de la biometría.
 - Requiere suerte, técnico, al menos una fotografía y GPS para guardar evidencia georreferenciada; no existe máximo artificial de fotos.
 - El TCH es opcional y su fuente se registra explícitamente.
-- La exportación ZIP crea carpetas por hacienda/productor con PNG etiquetados, originales sin rótulo para IA e historial XLSX.
-- Las fotografías se optimizan antes de IndexedDB para controlar uso de almacenamiento.
+- Guardar no descarga ZIP. El historial permite descargar/compartir cada PNG y descargar el original.
+- El ZIP se reserva para exportación masiva filtrada o seleccionada.
+- Las nuevas fotografías se optimizan y guardan como Blob; Base64 legado continúa legible.
+- El PNG mantiene la fotografía intacta y agrega un panel externo dinámico sin campos vacíos.
 
 Los campos legacy `lengthCm` y `diameterCm` siguen siendo legibles. Los pesajes antiguos del store `weighings` permanecen disponibles.
 

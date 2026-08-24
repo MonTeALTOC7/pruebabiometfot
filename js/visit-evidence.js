@@ -11,7 +11,7 @@ function cleanName(value, fallback = "sin_nombre") {
   return clean.slice(0, 80) || fallback;
 }
 
-function dataUrlToBlob(dataUrl) {
+export function dataUrlToBlob(dataUrl) {
   const [header, payload] = String(dataUrl).split(",");
   const type = header.match(/data:([^;]+)/)?.[1] || "application/octet-stream";
   const binary = atob(payload || "");
@@ -93,7 +93,7 @@ export async function prepareVisitPhoto(file, maxEdge = 1600) {
   const blob = await canvasBlob(canvas, "image/jpeg", 0.84);
   return {
     id: `photo_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`,
-    dataUrl: await blobDataUrl(blob),
+    blob,
     width,
     height,
     sizeBytes: blob.size,
@@ -101,6 +101,18 @@ export async function prepareVisitPhoto(file, maxEdge = 1600) {
     capturedAt: new Date().toISOString(),
     mimeType: "image/jpeg",
   };
+}
+
+export function visitPhotoBlob(photo) {
+  if (photo?.blob instanceof Blob) return photo.blob;
+  if (photo?.dataUrl) return dataUrlToBlob(photo.dataUrl);
+  throw new Error("La fotografía guardada no está disponible.");
+}
+
+export function visitPhotoPreviewUrl(photo) {
+  if (photo?.dataUrl) return photo.dataUrl;
+  if (photo?.blob instanceof Blob) return URL.createObjectURL(photo.blob);
+  return "";
 }
 
 function fitText(context, text, maxWidth, initialSize, minSize = 16, weight = 800) {
@@ -121,72 +133,110 @@ function drawFitted(context, text, x, y, maxWidth, size, color = "#ffffff", weig
 }
 
 function formatCoordinates(visit) {
-  if (!Number.isFinite(Number(visit.latitude)) || !Number.isFinite(Number(visit.longitude))) return "GPS: sin coordenadas";
+  if (!Number.isFinite(Number(visit.latitude)) || !Number.isFinite(Number(visit.longitude))) return "";
   return `GPS: ${Number(visit.latitude).toFixed(6)}, ${Number(visit.longitude).toFixed(6)} · ±${Math.round(finite(visit.gpsAccuracyM))} m`;
+}
+
+function dateShort(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).slice(0, 10).split("-").map(Number);
+  const months = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+  return year && month && day ? `${String(day).padStart(2, "0")}-${months[month - 1]}-${year}` : String(value);
+}
+
+function validDetail(value) {
+  const clean = String(value ?? "").trim();
+  return clean && !/^(no evaluad[oa]|n\/?e|sin registrar|sin estimaci[oó]n.*)$/i.test(clean) ? clean : "";
+}
+
+function wrapLines(context, text, maxWidth) {
+  const words = String(text || "").split(/\s+/).filter(Boolean);
+  const lines = [];
+  let line = "";
+  words.forEach((word) => {
+    const candidate = line ? `${line} ${word}` : word;
+    if (line && context.measureText(candidate).width > maxWidth) {
+      lines.push(line);
+      line = word;
+    } else line = candidate;
+  });
+  if (line) lines.push(line);
+  return lines;
 }
 
 async function loadLogo(logoUrl) {
   try { return await loadImage(logoUrl); } catch { return null; }
 }
 
-export async function createLabeledVisitPhotoBlob({ visit, photo, photoNumber = 1, logoUrl = "./assets/logo_casur.png" }) {
-  const image = await loadImage(photo.dataUrl);
+export async function createLabeledVisitPhotoBlob({ visit, photo, photoNumber = 1, photoTotal = visit.photos?.length || 1, logoUrl = "./assets/logo_casur.png" }) {
+  const image = await loadImage(visitPhotoBlob(photo));
   const width = image.width || image.naturalWidth;
   const height = image.height || image.naturalHeight;
+  const padding = Math.max(18, Math.round(width * 0.026));
+  const baseFont = Math.max(15, Math.round(width * 0.019));
+  const details = [
+    validDetail(visit.purpose),
+    validDetail(visit.overallCondition) ? `Condición: ${validDetail(visit.overallCondition)}` : "",
+    validDetail(visit.waterStatus) ? `Agua: ${validDetail(visit.waterStatus)}` : "",
+    validDetail(visit.weedLevel) ? `Malezas: ${validDetail(visit.weedLevel)}` : "",
+    validDetail(visit.pestLevel) ? `Plagas/daño: ${validDetail(visit.pestLevel)}` : "",
+    Number(visit.lodgingPct) > 0 ? `Acame: ${finite(visit.lodgingPct).toFixed(0)}%` : "",
+    visit.tchSource !== "none" && finite(visit.estimatedTch) > 0 ? `${finite(visit.estimatedTch).toFixed(1)} TCH · ${validDetail(visit.tchSourceLabel || visit.tchSource)}` : "",
+    finite(visit.estimatedTch2627) > 0 ? `Estimado 26/27: ${finite(visit.estimatedTch2627).toFixed(1)} TCH` : "",
+  ].filter(Boolean);
+  const footerLines = [
+    details.join(" · "),
+    [formatCoordinates(visit), validDetail(visit.technician) ? `Técnico: ${visit.technician}` : ""].filter(Boolean).join(" · "),
+  ].filter(Boolean);
+  const panelHeight = padding * 2 + Math.max(58, baseFont * 3.4) + footerLines.length * baseFont * 1.6 + (visit.notes ? baseFont * 3 : 0);
   const canvas = document.createElement("canvas");
   canvas.width = width;
-  canvas.height = height;
+  canvas.height = height + Math.round(panelHeight);
   const context = canvas.getContext("2d", { alpha: false });
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, canvas.width, canvas.height);
   context.drawImage(image, 0, 0, width, height);
   image.close?.();
-
-  const headerHeight = Math.max(100, Math.round(height * 0.14));
-  const footerHeight = Math.max(220, Math.round(height * 0.31));
-  const padding = Math.max(18, Math.round(width * 0.025));
-  const gradientTop = context.createLinearGradient(0, 0, 0, headerHeight);
-  gradientTop.addColorStop(0, "rgba(5,49,29,.97)");
-  gradientTop.addColorStop(1, "rgba(5,49,29,.80)");
-  context.fillStyle = gradientTop;
-  context.fillRect(0, 0, width, headerHeight);
-  const gradientBottom = context.createLinearGradient(0, height - footerHeight, 0, height);
-  gradientBottom.addColorStop(0, "rgba(2,28,17,.72)");
-  gradientBottom.addColorStop(0.22, "rgba(2,28,17,.92)");
-  gradientBottom.addColorStop(1, "rgba(2,28,17,.98)");
-  context.fillStyle = gradientBottom;
-  context.fillRect(0, height - footerHeight, width, footerHeight);
-
+  context.fillStyle = "#f7faf8";
+  context.fillRect(0, height, width, canvas.height - height);
+  context.fillStyle = "#0b7f3a";
+  context.fillRect(0, height, width, Math.max(5, width * 0.006));
   const logo = await loadLogo(logoUrl);
-  const logoWidth = Math.min(width * 0.2, headerHeight * 1.65);
-  const logoHeight = headerHeight * 0.62;
+  const logoWidth = Math.min(width * 0.13, 150);
+  const logoHeight = Math.max(44, baseFont * 2.5);
+  const panelY = height + padding;
   if (logo) {
-    context.fillStyle = "rgba(255,255,255,.96)";
-    context.fillRect(padding, headerHeight * 0.18, logoWidth, logoHeight);
-    const ratio = Math.min((logoWidth - 14) / (logo.width || logo.naturalWidth), (logoHeight - 10) / (logo.height || logo.naturalHeight));
+    const ratio = Math.min(logoWidth / (logo.width || logo.naturalWidth), logoHeight / (logo.height || logo.naturalHeight));
     const drawnWidth = (logo.width || logo.naturalWidth) * ratio;
     const drawnHeight = (logo.height || logo.naturalHeight) * ratio;
-    context.drawImage(logo, padding + (logoWidth - drawnWidth) / 2, headerHeight * 0.18 + (logoHeight - drawnHeight) / 2, drawnWidth, drawnHeight);
+    context.drawImage(logo, padding, panelY, drawnWidth, drawnHeight);
     logo.close?.();
   }
-  const titleX = padding + (logo ? logoWidth + padding : 0);
-  drawFitted(context, "VISITA DE CAMPO · EVIDENCIA TÉCNICA", titleX, headerHeight * 0.47, width - titleX - padding, Math.max(22, width * 0.029), "#ffffff", 900);
-  drawFitted(context, `Foto ${String(photoNumber).padStart(2, "0")} · ${visit.date || ""} ${visit.time || ""}`, titleX, headerHeight * 0.76, width - titleX - padding, Math.max(16, width * 0.021), "#f5d861", 800);
-
-  const baseY = height - footerHeight + padding * 1.4;
-  const lineGap = Math.max(30, footerHeight * 0.145);
-  const mainSize = Math.max(23, width * 0.029);
-  const smallSize = Math.max(17, width * 0.021);
-  drawFitted(context, `${visit.producer || "Hacienda"} · Suerte ${visit.lot || "—"}`, padding, baseY, width - padding * 2, mainSize, "#ffffff", 900);
-  drawFitted(context, `Código: ${visit.lotId || "—"} · Hacienda ${visit.farmCode || "—"} · ${finite(visit.area).toFixed(2)} ha · ${visit.variety || "Sin variedad"}`, padding, baseY + lineGap, width - padding * 2, smallSize, "#d9efe3", 700);
-  drawFitted(context, `${visit.purpose || "Inspección general"} · Condición: ${visit.overallCondition || "No evaluada"} · Agua: ${visit.waterStatus || "No evaluada"}`, padding, baseY + lineGap * 2, width - padding * 2, smallSize, "#ffffff", 750);
-  const tchText = finite(visit.estimatedTch) > 0 ? `${finite(visit.estimatedTch).toFixed(1)} TCH · ${visit.tchSourceLabel || visit.tchSource || "estimación"}` : "TCH: no estimado en esta visita";
-  drawFitted(context, `${tchText} · Malezas: ${visit.weedLevel || "N/E"} · Acame: ${finite(visit.lodgingPct).toFixed(0)}%`, padding, baseY + lineGap * 3, width - padding * 2, smallSize, "#f5d861", 800);
-  drawFitted(context, `${formatCoordinates(visit)} · Técnico: ${visit.technician || "Sin registrar"}`, padding, baseY + lineGap * 4, width - padding * 2, smallSize, "#ffffff", 700);
-  if (visit.notes) drawFitted(context, `Observación: ${String(visit.notes).replace(/\s+/g, " ").slice(0, 150)}`, padding, baseY + lineGap * 5, width - padding * 2, smallSize * 0.9, "#d9efe3", 650);
-
-  context.strokeStyle = "#f4c542";
-  context.lineWidth = Math.max(5, width * 0.005);
-  context.strokeRect(0, 0, width, height);
+  const textX = padding + (logo ? logoWidth + padding : 0);
+  drawFitted(context, `${visit.lotId || ""} · ${visit.producer || "Hacienda"} · Suerte ${visit.lot || "—"}`, textX, panelY + baseFont * 1.35, width - textX - padding, baseFont * 1.35, "#123c27", 900);
+  drawFitted(context, `${finite(visit.area).toFixed(2)} ha · ${visit.variety || "Sin variedad"} · ${dateShort(visit.date)} · Foto ${String(photoNumber).padStart(2, "0")}/${String(photoTotal).padStart(2, "0")}`, textX, panelY + baseFont * 2.75, width - textX - padding, baseFont, "#51665a", 700);
+  let y = panelY + Math.max(logoHeight, baseFont * 3.4) + baseFont;
+  context.font = `700 ${baseFont}px Arial, sans-serif`;
+  context.fillStyle = "#28483a";
+  footerLines.forEach((line) => {
+    wrapLines(context, line, width - padding * 2).forEach((wrapped) => {
+      context.fillText(wrapped, padding, y);
+      y += baseFont * 1.45;
+    });
+  });
+  if (visit.notes) {
+    context.font = `650 ${Math.max(13, baseFont - 1)}px Arial, sans-serif`;
+    context.fillStyle = "#52675d";
+    wrapLines(context, `Observación: ${String(visit.notes).replace(/\s+/g, " ").slice(0, 240)}`, width - padding * 2).slice(0, 2).forEach((line) => {
+      context.fillText(line, padding, y);
+      y += baseFont * 1.35;
+    });
+  }
   return canvasBlob(canvas, "image/png");
+}
+
+export function visitPhotoFilename(visit, photoNumber = 1, extension = "png") {
+  return `${cleanName(visit.lotId)}_${cleanName(visit.producer)}_Suerte_${cleanName(visit.lot)}_${cleanName(dateShort(visit.date))}_Foto_${String(photoNumber).padStart(2, "0")}.${extension}`;
 }
 
 function addWorkbookTitle(worksheet, columns) {
@@ -203,13 +253,13 @@ export function createVisitsWorkbookBlob(visits = []) {
   if (!globalThis.XLSX) throw new Error("No se cargó el componente Excel.");
   const headers = [
     "ID visita", "Fecha", "Hora", "Técnico", "Zona", "Código hacienda", "Hacienda", "Suerte", "Código suerte", "Área (ha)", "Variedad",
-    "Motivo", "Condición general", "Estado hídrico", "Nivel malezas", "Nivel plagas", "Acame (%)", "Fuente TCH", "TCH visita", "Fotos",
+    "Motivo", "Condición general", "Estado hídrico", "Nivel malezas", "Nivel plagas", "Acame (%)", "Fuente TCH", "TCH visita", "TCH estimado 26/27", "Fotos",
     "Latitud", "Longitud", "Precisión GPS (m)", "Fecha/hora GPS", "Observaciones", "Creado",
   ];
   const rows = visits.slice().sort((a, b) => `${b.date}${b.time || ""}`.localeCompare(`${a.date}${a.time || ""}`)).map((visit) => [
     visit.id, visit.date, visit.time, visit.technician, visit.zone, visit.farmCode, visit.producer, visit.lot, visit.lotId, visit.area, visit.variety,
     visit.purpose, visit.overallCondition, visit.waterStatus, visit.weedLevel, visit.pestLevel, visit.lodgingPct,
-    visit.tchSourceLabel || visit.tchSource, visit.estimatedTch || null, visit.photos?.length || 0,
+    visit.tchSourceLabel || visit.tchSource, visit.estimatedTch || null, visit.estimatedTch2627 || null, visit.photos?.length || 0,
     visit.latitude, visit.longitude, visit.gpsAccuracyM, visit.capturedAt, visit.notes, visit.createdAt,
   ]);
   const worksheet = XLSX.utils.aoa_to_sheet([[], [], [], headers, ...rows]);
@@ -331,44 +381,53 @@ async function createZip(entries) {
 }
 
 function visitFolder(visit) {
-  const producer = `${cleanName(visit.farmCode)}_${cleanName(visit.producer)}`;
-  const visitName = `${cleanName(visit.date)}_Suerte_${cleanName(visit.lot)}_${cleanName(visit.id).slice(-12)}`;
-  return `${producer}/${visitName}`;
+  return `Visitas_CASUR/${cleanName(visit.farmCode)}_${cleanName(visit.producer)}/Suerte_${cleanName(visit.lot)}/${cleanName(visit.date)}`;
 }
 
-export async function createVisitsPackageBlob(visits, { logoUrl = "./assets/logo_casur.png" } = {}) {
+export async function createVisitsPackageBlob(visits, {
+  logoUrl = "./assets/logo_casur.png",
+  includeLabeled = true,
+  includeOriginals = true,
+  includeExcel = true,
+} = {}) {
   if (!visits?.length) throw new Error("No hay visitas para exportar.");
   const entries = [];
-  entries.push({ name: "Historial_Visitas_Campo_CASUR.xlsx", blob: createVisitsWorkbookBlob(visits), date: new Date() });
+  if (includeExcel) entries.push({ name: "Visitas_CASUR/Historial_Visitas_Campo_CASUR.xlsx", blob: createVisitsWorkbookBlob(visits), date: new Date() });
   for (const visit of visits) {
     const folder = visitFolder(visit);
     for (let index = 0; index < (visit.photos || []).length; index += 1) {
       const photo = visit.photos[index];
       const number = String(index + 1).padStart(2, "0");
-      entries.push({
-        name: `${folder}/Evidencias_etiquetadas/${cleanName(visit.farmCode)}_${cleanName(visit.producer)}_S${cleanName(visit.lot)}_${cleanName(visit.date)}_Foto_${number}.png`,
-        blob: await createLabeledVisitPhotoBlob({ visit, photo, photoNumber: index + 1, logoUrl }),
+      if (includeLabeled) entries.push({
+        name: `${folder}/Etiquetadas/${visitPhotoFilename(visit, index + 1)}`,
+        blob: await createLabeledVisitPhotoBlob({ visit, photo, photoNumber: index + 1, photoTotal: visit.photos.length, logoUrl }),
         date: photo.capturedAt,
       });
-      entries.push({
-        name: `${folder}/Originales_para_IA/${cleanName(visit.farmCode)}_${cleanName(visit.producer)}_S${cleanName(visit.lot)}_${cleanName(visit.date)}_Foto_${number}_ORIGINAL.jpg`,
-        blob: dataUrlToBlob(photo.dataUrl),
+      if (includeOriginals) entries.push({
+        name: `${folder}/Originales_para_IA/${visitPhotoFilename(visit, index + 1, "jpg").replace(/\.jpg$/, "_ORIGINAL.jpg")}`,
+        blob: visitPhotoBlob(photo),
         date: photo.capturedAt,
       });
     }
   }
+  if (!entries.length) throw new Error("Seleccioná al menos un contenido para el ZIP.");
   return createZip(entries);
 }
 
 export function visitPackageFilename(visits) {
-  const date = new Date().toISOString().slice(0, 10);
   if (visits.length === 1) {
     const visit = visits[0];
     return `Visita_${cleanName(visit.farmCode)}_${cleanName(visit.producer)}_S${cleanName(visit.lot)}_${cleanName(visit.date)}.zip`;
   }
-  return `Visitas_Campo_CASUR_${date}.zip`;
+  const dates = visits.map((visit) => visit.date).filter(Boolean).sort();
+  const period = dates.length ? `${dates[0]}_${dates.at(-1)}` : new Date().toISOString().slice(0, 10);
+  const farms = [...new Set(visits.map((visit) => visit.farmCode).filter(Boolean))];
+  const group = farms.length === 1 ? `${cleanName(farms[0])}_${cleanName(visits[0].producer)}` : "Seleccion";
+  return `Visitas_Campo_CASUR_${group}_${period}.zip`;
 }
 
-export function visitsExcelFilename() {
-  return `Historial_Visitas_Campo_CASUR_${new Date().toISOString().slice(0, 10)}.xlsx`;
+export function visitsExcelFilename(visits = []) {
+  const dates = visits.map((visit) => visit.date).filter(Boolean).sort();
+  const period = dates.length ? `${dates[0]}_${dates.at(-1)}` : new Date().toISOString().slice(0, 10);
+  return `Historial_Visitas_Campo_CASUR_${period}.xlsx`;
 }

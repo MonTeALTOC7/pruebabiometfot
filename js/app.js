@@ -1,7 +1,7 @@
 import { repository } from "./storage.js";
 import {
   parseMasterWorkbook, masterSuggestions, auditChange, normalizeEmbeddedMaster,
-  masterFingerprint, masterToEmbeddedRows,
+  masterFingerprint, masterToEmbeddedRows, parseSeasonEstimateWorkbook,
 } from "./master.js";
 import {
   ageFromLot, averageStalkWeightKg, comparisonPct, createId, finiteNumber, formatNumber,
@@ -12,7 +12,8 @@ import { downloadBlob, downloadWorkbook } from "./excel.js";
 import { createResultImageBlob } from "./result-image.js";
 import {
   createVisitsPackageBlob, createVisitsWorkbookBlob, prepareVisitPhoto,
-  snapshotPhotoFiles, visitPackageFilename, visitsExcelFilename,
+  snapshotPhotoFiles, visitPackageFilename, visitsExcelFilename, visitPhotoBlob,
+  visitPhotoFilename, visitPhotoPreviewUrl, createLabeledVisitPhotoBlob,
 } from "./visit-evidence.js";
 
 const app = document.querySelector("#app");
@@ -20,6 +21,7 @@ const toast = document.querySelector("#toast");
 const modal = document.querySelector("#modal");
 const modalContent = document.querySelector("#modalContent");
 const masterFile = document.querySelector("#masterFile");
+const estimateFile = document.querySelector("#estimateFile");
 const backupFile = document.querySelector("#backupFile");
 const visitCameraFile = document.querySelector("#visitCameraFile");
 const visitGalleryFile = document.querySelector("#visitGalleryFile");
@@ -38,17 +40,32 @@ const state = {
   selectedLot: null,
   installPrompt: null,
   pendingMaster: null,
+  pendingEstimateImport: null,
   editingLot: null,
   biometry: null,
   weighing: null,
   visit: null,
   visitView: "new",
   visitQuery: "",
+  visitDateFrom: "",
+  visitDateTo: "",
+  visitProducer: "",
+  selectedVisitIds: new Set(),
   historyQuery: "",
   masterQuery: "",
   embeddedMasterError: "",
   masterSync: { status: "idle", message: "", checkedAt: "" },
+  storageEstimate: null,
 };
+
+const photoPreviewCache = new WeakMap();
+
+function photoPreview(photo) {
+  if (photo?.dataUrl) return photo.dataUrl;
+  if (!(photo?.blob instanceof Blob)) return "";
+  if (!photoPreviewCache.has(photo)) photoPreviewCache.set(photo, visitPhotoPreviewUrl(photo));
+  return photoPreviewCache.get(photo);
+}
 
 const TARGET_AGES = [9, 9.5, 10, 10.5, 11];
 const ROW_SPACING_PRESETS = [1.5, 1.65, 1.75, 1.8, 2.2];
@@ -83,8 +100,9 @@ function formatDateShort(value) {
 function productionComparison(lot, projected) {
   const historical = finiteNumber(lot?.historicalTch) || null;
   const latestSeason = finiteNumber(lot?.latestSeasonTch) || null;
+  const estimated2627 = finiteNumber(lot?.estimatedTch2627) || null;
   const delta = (reference) => reference > 0 && projected ? ((projected - reference) / reference) * 100 : null;
-  return { historical, latestSeason, vsHistorical: delta(historical), vsLatestSeason: delta(latestSeason) };
+  return { historical, latestSeason, estimated2627, vsHistorical: delta(historical), vsLatestSeason: delta(latestSeason), vsEstimated2627: delta(estimated2627) };
 }
 
 function notify(message) {
@@ -119,6 +137,14 @@ function closeModal() {
 
 async function persistSettings() {
   await repository.put("settings", { key: "app", value: state.settings });
+}
+
+async function refreshStorageEstimate() {
+  try {
+    if (!navigator.storage?.estimate) return;
+    const estimate = await navigator.storage.estimate();
+    state.storageEstimate = { usage: estimate.usage || 0, quota: estimate.quota || 0 };
+  } catch { state.storageEstimate = null; }
 }
 
 function isStandalone() {
@@ -291,11 +317,11 @@ function resetVisit() {
     technician: state.settings.technician || "",
     search: "",
     purpose: VISIT_PURPOSES[0],
-    overallCondition: "Buena",
-    waterStatus: "No evaluado",
-    weedLevel: "No evaluado",
-    pestLevel: "No evaluado",
-    lodgingPct: 0,
+    overallCondition: "",
+    waterStatus: "",
+    weedLevel: "",
+    pestLevel: "",
+    lodgingPct: "",
     tchSource: "none",
     estimatedTch: "",
     latitude: null,
@@ -336,6 +362,7 @@ async function loadState() {
   resetBiometry();
   resetWeighing();
   resetVisit();
+  await refreshStorageEstimate();
 }
 
 function go(route) {
@@ -429,8 +456,9 @@ function selectedLotPanel(lot, date) {
       <div class="lot-fact fact-variety"><span>Variedad</span><strong>${escapeHtml(lot.variety || "—")}</strong></div>
       <div class="lot-fact fact-age"><span>Edad actual</span><strong>${formatNumber(age.months, 2)} meses</strong></div>
       <div class="lot-fact fact-date"><span>Fecha base</span><strong>${escapeHtml(formatDateShort(age.baseDate))}</strong></div>
-      <div class="lot-fact fact-history"><span>TCH histórico promedio</span><strong>${formatNumber(lot.historicalTch, 1)}</strong></div>
-      <div class="lot-fact fact-season"><span>TCH zafra 25/26</span><strong>${formatNumber(lot.latestSeasonTch, 1)}</strong></div>
+      <div class="lot-fact fact-season"><span>TCH zafra 25/26</span><strong>${formatNumber(lot.latestSeasonTch, 1)}</strong><small>Resultado real más reciente</small></div>
+      <div class="lot-fact fact-estimate"><span>Estimado zafra 26/27</span><strong>${formatNumber(lot.estimatedTch2627, 1)}</strong><small>${lot.estimatedTch2627UpdatedAt ? `Fuente ${escapeHtml(formatDateShort(lot.estimatedTch2627UpdatedAt))}` : "Sin estimación oficial"}</small></div>
+      <div class="lot-fact fact-history"><span>TCH histórico promedio</span><strong>${formatNumber(lot.historicalTch, 1)}</strong><small>Referencia secundaria</small></div>
     </div>
   </section>`;
 }
@@ -629,9 +657,10 @@ function resultPanel(summary) {
       <div><span>Diferencia vs TCHe</span><strong>${summary.weightDifferencePct >= 0 ? "+" : ""}${formatNumber(summary.weightDifferencePct, 1)}%</strong><small>No modifica el TCH proyectado.</small></div>
     </section>` : ""}
     ${state.selectedLot ? `<section class="result-comparison">
-      <div><span>Histórico promedio</span><strong>${formatNumber(comparison.historical, 1)} TCH</strong><em class="${comparison.vsHistorical >= 0 ? "positive" : "negative"}">${deltaText(comparison.vsHistorical)}</em></div>
       <div><span>Último TCH · zafra 25/26</span><strong>${formatNumber(comparison.latestSeason, 1)} TCH</strong><em class="${comparison.vsLatestSeason >= 0 ? "positive" : "negative"}">${deltaText(comparison.vsLatestSeason)}</em></div>
-      <small>Las referencias históricas y el pesaje son comparativos. Ninguno altera la fórmula de proyección biométrica.</small>
+      <div><span>Estimado oficial · zafra 26/27</span><strong>${formatNumber(comparison.estimated2627, 1)} TCH</strong><em class="${comparison.vsEstimated2627 >= 0 ? "positive" : "negative"}">${deltaText(comparison.vsEstimated2627)}</em></div>
+      <div><span>Histórico promedio</span><strong>${formatNumber(comparison.historical, 1)} TCH</strong><em class="${comparison.vsHistorical >= 0 ? "positive" : "negative"}">${deltaText(comparison.vsHistorical)}</em></div>
+      <small>Las tres referencias son comparativas y no alteran la fórmula biométrica.</small>
     </section>` : ""}
     <div class="calc-actions">
       <button class="btn ${validated ? "btn-light" : "btn-blue"}" id="validateCalculation">${validated ? "✓ Cálculo validado" : "✓ Validar cálculo"}</button>
@@ -684,7 +713,7 @@ function renderVisitPhotos() {
   const totalMb = photos.reduce((sum, photo) => sum + finiteNumber(photo.sizeBytes), 0) / 1024 / 1024;
   const busy = Boolean(state.visit.photoProcessing);
   return `<div class="visit-photo-grid">${photos.map((photo, index) => `<figure class="visit-photo">
-    <img src="${photo.dataUrl}" alt="Fotografía ${index + 1} de la visita">
+    <img src="${photoPreview(photo)}" alt="Fotografía ${index + 1} de la visita">
     <figcaption><b>Foto ${String(index + 1).padStart(2, "0")}</b><small>${formatNumber(photo.sizeBytes / 1024, 0)} KB</small></figcaption>
     <button type="button" data-remove-visit-photo="${escapeHtml(photo.id)}" aria-label="Quitar fotografía">×</button>
   </figure>`).join("")}<button class="visit-photo-add" id="takeVisitPhoto" type="button" ${busy ? "disabled" : ""}><b>${busy ? "…" : "＋"}</b><strong>${busy ? "Procesando fotos" : photos.length ? "Otra fotografía" : "Tomar fotografía"}</strong><small>${busy ? escapeHtml(state.visit.photoProgress || "Preparando…") : "Agregá las que necesités"}</small></button></div>
@@ -710,10 +739,10 @@ function renderVisitNew() {
       <div class="card-head"><span class="step blue">2</span><div><strong>Condición observada</strong><small>Clasificá de forma breve lo visible; la fotografía y la observación conservan el detalle técnico.</small></div></div>
       <div class="card-body"><div class="form-grid three">
         ${field("Motivo de la visita", `<select id="visitPurpose">${VISIT_PURPOSES.map((item) => `<option ${visit.purpose === item ? "selected" : ""}>${escapeHtml(item)}</option>`).join("")}</select>`)}
-        ${field("Condición general", `<select id="visitCondition">${["Excelente", "Buena", "Regular", "Crítica"].map((item) => `<option ${visit.overallCondition === item ? "selected" : ""}>${item}</option>`).join("")}</select>`)}
-        ${field("Estado hídrico", `<select id="visitWater">${["No evaluado", "Adecuado", "Estrés leve", "Estrés moderado", "Estrés severo", "Encharcamiento"].map((item) => `<option ${visit.waterStatus === item ? "selected" : ""}>${item}</option>`).join("")}</select>`)}
-        ${field("Nivel de malezas", `<select id="visitWeeds">${["No evaluado", "Bajo", "Medio", "Alto"].map((item) => `<option ${visit.weedLevel === item ? "selected" : ""}>${item}</option>`).join("")}</select>`)}
-        ${field("Plagas / daño", `<select id="visitPests">${["No evaluado", "Sin evidencia", "Leve", "Moderado", "Severo"].map((item) => `<option ${visit.pestLevel === item ? "selected" : ""}>${item}</option>`).join("")}</select>`)}
+        ${field("Condición general", `<select id="visitCondition"><option value="">Sin registrar</option>${["Excelente", "Buena", "Regular", "Crítica"].map((item) => `<option ${visit.overallCondition === item ? "selected" : ""}>${item}</option>`).join("")}</select>`)}
+        ${field("Estado hídrico", `<select id="visitWater"><option value="">Sin registrar</option>${["Adecuado", "Estrés leve", "Estrés moderado", "Estrés severo", "Encharcamiento"].map((item) => `<option ${visit.waterStatus === item ? "selected" : ""}>${item}</option>`).join("")}</select>`)}
+        ${field("Nivel de malezas", `<select id="visitWeeds"><option value="">Sin registrar</option>${["Bajo", "Medio", "Alto"].map((item) => `<option ${visit.weedLevel === item ? "selected" : ""}>${item}</option>`).join("")}</select>`)}
+        ${field("Plagas / daño", `<select id="visitPests"><option value="">Sin registrar</option>${["Sin evidencia", "Leve", "Moderado", "Severo"].map((item) => `<option ${visit.pestLevel === item ? "selected" : ""}>${item}</option>`).join("")}</select>`)}
         ${field("Acame observado", `<div class="input-unit"><input id="visitLodging" type="number" inputmode="decimal" min="0" max="100" step="1" value="${escapeHtml(visit.lodgingPct)}"><b>%</b></div>`)}
       </div></div>
     </section>
@@ -733,28 +762,37 @@ function renderVisitNew() {
       <div class="card-body">
         <button class="gps-button ${visit.latitude ? "captured" : ""}" id="visitGps">${visit.latitude ? `✓ GPS capturado · ${Number(visit.latitude).toFixed(6)}, ${Number(visit.longitude).toFixed(6)} · ±${formatNumber(visit.gpsAccuracyM, 0)} m` : "⌖ CAPTURAR GPS DE LA VISITA"}</button>
         ${field("Observación técnica", `<textarea id="visitNotes" placeholder="Describí la condición de la caña, uniformidad, espacios, sequía, acame, malezas, plagas o cualquier detalle relevante.">${escapeHtml(visit.notes)}</textarea>`)}
-        <div class="visit-save-actions"><button class="btn btn-green" id="saveVisit" ${visit.photoProcessing || visit.saving ? "disabled" : ""}>${visit.saving ? "… Guardando" : "▣ Guardar visita"}</button><button class="btn btn-gold" id="saveExportVisit" ${visit.photoProcessing || visit.saving ? "disabled" : ""}>⇩ Guardar + carpeta ZIP</button></div>
+        <div class="visit-save-actions"><button class="btn btn-green btn-wide" id="saveVisit" ${visit.photoProcessing || visit.saving ? "disabled" : ""}>${visit.saving ? "… Guardando" : "▣ Guardar visita"}</button></div>
+        <div class="info-note">Primero guardá la visita. Después podrás descargar cada PNG directamente o compartirlo por WhatsApp; el ZIP queda reservado para exportaciones masivas.</div>
       </div>
     </section>`;
 }
 
-function renderVisitHistory() {
+function filteredVisits() {
   const query = state.visitQuery.toLowerCase().trim();
-  const visits = state.visits.filter((visit) => !query || [visit.producer, visit.farmCode, visit.lot, visit.lotId, visit.date, visit.technician, visit.purpose, visit.overallCondition]
-    .some((value) => String(value || "").toLowerCase().includes(query)))
+  return state.visits.filter((visit) => (!query || [visit.producer, visit.farmCode, visit.lot, visit.lotId, visit.date, visit.technician, visit.purpose, visit.overallCondition]
+    .some((value) => String(value || "").toLowerCase().includes(query))) &&
+    (!state.visitDateFrom || visit.date >= state.visitDateFrom) && (!state.visitDateTo || visit.date <= state.visitDateTo) &&
+    (!state.visitProducer || visit.farmCode === state.visitProducer))
     .sort((a, b) => `${b.date}${b.createdAt || ""}`.localeCompare(`${a.date}${a.createdAt || ""}`));
+}
+
+function renderVisitHistory() {
+  const visits = filteredVisits();
+  const producers = [...new Map(state.visits.map((visit) => [visit.farmCode, `${visit.farmCode} · ${visit.producer}`])).entries()].sort((a, b) => a[1].localeCompare(b[1], "es"));
   return `${pageHead("Visitas de campo", "Consultá y exportá las evidencias organizadas por hacienda y suerte.")}
     ${renderVisitTabs()}
     <section class="card"><div class="card-body">${field("Buscar visitas", `<input id="visitHistorySearch" value="${escapeHtml(state.visitQuery)}" placeholder="Hacienda, suerte, técnico o motivo…">`)}
-      <div class="visit-export-actions"><button class="btn btn-blue" id="exportVisitsExcel" ${state.visits.length ? "" : "disabled"}>⇩ Historial Excel</button><button class="btn btn-gold" id="exportAllVisits" ${state.visits.length ? "" : "disabled"}>🗂 Carpeta completa ZIP</button></div>
-      <div class="info-note">La carpeta ZIP se organiza por hacienda/productor y contiene PNG etiquetados, originales limpios para visión artificial y el historial Excel.</div>
+      <div class="form-grid three visit-filters">${field("Desde", `<input id="visitDateFrom" type="date" value="${escapeHtml(state.visitDateFrom)}">`)}${field("Hasta", `<input id="visitDateTo" type="date" value="${escapeHtml(state.visitDateTo)}">`)}${field("Productor / hacienda", `<select id="visitProducer"><option value="">Todos</option>${producers.map(([code, label]) => `<option value="${escapeHtml(code)}" ${state.visitProducer === code ? "selected" : ""}>${escapeHtml(label)}</option>`).join("")}</select>`)}</div>
+      <div class="visit-export-actions"><button class="btn btn-blue" id="exportVisitsExcel" ${visits.length ? "" : "disabled"}>⇩ Excel filtrado</button><button class="btn btn-gold" id="openBulkVisitExport" ${visits.length ? "" : "disabled"}>🗂 Exportación masiva ZIP</button></div>
+      <div class="info-note">${visits.length} visita(s) en el filtro. El Excel se descarga directamente; el ZIP agrupa únicamente lo que seleccionés.</div>
     </div></section>
     ${visits.length ? `<section class="history-list visit-history-list">${visits.map((visit) => `<article class="record visit-record">
-      <div class="record-head"><div><h3>${escapeHtml(visit.producer)} · Suerte ${escapeHtml(visit.lot)}</h3><p>${formatDateShort(visit.date)} · ${escapeHtml(visit.purpose)} · ${escapeHtml(visit.technician)}</p></div><span class="code-pill">${escapeHtml(visit.lotId)}</span></div>
-      <div class="record-meta">${escapeHtml(visit.zone || "")} · Condición ${escapeHtml(visit.overallCondition || "N/E")} · GPS ${visit.latitude ? `±${formatNumber(visit.gpsAccuracyM, 0)} m` : "sin captura"}</div>
-      <div class="visit-thumbs">${(visit.photos || []).map((photo, index) => `<img src="${photo.dataUrl}" alt="Foto ${index + 1}">`).join("")}</div>
+      <div class="record-head"><label class="visit-select"><input type="checkbox" data-select-visit="${escapeHtml(visit.id)}" ${state.selectedVisitIds.has(visit.id) ? "checked" : ""}> Seleccionar</label><div><h3>${escapeHtml(visit.producer)} · Suerte ${escapeHtml(visit.lot)}</h3><p>${formatDateShort(visit.date)} · ${escapeHtml(visit.purpose)} · ${escapeHtml(visit.technician)}</p></div><span class="code-pill">${escapeHtml(visit.lotId)}</span></div>
+      <div class="record-meta">${escapeHtml(visit.zone || "")}${visit.overallCondition ? ` · Condición ${escapeHtml(visit.overallCondition)}` : ""} · GPS ${visit.latitude ? `±${formatNumber(visit.gpsAccuracyM, 0)} m` : "sin captura"}</div>
+      <div class="visit-thumbs">${(visit.photos || []).map((photo, index) => `<img src="${photoPreview(photo)}" alt="Foto ${index + 1}">`).join("")}</div>
       <div class="record-metrics"><div><span>Fotografías</span><strong>${visit.photos?.length || 0}</strong></div><div><span>TCH visita</span><strong>${visit.estimatedTch ? formatNumber(visit.estimatedTch, 1) : "—"}</strong></div><div><span>Estado hídrico</span><strong>${escapeHtml(visit.waterStatus || "N/E")}</strong></div></div>
-      <div class="record-actions"><button class="btn btn-gold" data-export-visit="${escapeHtml(visit.id)}">⇩ PNG + carpeta</button><button class="btn btn-danger" data-delete-visit="${escapeHtml(visit.id)}">Eliminar</button></div>
+      <div class="record-actions"><button class="btn btn-green" data-open-visit="${escapeHtml(visit.id)}">Ver y compartir fotos</button><button class="btn btn-danger" data-delete-visit="${escapeHtml(visit.id)}">Eliminar</button></div>
     </article>`).join("")}</section>` : emptyState("📷", "Sin visitas", "Todavía no hay visitas que coincidan con el filtro.", `<button class="btn btn-green" data-visit-tab="new">Registrar la primera visita</button>`)}`;
 }
 
@@ -762,14 +800,25 @@ function renderVisits() {
   return state.visitView === "history" ? renderVisitHistory() : renderVisitNew();
 }
 
-async function exportVisits(visits) {
+function openVisitDetail(visit) {
+  openModal(`<div class="visit-detail"><h2>${escapeHtml(visit.producer)} · Suerte ${escapeHtml(visit.lot)}</h2><p>${escapeHtml(visit.lotId)} · ${formatDateShort(visit.date)} · ${visit.photos?.length || 0} fotografía(s)</p><div class="visit-detail-grid">${(visit.photos || []).map((photo, index) => `<article><img src="${photoPreview(photo)}" alt="Foto ${index + 1}"><strong>Foto ${String(index + 1).padStart(2, "0")}</strong><div class="actions"><button class="btn btn-green" data-share-visit-photo="${escapeHtml(visit.id)}" data-photo-index="${index}">Compartir PNG</button><button class="btn btn-blue" data-download-visit-photo="${escapeHtml(visit.id)}" data-photo-index="${index}">Descargar PNG</button><button class="btn btn-light" data-download-original="${escapeHtml(visit.id)}" data-photo-index="${index}">Original</button></div></article>`).join("")}</div><button class="btn btn-light btn-wide" data-close-modal>Cerrar</button></div>`);
+}
+
+async function labeledVisitFile(visit, photoIndex) {
+  const photo = visit.photos?.[photoIndex];
+  if (!photo) throw new Error("No se encontró la fotografía.");
+  const blob = await createLabeledVisitPhotoBlob({ visit, photo, photoNumber: photoIndex + 1, photoTotal: visit.photos.length });
+  return new File([blob], visitPhotoFilename(visit, photoIndex + 1), { type: "image/png" });
+}
+
+async function exportVisits(visits, options = {}) {
   notify("Generando PNG etiquetados y carpeta de evidencias…");
-  const blob = await createVisitsPackageBlob(visits);
+  const blob = await createVisitsPackageBlob(visits, options);
   downloadBlob(blob, visitPackageFilename(visits));
   notify("Carpeta ZIP generada correctamente.");
 }
 
-async function saveVisit(exportAfter = false) {
+async function saveVisit() {
   const visit = state.visit;
   if (visit.photoProcessing) return notify("Esperá a que terminen de cargar las fotografías.");
   if (visit.saving) return;
@@ -801,17 +850,19 @@ async function saveVisit(exportAfter = false) {
     waterStatus: visit.waterStatus,
     weedLevel: visit.weedLevel,
     pestLevel: visit.pestLevel,
-    lodgingPct: Math.min(100, Math.max(0, finiteNumber(visit.lodgingPct))),
+    lodgingPct: String(visit.lodgingPct).trim() === "" ? null : Math.min(100, Math.max(0, finiteNumber(visit.lodgingPct))),
     tchSource: visit.tchSource,
     tchSourceLabel: TCH_SOURCES[visit.tchSource] || visit.tchSource,
     estimatedTch: visit.tchSource === "none" ? null : finiteNumber(visit.estimatedTch),
+    estimatedTch2627: lot.estimatedTch2627 || null,
     latitude: visit.latitude,
     longitude: visit.longitude,
     gpsAccuracyM: visit.gpsAccuracyM,
     capturedAt: visit.capturedAt,
     notes: visit.notes.trim(),
     photos: visit.photos,
-    datasetVersion: "visit-photos-v1",
+    datasetVersion: "visit-photos-v2-blob",
+    sync: { status: "local", updatedAt: now.toISOString(), remoteId: "", checksum: "" },
   };
   visit.saving = true;
   render();
@@ -827,12 +878,11 @@ async function saveVisit(exportAfter = false) {
     return;
   }
   state.visits.push(record);
-  if (exportAfter) {
-    try { await exportVisits([record]); } catch (error) { notify(error?.message || "La visita se guardó, pero no se pudo exportar."); }
-  }
+  await refreshStorageEstimate();
   resetVisit();
   state.visitView = "history";
   render();
+  openVisitDetail(record);
   notify("Visita guardada con fotografías y GPS.");
 }
 
@@ -918,6 +968,7 @@ async function saveBiometry(download = false) {
     irrigation: lot.irrigation,
     historicalTch: lot.historicalTch,
     latestSeasonTch: lot.latestSeasonTch,
+    estimatedTch2627: lot.estimatedTch2627,
     ageBaseDate: summary.age.baseDate,
     ageSource: summary.age.source,
     currentAgeMonths: summary.age.months,
@@ -1090,7 +1141,10 @@ function renderAnalytics() {
 }
 
 function renderExport() {
+  const storage = state.storageEstimate;
+  const storagePct = storage?.quota ? (storage.usage / storage.quota) * 100 : null;
   return `${pageHead("Exportar y respaldar", "Descargá XLSX real o protegé toda la información del teléfono.")}
+    ${storage ? `<div class="${storagePct > 80 ? "warning" : "info-note"}"><b>Almacenamiento local:</b> ${formatNumber(storage.usage / 1024 / 1024, 1)} MB usados de ${formatNumber(storage.quota / 1024 / 1024, 0)} MB disponibles para el navegador (${formatNumber(storagePct, 1)}%). La app nunca elimina evidencias automáticamente.</div>` : ""}
     <section class="module-grid"><button class="module-card" id="exportExcel"><span class="module-icon">⇩</span><span><small>XLSX TCH</small><strong>Exportar Excel de biometrías</strong><p>Incluye Maestro General, biometrías, puntos, peso opcional, pesajes antiguos y comparativos.</p></span><b>›</b></button><button class="module-card" data-route="visits"><span class="module-icon blue">📷</span><span><small>VISITAS</small><strong>Fotos e historial Excel</strong><p>Abre el historial para exportar PNG, originales y carpetas por hacienda.</p></span><b>›</b></button><button class="module-card" id="exportBackup"><span class="module-icon blue">⬇</span><span><small>RESPALDO</small><strong>Descargar copia JSON</strong><p>Incluye maestro, biometrías, visitas con fotos, pesajes, cosechas reales y auditoría.</p></span><b>›</b></button><button class="module-card" id="restoreBackup"><span class="module-icon gold">⬆</span><span><small>RESTAURACIÓN</small><strong>Restaurar copia</strong><p>Reemplaza los datos locales con un respaldo válido.</p></span><b>›</b></button><button class="module-card" id="saveSettings"><span class="module-icon purple">⚙</span><span><small>CONFIGURACIÓN</small><strong>Técnico predeterminado</strong><p>${escapeHtml(state.settings.technician || "Aún no definido")}</p></span><b>›</b></button></section>`;
 }
 
@@ -1125,7 +1179,8 @@ function renderMaster() {
       <article class="kpi red"><span>Tenencia</span><strong>${tenureCounts.PR}/${tenureCounts.CA}/${tenureCounts.CV}</strong><small>PR / CA / CV</small></article>
     </section>
     <section class="card"><div class="card-head"><span class="step">1</span><div><strong>Actualizar y sincronizar</strong><small>Al cargar el cronológico se busca REPORTE, se descarta Sucuya y se valida antes de reemplazar.</small></div></div><div class="card-body"><div class="form-grid two"><button class="btn btn-green btn-wide" id="chooseMasterFile">⬆ Seleccionar Excel de actualización</button><button class="btn btn-blue btn-wide" id="syncMasterGitHub">↻ Sincronizar desde GitHub</button></div><div class="sync-status"><b>${syncIcon}</b><div><strong>${escapeHtml(syncMessage)}</strong><small>${escapeHtml(pendingMessage)}${state.masterSync.checkedAt ? ` Última comprobación: ${escapeHtml(new Date(state.masterSync.checkedAt).toLocaleString("es-NI"))}.` : ""}</small></div></div></div></section>
-    <section class="card search-card"><div class="card-head"><span class="step blue">2</span><div><strong>Editar suerte manualmente</strong><small>El buscador cubre todo el Maestro General.</small></div></div><div class="card-body">${searchBox(state.masterQuery, "master")}${lot ? `<div class="form-grid three" style="margin-top:12px">
+    <section class="card estimate-update-card"><div class="card-head"><span class="step gold">2</span><div><strong>Actualizar TCH estimado 26/27</strong><small>Módulo independiente y protegido. Valida Código hacienda + Suerte antes de modificar únicamente esta referencia.</small></div></div><div class="card-body"><button class="btn btn-gold btn-wide" id="chooseEstimateFile">⬆ Seleccionar Excel oficial 26/27</button><div class="info-note">Fuente esperada: hoja <b>Productores_V3</b>, columna <b>TCH_Est_170726</b>. No modifica áreas, fechas, variedades ni TCH históricos.</div></div></section>
+    <section class="card search-card"><div class="card-head"><span class="step blue">3</span><div><strong>Editar suerte manualmente</strong><small>El buscador cubre todo el Maestro General.</small></div></div><div class="card-body">${searchBox(state.masterQuery, "master")}${lot ? `<div class="form-grid three" style="margin-top:12px">
       ${field("Código hacienda", `<input data-master-field="farmCode" value="${escapeHtml(lot.farmCode)}">`)}
       ${field("Hacienda", `<input data-master-field="producer" value="${escapeHtml(lot.producer)}">`)}
       ${field("Suerte", `<input data-master-field="lot" value="${escapeHtml(lot.lot)}">`)}
@@ -1138,11 +1193,12 @@ function renderMaster() {
       ${field("Tipo de riego", `<input data-master-field="irrigation" value="${escapeHtml(lot.irrigation)}">`)}
       ${field("TCH histórico promedio", `<input data-master-field="historicalTch" type="number" step="0.01" value="${escapeHtml(lot.historicalTch)}">`)}
       ${field("TCH zafra 25/26", `<input data-master-field="latestSeasonTch" type="number" step="0.01" value="${escapeHtml(lot.latestSeasonTch)}">`)}
+      ${field("TCH estimado 26/27", `<input data-master-field="estimatedTch2627" type="number" step="0.01" value="${escapeHtml(lot.estimatedTch2627)}">`)}
       ${field("Zona", `<input data-master-field="zone" value="${escapeHtml(lot.zone)}">`)}
       ${field("Tenencia código", `<select data-master-field="tenureCode"><option value="PR" ${lot.tenureCode === "PR" ? "selected" : ""}>PR · Propio</option><option value="CA" ${lot.tenureCode === "CA" ? "selected" : ""}>CA · Arriendo</option><option value="CV" ${lot.tenureCode === "CV" ? "selected" : ""}>CV · Compra Venta</option></select>`)}
       </div><button class="btn btn-blue btn-wide" id="saveManualLot" style="margin-top:12px">▣ Guardar cambios de la suerte</button>` : `<p class="help">Seleccioná una sugerencia para editar la suerte.</p>`}</div></section>
-    <section class="card"><div class="card-head"><span class="step gold">3</span><div><strong>Auditoría reciente</strong><small>Valor anterior, valor nuevo, fecha y usuario.</small></div></div><div class="card-body"><div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Suerte</th><th>Campo</th><th>Anterior</th><th>Nuevo</th></tr></thead><tbody>${state.audit.slice().sort((a, b) => b.changedAt.localeCompare(a.changedAt)).slice(0, 50).map((a) => `<tr><td>${escapeHtml(formatDateShort(a.changedAt))}</td><td>${escapeHtml(a.lotId)}</td><td>${escapeHtml(a.field)}</td><td>${escapeHtml(a.oldValue)}</td><td>${escapeHtml(a.newValue)}</td></tr>`).join("")}</tbody></table></div></div></section>
-    <section class="publish-panel"><h3>4. Publicar la actualización para todos</h3><p>Descargá <b>suertes.json</b> y reemplazalo dentro de <b>data/</b> en el repositorio. La v2.4 consulta este archivo primero y mantiene compatibilidad con productores.json.</p><div class="publish-steps"><div class="publish-step"><b>1</b><span>Aplicar y revisar los cambios.</span></div><div class="publish-step"><b>2</b><span>Descargar suertes.json actualizado.</span></div><div class="publish-step"><b>3</b><span>Publicar el archivo en GitHub cuando esté aprobado.</span></div></div><div class="publish-actions"><button class="btn btn-green" id="downloadMasterJson">⇩ Descargar suertes.json actualizado</button><button class="btn btn-light" id="openGitHubData" ${githubAvailable ? "" : "disabled"}>↗ Abrir carpeta data en GitHub</button></div></section>`;
+    <section class="card"><div class="card-head"><span class="step gold">4</span><div><strong>Auditoría reciente</strong><small>Valor anterior, valor nuevo, fecha y usuario.</small></div></div><div class="card-body"><div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Suerte</th><th>Campo</th><th>Anterior</th><th>Nuevo</th></tr></thead><tbody>${state.audit.slice().sort((a, b) => b.changedAt.localeCompare(a.changedAt)).slice(0, 50).map((a) => `<tr><td>${escapeHtml(formatDateShort(a.changedAt))}</td><td>${escapeHtml(a.lotId)}</td><td>${escapeHtml(a.field)}</td><td>${escapeHtml(a.oldValue)}</td><td>${escapeHtml(a.newValue)}</td></tr>`).join("")}</tbody></table></div></div></section>
+    <section class="publish-panel"><h3>5. Publicar la actualización para todos</h3><p>Descargá <b>suertes.json</b> y reemplazalo dentro de <b>data/</b> en el repositorio. La v2.6 consulta este archivo primero y mantiene compatibilidad con productores.json.</p><div class="publish-steps"><div class="publish-step"><b>1</b><span>Aplicar y revisar los cambios.</span></div><div class="publish-step"><b>2</b><span>Descargar suertes.json actualizado.</span></div><div class="publish-step"><b>3</b><span>Publicar el archivo en GitHub cuando esté aprobado.</span></div></div><div class="publish-actions"><button class="btn btn-green" id="downloadMasterJson">⇩ Descargar suertes.json actualizado</button><button class="btn btn-light" id="openGitHubData" ${githubAvailable ? "" : "disabled"}>↗ Abrir carpeta data en GitHub</button></div></section>`;
 }
 
 function render() {
@@ -1272,23 +1328,59 @@ document.addEventListener("click", async (event) => {
   }
 
   if (button.id === "visitGps") captureGps(state.visit);
-  if (button.id === "saveVisit") await saveVisit(false);
-  if (button.id === "saveExportVisit") await saveVisit(true);
+  if (button.id === "saveVisit") await saveVisit();
 
   if (button.id === "exportVisitsExcel") {
-    if (!state.visits.length) return notify("No hay visitas para exportar.");
-    downloadBlob(createVisitsWorkbookBlob(state.visits), visitsExcelFilename());
+    const visits = filteredVisits();
+    if (!visits.length) return notify("No hay visitas para exportar.");
+    downloadBlob(createVisitsWorkbookBlob(visits), visitsExcelFilename(visits));
     notify("Historial Excel de visitas generado.");
   }
 
-  if (button.id === "exportAllVisits") {
-    try { await exportVisits(state.visits); } catch (error) { notify(error?.message || "No se pudo generar la carpeta de visitas."); }
+  if (button.id === "openBulkVisitExport") {
+    const filtered = filteredVisits();
+    const selected = filtered.filter((visit) => state.selectedVisitIds.has(visit.id));
+    openModal(`<h2>Exportación masiva de visitas</h2><p>El ZIP se usa únicamente para agrupar evidencias. El filtro actual contiene <b>${filtered.length}</b> visita(s) y hay <b>${selected.length}</b> seleccionada(s).</p>${field("Alcance", `<select id="bulkVisitScope"><option value="filtered">Todas las filtradas (${filtered.length})</option><option value="selected" ${selected.length ? "" : "disabled"}>Solo seleccionadas (${selected.length})</option></select>`)}<div class="bulk-options"><label><input id="bulkLabeled" type="checkbox" checked> PNG etiquetados</label><label><input id="bulkOriginals" type="checkbox" checked> Originales limpios</label><label><input id="bulkExcel" type="checkbox" checked> Historial Excel</label></div><div class="actions"><button class="btn btn-gold" id="confirmBulkVisitExport">Generar ZIP</button><button class="btn btn-light" data-close-modal>Cancelar</button></div>`);
   }
 
-  if (button.dataset.exportVisit) {
-    const visit = state.visits.find((item) => item.id === button.dataset.exportVisit);
-    if (!visit) return notify("No se encontró la visita.");
-    try { await exportVisits([visit]); } catch (error) { notify(error?.message || "No se pudo exportar la visita."); }
+  if (button.id === "confirmBulkVisitExport") {
+    const filtered = filteredVisits();
+    const visits = document.querySelector("#bulkVisitScope")?.value === "selected"
+      ? filtered.filter((visit) => state.selectedVisitIds.has(visit.id)) : filtered;
+    const options = {
+      includeLabeled: document.querySelector("#bulkLabeled")?.checked,
+      includeOriginals: document.querySelector("#bulkOriginals")?.checked,
+      includeExcel: document.querySelector("#bulkExcel")?.checked,
+    };
+    if (!visits.length) return notify("No hay visitas en el alcance elegido.");
+    closeModal();
+    try { await exportVisits(visits, options); } catch (error) { notify(error?.message || "No se pudo generar la exportación masiva."); }
+  }
+
+  if (button.dataset.openVisit) {
+    const visit = state.visits.find((item) => item.id === button.dataset.openVisit);
+    if (visit) openVisitDetail(visit);
+  }
+
+  if (button.dataset.downloadVisitPhoto || button.dataset.shareVisitPhoto) {
+    const visitId = button.dataset.downloadVisitPhoto || button.dataset.shareVisitPhoto;
+    const visit = state.visits.find((item) => item.id === visitId);
+    try {
+      const file = await labeledVisitFile(visit, Number(button.dataset.photoIndex));
+      if (button.dataset.shareVisitPhoto && navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+        await navigator.share({ files: [file], title: `${visit.producer} · Suerte ${visit.lot}`, text: `Evidencia de campo ${formatDateShort(visit.date)}` });
+      } else {
+        downloadBlob(file, file.name);
+        if (button.dataset.shareVisitPhoto) notify("El teléfono no ofrece compartir archivos desde este navegador; se descargó el PNG.");
+      }
+    } catch (error) { if (error?.name !== "AbortError") notify(error?.message || "No se pudo preparar el PNG."); }
+  }
+
+  if (button.dataset.downloadOriginal) {
+    const visit = state.visits.find((item) => item.id === button.dataset.downloadOriginal);
+    const index = Number(button.dataset.photoIndex);
+    try { downloadBlob(visitPhotoBlob(visit.photos[index]), visitPhotoFilename(visit, index + 1, "jpg").replace(/\.jpg$/, "_ORIGINAL.jpg")); }
+    catch (error) { notify(error?.message || "No se pudo descargar el original."); }
   }
 
   if (button.dataset.deleteVisit) {
@@ -1296,6 +1388,8 @@ document.addEventListener("click", async (event) => {
     if (!visit || !confirm(`¿Eliminar la visita de ${visit.producer} · suerte ${visit.lot} y sus fotografías del teléfono?`)) return;
     await repository.delete("visits", visit.id);
     state.visits = state.visits.filter((item) => item.id !== visit.id);
+    state.selectedVisitIds.delete(visit.id);
+    await refreshStorageEstimate();
     render();
     notify("Visita y fotografías eliminadas del teléfono.");
   }
@@ -1499,6 +1593,7 @@ document.addEventListener("click", async (event) => {
   }
 
   if (button.id === "chooseMasterFile") masterFile.click();
+  if (button.id === "chooseEstimateFile") estimateFile.click();
   if (button.id === "syncMasterGitHub") await syncPublishedMaster({ force: true, userInitiated: true });
 
   if (button.id === "downloadMasterJson") {
@@ -1523,6 +1618,27 @@ document.addEventListener("click", async (event) => {
     notify("Maestro General actualizado en este dispositivo. Descargá suertes.json para publicarlo cuando esté aprobado.");
   }
 
+  if (button.id === "confirmEstimateImport") {
+    const pending = state.pendingEstimateImport;
+    if (!pending?.report?.canApply) return notify("La validación no permite aplicar esta fuente.");
+    const previous = new Map(state.master.map((lot) => [lot.id, lot]));
+    const auditRows = pending.lots.flatMap((lot) => {
+      const old = previous.get(lot.id)?.estimatedTch2627 ?? null;
+      return Number(old || 0) === Number(lot.estimatedTch2627 || 0) ? [] : [auditChange(lot, "estimatedTch2627", old, lot.estimatedTch2627, state.settings.technician || "Importación oficial")];
+    });
+    await repository.replaceAll("master", pending.lots);
+    if (auditRows.length) await repository.putMany("audit", auditRows);
+    state.master = pending.lots;
+    state.audit.push(...auditRows);
+    state.settings.estimate2627LastImport = pending.report;
+    state.pendingEstimateImport = null;
+    markMasterPendingPublish();
+    await persistSettings();
+    closeModal();
+    render();
+    notify(`TCH 26/27 actualizado: ${pending.report.withEstimate} valores y ${pending.report.withoutEstimate} vacíos oficiales.`);
+  }
+
   if (button.id === "saveManualLot") {
     const original = state.master.find((lotItem) => lotItem.id === state.editingLot.id);
     if (!original) return;
@@ -1534,6 +1650,10 @@ document.addEventListener("click", async (event) => {
     });
     if (!changes.length) return notify("No hay cambios para guardar.");
     changes.forEach((change) => { original[change.fieldName] = change.newValue; });
+    if (changes.some((change) => change.fieldName === "estimatedTch2627")) {
+      original.estimatedTch2627UpdatedAt = todayISO();
+      original.estimatedTch2627Source = "Edición manual protegida";
+    }
     if (changes.some((change) => change.fieldName === "tenureCode")) {
       original.tenureLabel = original.tenureCode === "CA" ? "Arriendo" : original.tenureCode === "CV" ? "Compra Venta" : original.tenureCode === "PR" ? "Propio" : "";
     }
@@ -1655,6 +1775,18 @@ document.addEventListener("input", (event) => {
 
 document.addEventListener("change", (event) => {
   const input = event.target;
+
+  if (input.dataset.selectVisit) {
+    if (input.checked) state.selectedVisitIds.add(input.dataset.selectVisit);
+    else state.selectedVisitIds.delete(input.dataset.selectVisit);
+  }
+
+  if (["visitDateFrom", "visitDateTo", "visitProducer"].includes(input.id)) {
+    if (input.id === "visitDateFrom") state.visitDateFrom = input.value;
+    if (input.id === "visitDateTo") state.visitDateTo = input.value;
+    if (input.id === "visitProducer") state.visitProducer = input.value;
+    render();
+  }
 
   if (input.id === "bioDate") {
     state.biometry.date = input.value;
@@ -1784,6 +1916,20 @@ masterFile.addEventListener("change", async () => {
     openModal(`<h2>Validación del Maestro General</h2><p>Hoja leída: <b>${escapeHtml(state.pendingMaster.sheetName)}</b>. Revisá el resumen antes de reemplazar la copia local.</p><div class="kpi-grid"><article class="kpi"><span>Analizados</span><strong>${r.analyzed}</strong></article><article class="kpi blue"><span>Válidos</span><strong>${r.valid}</strong></article><article class="kpi gold"><span>Productores</span><strong>${r.producers ?? "—"}</strong></article><article class="kpi red"><span>Excluidos</span><strong>${r.excluded ?? 0}</strong></article></div><div class="${r.errors.length || r.duplicates.length ? "warning" : "success"}">${r.duplicates.length} código(s) duplicado(s) · ${r.errors.length} error(es) · ${r.added} nuevos · ${r.modified} modificados · ${r.unchanged} sin cambios.${r.excluded ? ` ${r.excluded} registros de ${escapeHtml(r.excludedReason)} fueron excluidos.` : ""}</div>${r.errors.length ? `<div class="table-wrap"><table><thead><tr><th>Fila</th><th>Error</th></tr></thead><tbody>${r.errors.slice(0, 30).map((e) => `<tr><td>${e.row}</td><td>${escapeHtml(e.issue)}</td></tr>`).join("")}</tbody></table></div>` : ""}<div class="actions"><button class="btn btn-green" id="confirmMasterImport" ${r.valid ? "" : "disabled"}>Confirmar actualización</button><button class="btn btn-light" data-close-modal>Cancelar</button></div>`);
   } catch (error) {
     notify(error.message || "No se pudo leer el Maestro General.");
+  }
+});
+
+estimateFile.addEventListener("change", async () => {
+  const file = estimateFile.files[0];
+  estimateFile.value = "";
+  if (!file) return;
+  try {
+    notify("Validando TCH estimado 26/27 por hacienda y suerte…");
+    state.pendingEstimateImport = await parseSeasonEstimateWorkbook(file, state.master);
+    const r = state.pendingEstimateImport.report;
+    openModal(`<h2>Validación TCH estimado 26/27</h2><p><b>${escapeHtml(r.sheetName)}</b> · columna <b>${escapeHtml(r.sourceColumn)}</b> · fecha de fuente ${escapeHtml(formatDateShort(r.sourceDate))}.</p><div class="kpi-grid"><article class="kpi"><span>Analizados</span><strong>${r.analyzed}</strong></article><article class="kpi blue"><span>Vinculados</span><strong>${r.matched}</strong></article><article class="kpi gold"><span>Con TCH</span><strong>${r.withEstimate}</strong></article><article class="kpi red"><span>Vacíos oficiales</span><strong>${r.withoutEstimate}</strong></article></div><div class="${r.canApply ? "success" : "warning"}">${r.updated} cambio(s) · ${r.unchanged} sin cambio · ${r.duplicates.length} duplicado(s) · ${r.unknown.length} no encontrado(s). De los vacíos, ${r.seedWithoutEstimate} corresponden a semilla y ${r.withoutEstimateOther} a otros registros.</div><p class="help">Esta operación actualiza solamente el TCH estimado 26/27 y conserva intactos los demás datos del Maestro.</p><div class="actions"><button class="btn btn-green" id="confirmEstimateImport" ${r.canApply ? "" : "disabled"}>Aplicar actualización 26/27</button><button class="btn btn-light" data-close-modal>Cancelar</button></div>`);
+  } catch (error) {
+    notify(error.message || "No se pudo validar el TCH estimado 26/27.");
   }
 });
 

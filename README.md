@@ -1,16 +1,27 @@
-# Estimador TCH CASUR — v2.5.1
+# Estimador TCH CASUR — v2.6.0
 
 PWA estática para GitHub Pages orientada a trabajo de campo de Negocios de Caña CASUR.
 
-## Nuevo módulo principal: Visitas de campo
+## Mejoras principales v2.6.0
+
+- TCH estimado 26/27 incorporado para las 262 suertes de Productores desde la fuente oficial auditada.
+- Actualizador protegido e independiente que valida `Código hacienda + Suerte` y no altera los demás campos del maestro.
+- Ficha de suerte con jerarquía clara: zafra 25/26, estimado 26/27 e histórico promedio.
+- Comparativos de biometría, PNG ejecutivo y Excel frente al estimado 26/27.
+- Etiqueta fotográfica externa, clara y dinámica: conserva el 100% de la foto y omite campos vacíos/no evaluados.
+- `Guardar visita` ya no genera ZIP. Cada PNG puede descargarse o compartirse desde el historial.
+- ZIP reservado para descarga masiva por filtro/selección, con opción de etiquetadas, originales y Excel.
+- Nuevas fotos almacenadas como Blob; datos antiguos en Base64 siguen siendo compatibles.
+
+## Módulo principal: Visitas de campo
 
 - Selección desde el Maestro General.
 - Captura libre de las fotografías necesarias desde cámara o galería, optimizadas antes de guardarse.
 - Corrección Android/WebView: la selección se copia antes de limpiar cámara o galería para que las imágenes sí lleguen a la visita.
 - GPS, técnico, motivo y condición agronómica.
 - TCH opcional identificado como visual, aforo o biometría; una visita puede guardarse sin estimar TCH.
-- PNG etiquetado con hacienda, suerte, fecha, condición, coordenadas y observación.
-- Carpeta ZIP organizada por hacienda/productor y visita.
+- PNG etiquetado con panel externo compacto y solo con los datos realmente registrados.
+- Descarga directa y opción Compartir mediante Web Share; ZIP únicamente para agrupación masiva.
 - Conservación de originales limpios para preparar el futuro conjunto de datos de visión artificial.
 - Historial Excel de visitas e índice de fotografías.
 - Persistencia local en IndexedDB y funcionamiento sin conexión después de instalar la PWA.
@@ -69,7 +80,7 @@ Destino previsto, una vez aprobada la versión:
 
 `MonTeALTOC7/Estimado_TCH_APP_CT`
 
-La v2.4.1 consulta primero `data/suertes.json` y mantiene `data/productores.json` como compatibilidad para Zona 5.
+La v2.6.0 consulta primero `data/suertes.json` y mantiene `data/productores.json` como compatibilidad para Zona 5.
 
 No contiene claves privadas ni requiere ChatGPT para funcionar.
 

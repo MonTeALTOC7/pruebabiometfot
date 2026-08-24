@@ -1,5 +1,5 @@
 const WIDTH = 1080;
-const HEIGHT = 1410;
+const HEIGHT = 1460;
 
 function number(value, digits = 1) {
   const parsed = Number(value);
@@ -122,8 +122,8 @@ function comparisonTone(deltaPct) {
   return { fill: "#ffeded", text: "#a61b1b" };
 }
 
-function executiveStatus(projected, historical, latest) {
-  const references = [historical, latest].map((value) => Number(value)).filter((value) => Number.isFinite(value) && value > 0);
+function executiveStatus(projected, historical, latest, estimate) {
+  const references = [historical, latest, estimate].map((value) => Number(value)).filter((value) => Number.isFinite(value) && value > 0);
   if (!references.length) return { label: "Sin referencias", fill: "#eef2ef", text: "#64736c" };
   const above = references.filter((reference) => Number(projected) >= reference).length;
   if (above === references.length) return { label: "Sobre referencias", fill: "#e7f6ec", text: "#08723a" };
@@ -131,10 +131,11 @@ function executiveStatus(projected, historical, latest) {
   return { label: "Comportamiento mixto", fill: "#fff4df", text: "#9a6200" };
 }
 
-function executiveInsight(projected, historical, latest) {
+function executiveInsight(projected, historical, latest, estimate) {
   const hasHistorical = Number(historical) > 0;
   const hasLatest = Number(latest) > 0;
-  if (!hasHistorical && !hasLatest) return "Sin referencias comparables para lectura ejecutiva.";
+  const hasEstimate = Number(estimate) > 0;
+  if (!hasHistorical && !hasLatest && !hasEstimate) return "Sin referencias comparables para lectura ejecutiva.";
 
   const messages = [];
   if (hasHistorical) {
@@ -147,6 +148,11 @@ function executiveInsight(projected, historical, latest) {
     const pct = comparisonPct(projected, latest);
     messages.push(`vs 25/26 ${diff >= 0 ? "+" : ""}${number(diff, 1)} TCH (${deltaText(pct)})`);
   }
+  if (hasEstimate) {
+    const diff = comparisonGap(projected, estimate);
+    const pct = comparisonPct(projected, estimate);
+    messages.push(`vs estimado 26/27 ${diff >= 0 ? "+" : ""}${number(diff, 1)} TCH (${deltaText(pct)})`);
+  }
   return `Brecha ejecutiva: ${messages.join(" · ")}`;
 }
 
@@ -154,25 +160,27 @@ function drawComparison(ctx, summary, lot) {
   const projected = Number(summary.projected) || 0;
   const historical = Number(lot.historicalTch) || 0;
   const latest = Number(lot.latestSeasonTch) || 0;
+  const estimate = Number(lot.estimatedTch2627) || 0;
   const vsHistorical = comparisonPct(projected, historical);
   const vsLatest = comparisonPct(projected, latest);
   const gapHistorical = comparisonGap(projected, historical);
   const gapLatest = comparisonGap(projected, latest);
-  const status = executiveStatus(projected, historical, latest);
+  const status = executiveStatus(projected, historical, latest, estimate);
   const rows = [
     { label: "Proyección actual", value: projected, color: "#087da1", chipText: "RESULTADO CLAVE", chipFill: "#e7f2fb", chipTextColor: "#005b8a" },
-    { label: "Histórico promedio", value: historical, color: "#0b7f3a", delta: vsHistorical, gap: gapHistorical },
     { label: "Último TCH zafra 25/26", value: latest, color: "#c28b00", delta: vsLatest, gap: gapLatest },
+    { label: "Estimado oficial zafra 26/27", value: estimate, color: "#7e4ab1", delta: comparisonPct(projected, estimate), gap: comparisonGap(projected, estimate) },
+    { label: "Histórico promedio", value: historical, color: "#0b7f3a", delta: vsHistorical, gap: gapHistorical },
   ];
   const max = Math.max(1, ...rows.map((row) => Number(row.value) || 0));
 
-  fillRound(ctx, 42, 942, 996, 198, 28, "#ffffff", { color: "rgba(3,54,30,.12)", blur: 21, y: 8 });
+  fillRound(ctx, 42, 942, 996, 242, 28, "#ffffff", { color: "rgba(3,54,30,.12)", blur: 21, y: 8 });
   ctx.fillStyle = "#0d2f1d";
   ctx.font = "900 20px Arial, sans-serif";
   ctx.fillText("Comparativo ejecutivo de productividad", 68, 978);
   ctx.fillStyle = "#5f7268";
   ctx.font = "700 13px Arial, sans-serif";
-  ctx.fillText("Posición del lote frente a sus dos referencias principales.", 68, 997);
+  ctx.fillText("Posición del lote frente a zafra previa, estimado 26/27 e histórico.", 68, 997);
 
   fillRound(ctx, 788, 954, 214, 32, 16, status.fill);
   ctx.fillStyle = status.text;
@@ -209,10 +217,11 @@ function drawComparison(ctx, summary, lot) {
     ctx.textAlign = "left";
   });
 
-  fillRound(ctx, 68, 1114, 934, 18, 9, "#f2f7f3");
+  fillRound(ctx, 68, 1148, 934, 24, 10, "#f2f7f3");
   ctx.fillStyle = "#466357";
   ctx.font = "800 11px Arial, sans-serif";
-  ctx.fillText(executiveInsight(projected, historical, latest), 82, 1127);
+  fitText(ctx, executiveInsight(projected, historical, latest, estimate), 900, 11, 800);
+  ctx.fillText(executiveInsight(projected, historical, latest, estimate), 82, 1164);
 }
 
 async function loadImage(source) {
@@ -321,30 +330,30 @@ export async function createResultImageBlob({ lot, biometry, summary, logoUrl = 
 
   drawComparison(ctx, summary, lot);
 
-  fillRound(ctx, 42, 1208, 996, 94, 25, "#ffffff", { color: "rgba(3,54,30,.10)", blur: 18, y: 7 });
-  drawRuler(ctx, 65, 1221, 68);
+  fillRound(ctx, 42, 1228, 996, 94, 25, "#ffffff", { color: "rgba(3,54,30,.10)", blur: 18, y: 7 });
+  drawRuler(ctx, 65, 1241, 68);
   ctx.fillStyle = "#0d2f1d";
   ctx.font = "900 19px Arial, sans-serif";
-  ctx.fillText("Lectura técnica del muestreo", 122, 1237);
+  ctx.fillText("Lectura técnica del muestreo", 122, 1257);
   ctx.font = "700 16px Arial, sans-serif";
   ctx.fillStyle = "#52685b";
-  ctx.fillText(`Rango ${number(summary.min, 1)}–${number(summary.max, 1)} TCH · CV ${number(summary.cv, 1)}% · Surco ${number(biometry.rowSpacingM, 2)} m · Calidad ${summary.quality}`, 122, 1267);
+  ctx.fillText(`Rango ${number(summary.min, 1)}–${number(summary.max, 1)} TCH · CV ${number(summary.cv, 1)}% · Surco ${number(biometry.rowSpacingM, 2)} m · Calidad ${summary.quality}`, 122, 1287);
   ctx.fillStyle = "#0b7f3a";
   ctx.font = "900 15px Arial, sans-serif";
-  ctx.fillText("Las referencias históricas orientan el análisis y no modifican el TCH estimado.", 122, 1290);
+  ctx.fillText("Las referencias orientan el análisis y no modifican el TCH biométrico.", 122, 1310);
 
   ctx.fillStyle = "#496457";
   ctx.font = "700 16px Arial, sans-serif";
-  ctx.fillText(`Técnico: ${biometry.technician || "Sin registrar"}`, 48, 1350);
+  ctx.fillText(`Técnico: ${biometry.technician || "Sin registrar"}`, 48, 1395);
   ctx.textAlign = "right";
-  ctx.fillText("Estimador TCH CASUR v2.5.1 · PNG generado en el teléfono", 1032, 1350);
+  ctx.fillText("Estimador TCH CASUR v2.6.0 · PNG generado en el teléfono", 1032, 1395);
   ctx.textAlign = "left";
   ctx.fillStyle = "#0b7f3a";
-  ctx.fillRect(42, 1374, 620, 9);
+  ctx.fillRect(42, 1419, 620, 9);
   ctx.fillStyle = "#005baa";
-  ctx.fillRect(662, 1374, 250, 9);
+  ctx.fillRect(662, 1419, 250, 9);
   ctx.fillStyle = "#f4c542";
-  ctx.fillRect(912, 1374, 126, 9);
+  ctx.fillRect(912, 1419, 126, 9);
 
   return new Promise((resolve, reject) => canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("No se pudo generar la imagen.")), "image/png", 1));
 }
