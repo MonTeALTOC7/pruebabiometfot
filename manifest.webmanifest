@@ -1,6 +1,6 @@
 {
   "name": "Estimador TCH CASUR",
-  "short_name": "TCH CASUR",
+  "short_name": "TCH_Est_CASUR",
   "description": "Biometría TCH y visitas de campo con fotografías etiquetadas, GPS e historial Excel.",
   "lang": "es-NI",
   "start_url": "./",
