@@ -1,16 +1,19 @@
-# Estimador TCH CASUR — v2.6.0
+# Estimador TCH CASUR — v2.7.0
 
 PWA estática para GitHub Pages orientada a trabajo de campo de Negocios de Caña CASUR.
 
-## Mejoras principales v2.6.0
+## Mejoras principales v2.7.0
 
-- TCH estimado 26/27 incorporado para las 262 suertes de Productores desde la fuente oficial auditada.
-- Actualizador protegido e independiente que valida `Código hacienda + Suerte` y no altera los demás campos del maestro.
+- Cronológico oficial `REPORTE` del 24-ago-2026 incorporado: 1,053 suertes únicas, 10,030.65 ha, 262 de Productores y 245 TCH estimados Z26/27.
+- Importador de maestro con detección de hoja, fila de encabezado y aliases de columnas; reconoce los encabezados oficiales y variantes equivalentes.
 - Ficha de suerte con jerarquía clara: zafra 25/26, estimado 26/27 e histórico promedio.
 - Comparativos de biometría, PNG ejecutivo y Excel frente al estimado 26/27.
-- Etiqueta fotográfica externa, clara y dinámica: conserva el 100% de la foto y omite campos vacíos/no evaluados.
+- Etiqueta fotográfica gerencial: fotografía completa, panel blanco externo, jerarquía por bloques, observación completa y denominación exacta `TCH ESTIMADO Z26/27`.
 - `Guardar visita` ya no genera ZIP. Cada PNG puede descargarse o compartirse desde el historial.
-- ZIP reservado para descarga masiva por filtro/selección, con opción de etiquetadas, originales y Excel.
+- Filtros y exportación en un desplegable compacto; búsqueda normalizada por hacienda, código, suerte, técnico, motivo y observación.
+- Visitas completamente editables; los PNG se regeneran a partir de la información corregida.
+- TCH de visita enlazable con una biometría guardada o con una nueva biometría iniciada desde la visita.
+- El antiguo módulo de avance se sustituye por consulta del cronológico, TCH estimado Z26/27, biometrías y visitas por suerte.
 - Nuevas fotos almacenadas como Blob; datos antiguos en Base64 siguen siendo compatibles.
 
 ## Módulo principal: Visitas de campo
@@ -28,10 +31,10 @@ PWA estática para GitHub Pages orientada a trabajo de campo de Negocios de Cañ
 
 La carpeta `docs/` incluye la arquitectura propuesta para biometría con YOLO/visión por computadora. No se presenta como medición automática hasta entrenar y validar un modelo con datos reales CASUR.
 
-## Cambios principales v2.4.1
+## Base agronómica y compatibilidad
 
 - Maestro General construido desde la hoja `REPORTE` del cronológico.
-- 1,054 suertes operativas y 10,030.06 ha.
+- 1,053 suertes operativas y 10,030.65 ha según el cronológico oficial del 24-ago-2026.
 - Se incluyen Zonas 1-Sur, 2-Centro, 3-Norte y 5-Productores.
 - Zona 0 / Sucuya queda excluida del maestro operativo.
 - `Tn`: `CA=Arriendo`, `CV=Compra Venta`, `PR=Propio`.
@@ -80,7 +83,7 @@ Destino previsto, una vez aprobada la versión:
 
 `MonTeALTOC7/Estimado_TCH_APP_CT`
 
-La v2.6.0 consulta primero `data/suertes.json` y mantiene `data/productores.json` como compatibilidad para Zona 5.
+La v2.7.0 consulta primero `data/suertes.json` y mantiene `data/productores.json` como compatibilidad para Zona 5.
 
 No contiene claves privadas ni requiere ChatGPT para funcionar.
 

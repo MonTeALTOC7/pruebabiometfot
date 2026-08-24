@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createVisitsPackageBlob, snapshotPhotoFiles, visitPhotoBlob, visitPhotoFilename } from "../js/visit-evidence.js";
+import { buildVisitLabelModel, createVisitsPackageBlob, snapshotPhotoFiles, visitPhotoBlob, visitPhotoFilename } from "../js/visit-evidence.js";
 
 test("copia FileList antes de que el input sea limpiado", () => {
   const cameraPhoto = { name: "camara.jpg" };
@@ -31,6 +31,22 @@ test("acepta Blob nuevo y Base64 legado sin perder compatibilidad", async () => 
 test("nombre directo de PNG incluye código, productor, suerte, fecha y número", () => {
   const name = visitPhotoFilename({ lotId: "99302", producer: "Pansaco", lot: "02", date: "2026-08-24" }, 3);
   assert.equal(name, "99302_Pansaco_Suerte_02_24-ago-2026_Foto_03.png");
+});
+
+test("etiqueta gerencial conserva observación completa y omite campos sin registrar", () => {
+  const longNote = "La caña presenta estrés en el extremo norte; validar uniformidad y población antes de programar el corte, sin ocultar ningún detalle registrado.";
+  const model = buildVisitLabelModel({
+    lotId: "603", producer: "Freddy Sovalvarro", lot: "03", area: 4.53, variety: "RB 84-5210",
+    date: "2026-08-23", purpose: "", overallCondition: "Crítica", waterStatus: "Sin registrar",
+    tchSource: "visual", tchSourceLabel: "Estimación visual", estimatedTch: 75, estimatedTch2627: 78.4,
+    notes: longNote, latitude: 11.439454, longitude: -85.831832, gpsAccuracyM: 19, technician: "Carlos Tijerino",
+  }, 2, 2);
+  assert.equal(model.title, "603 · Freddy Sovalvarro · Suerte 03");
+  assert.equal(model.observation, longNote);
+  assert.equal(model.purpose, "");
+  assert.ok(model.technical.some((item) => item.label === "TCH ESTIMADO Z26/27" && item.value === "78.4"));
+  assert.ok(model.technical.some((item) => item.label === "TCH VISITA" && item.value === "75.0 · Visual"));
+  assert.ok(!model.technical.some((item) => item.label === "ESTADO HÍDRICO"));
 });
 
 test("ZIP masivo permite exportar solo originales sin depender de Excel o canvas", async () => {

@@ -115,7 +115,7 @@ export function visitPhotoPreviewUrl(photo) {
   return "";
 }
 
-function fitText(context, text, maxWidth, initialSize, minSize = 16, weight = 800) {
+function fitText(context, text, maxWidth, initialSize, minSize = 11, weight = 800) {
   let size = initialSize;
   while (size > minSize) {
     context.font = `${weight} ${size}px Arial, sans-serif`;
@@ -149,6 +149,38 @@ function validDetail(value) {
   return clean && !/^(no evaluad[oa]|n\/?e|sin registrar|sin estimaci[oó]n.*)$/i.test(clean) ? clean : "";
 }
 
+function tchSourceShort(visit) {
+  const source = String(visit.tchSource || "").toLowerCase();
+  if (source === "visual") return "Visual";
+  if (source === "biometry") return "Biometría app";
+  if (source === "gauging") return "Aforo";
+  return validDetail(visit.tchSourceLabel || visit.tchSource);
+}
+
+export function buildVisitLabelModel(visit, photoNumber = 1, photoTotal = visit.photos?.length || 1) {
+  const technical = [];
+  const add = (label, value) => { const clean = validDetail(value); if (clean) technical.push({ label, value: clean }); };
+  add("CONDICIÓN", visit.overallCondition);
+  add("ESTADO HÍDRICO", visit.waterStatus);
+  add("MALEZAS", visit.weedLevel);
+  add("PLAGAS / DAÑO", visit.pestLevel);
+  if (String(visit.lodgingPct ?? "").trim() !== "" && Number.isFinite(Number(visit.lodgingPct))) {
+    add("ACAME", `${finite(visit.lodgingPct).toFixed(0)}%${validDetail(visit.lodgingDescription) ? ` · ${validDetail(visit.lodgingDescription)}` : ""}`);
+  }
+  if (visit.tchSource !== "none" && finite(visit.estimatedTch) > 0) {
+    add("TCH VISITA", `${finite(visit.estimatedTch).toFixed(1)}${tchSourceShort(visit) ? ` · ${tchSourceShort(visit)}` : ""}${validDetail(visit.tchDescription) ? ` · ${validDetail(visit.tchDescription)}` : ""}`);
+  }
+  if (finite(visit.estimatedTch2627) > 0) add("TCH ESTIMADO Z26/27", finite(visit.estimatedTch2627).toFixed(1));
+  return {
+    title: [validDetail(visit.lotId), validDetail(visit.producer) || "Hacienda", visit.lot ? `Suerte ${visit.lot}` : ""].filter(Boolean).join(" · "),
+    general: [finite(visit.area) > 0 ? `${finite(visit.area).toFixed(2)} ha` : "", validDetail(visit.variety), dateShort(visit.date), `Foto ${String(photoNumber).padStart(2, "0")}/${String(photoTotal).padStart(2, "0")}`].filter(Boolean),
+    purpose: validDetail(visit.purpose),
+    technical,
+    observation: validDetail(visit.notes),
+    footer: [formatCoordinates(visit), validDetail(visit.technician) ? `Técnico: ${visit.technician}` : ""].filter(Boolean),
+  };
+}
+
 function wrapLines(context, text, maxWidth) {
   const words = String(text || "").split(/\s+/).filter(Boolean);
   const lines = [];
@@ -172,65 +204,92 @@ export async function createLabeledVisitPhotoBlob({ visit, photo, photoNumber = 
   const image = await loadImage(visitPhotoBlob(photo));
   const width = image.width || image.naturalWidth;
   const height = image.height || image.naturalHeight;
-  const padding = Math.max(18, Math.round(width * 0.026));
-  const baseFont = Math.max(15, Math.round(width * 0.019));
-  const details = [
-    validDetail(visit.purpose),
-    validDetail(visit.overallCondition) ? `Condición: ${validDetail(visit.overallCondition)}` : "",
-    validDetail(visit.waterStatus) ? `Agua: ${validDetail(visit.waterStatus)}` : "",
-    validDetail(visit.weedLevel) ? `Malezas: ${validDetail(visit.weedLevel)}` : "",
-    validDetail(visit.pestLevel) ? `Plagas/daño: ${validDetail(visit.pestLevel)}` : "",
-    Number(visit.lodgingPct) > 0 ? `Acame: ${finite(visit.lodgingPct).toFixed(0)}%` : "",
-    visit.tchSource !== "none" && finite(visit.estimatedTch) > 0 ? `${finite(visit.estimatedTch).toFixed(1)} TCH · ${validDetail(visit.tchSourceLabel || visit.tchSource)}` : "",
-    finite(visit.estimatedTch2627) > 0 ? `Estimado 26/27: ${finite(visit.estimatedTch2627).toFixed(1)} TCH` : "",
-  ].filter(Boolean);
-  const footerLines = [
-    details.join(" · "),
-    [formatCoordinates(visit), validDetail(visit.technician) ? `Técnico: ${visit.technician}` : ""].filter(Boolean).join(" · "),
-  ].filter(Boolean);
-  const panelHeight = padding * 2 + Math.max(58, baseFont * 3.4) + footerLines.length * baseFont * 1.6 + (visit.notes ? baseFont * 3 : 0);
+  const landscape = width >= height;
+  const padding = Math.max(12, Math.round(width * (landscape ? 0.018 : 0.022)));
+  const gap = Math.max(6, Math.round(width * 0.008));
+  const baseFont = Math.max(12, Math.min(22, Math.round(width * (landscape ? 0.016 : 0.018))));
+  const smallFont = Math.max(10, Math.round(baseFont * 0.78));
+  const titleFont = Math.max(14, Math.round(baseFont * 1.12));
+  const lineHeight = Math.round(baseFont * 1.34);
+  const model = buildVisitLabelModel(visit, photoNumber, photoTotal);
+  const measureCanvas = document.createElement("canvas");
+  const measure = measureCanvas.getContext("2d");
+  const logoWidth = Math.min(Math.round(width * 0.095), landscape ? 116 : 96);
+  const contentWidth = width - padding * 2;
+  measure.font = `600 ${smallFont}px Arial, sans-serif`;
+  const observationLines = model.observation ? wrapLines(measure, model.observation, contentWidth) : [];
+  const purposeLines = model.purpose ? wrapLines(measure, `MOTIVO: ${model.purpose}`, contentWidth) : [];
+  const columns = landscape ? Math.min(3, Math.max(1, model.technical.length)) : Math.min(2, Math.max(1, model.technical.length));
+  const technicalRows = model.technical.length ? Math.ceil(model.technical.length / columns) : 0;
+  const headerHeight = Math.max(Math.round(baseFont * 2.55), Math.round(logoWidth * 0.44));
+  const purposeHeight = purposeLines.length ? purposeLines.length * lineHeight + gap : 0;
+  const technicalHeight = technicalRows ? technicalRows * Math.round(baseFont * 2.35) + gap : 0;
+  const observationHeight = observationLines.length ? smallFont + observationLines.length * Math.round(smallFont * 1.35) + gap * 2 : 0;
+  const footerHeight = model.footer.length ? Math.round(smallFont * 1.5) + gap : 0;
+  const contentHeight = padding * 2 + headerHeight + gap + purposeHeight + technicalHeight + observationHeight + footerHeight;
+  const targetRatio = landscape ? 0.15 : 0.13;
+  const targetPanel = Math.round(height * targetRatio / (1 - targetRatio));
+  // 12–16 % es la referencia compacta. La observación completa tiene prioridad y puede ampliar el panel.
+  const panelHeight = Math.max(contentHeight, model.technical.length || model.observation ? targetPanel : Math.round(targetPanel * 0.72));
   const canvas = document.createElement("canvas");
   canvas.width = width;
-  canvas.height = height + Math.round(panelHeight);
+  canvas.height = height + panelHeight;
   const context = canvas.getContext("2d", { alpha: false });
   context.fillStyle = "#ffffff";
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.drawImage(image, 0, 0, width, height);
   image.close?.();
-  context.fillStyle = "#f7faf8";
+  context.fillStyle = "#ffffff";
   context.fillRect(0, height, width, canvas.height - height);
   context.fillStyle = "#0b7f3a";
-  context.fillRect(0, height, width, Math.max(5, width * 0.006));
+  context.fillRect(0, height, width, Math.max(3, Math.round(width * 0.003)));
   const logo = await loadLogo(logoUrl);
-  const logoWidth = Math.min(width * 0.13, 150);
-  const logoHeight = Math.max(44, baseFont * 2.5);
   const panelY = height + padding;
+  let drawnLogoWidth = 0;
   if (logo) {
+    const logoHeight = Math.round(headerHeight * 0.84);
     const ratio = Math.min(logoWidth / (logo.width || logo.naturalWidth), logoHeight / (logo.height || logo.naturalHeight));
     const drawnWidth = (logo.width || logo.naturalWidth) * ratio;
     const drawnHeight = (logo.height || logo.naturalHeight) * ratio;
-    context.drawImage(logo, padding, panelY, drawnWidth, drawnHeight);
+    drawnLogoWidth = drawnWidth;
+    context.drawImage(logo, padding, panelY + (headerHeight - drawnHeight) / 2, drawnWidth, drawnHeight);
     logo.close?.();
   }
-  const textX = padding + (logo ? logoWidth + padding : 0);
-  drawFitted(context, `${visit.lotId || ""} · ${visit.producer || "Hacienda"} · Suerte ${visit.lot || "—"}`, textX, panelY + baseFont * 1.35, width - textX - padding, baseFont * 1.35, "#123c27", 900);
-  drawFitted(context, `${finite(visit.area).toFixed(2)} ha · ${visit.variety || "Sin variedad"} · ${dateShort(visit.date)} · Foto ${String(photoNumber).padStart(2, "0")}/${String(photoTotal).padStart(2, "0")}`, textX, panelY + baseFont * 2.75, width - textX - padding, baseFont, "#51665a", 700);
-  let y = panelY + Math.max(logoHeight, baseFont * 3.4) + baseFont;
-  context.font = `700 ${baseFont}px Arial, sans-serif`;
-  context.fillStyle = "#28483a";
-  footerLines.forEach((line) => {
-    wrapLines(context, line, width - padding * 2).forEach((wrapped) => {
-      context.fillText(wrapped, padding, y);
-      y += baseFont * 1.45;
+  const textX = padding + (drawnLogoWidth ? drawnLogoWidth + padding : 0);
+  drawFitted(context, model.title, textX, panelY + titleFont, width - textX - padding, titleFont, "#123c27", 850);
+  drawFitted(context, model.general.join(" · "), textX, panelY + titleFont + lineHeight, width - textX - padding, smallFont, "#596961", 600);
+  let y = panelY + headerHeight + gap;
+  const divider = () => { context.fillStyle = "#dce6e0"; context.fillRect(padding, y, contentWidth, 1); y += gap; };
+  if (purposeLines.length) {
+    context.font = `650 ${smallFont}px Arial, sans-serif`; context.fillStyle = "#3f5449";
+    purposeLines.forEach((line) => { context.fillText(line, padding, y + smallFont); y += lineHeight; });
+    divider();
+  }
+  if (model.technical.length) {
+    const columnGap = gap * 2;
+    const cellWidth = (contentWidth - columnGap * (columns - 1)) / columns;
+    model.technical.forEach((item, index) => {
+      const column = index % columns;
+      const row = Math.floor(index / columns);
+      const x = padding + column * (cellWidth + columnGap);
+      const top = y + row * Math.round(baseFont * 2.35);
+      context.font = `800 ${smallFont}px Arial, sans-serif`; context.fillStyle = "#0b7f3a";
+      context.fillText(item.label, x, top + smallFont);
+      drawFitted(context, item.value, x, top + smallFont + lineHeight, cellWidth, baseFont, "#263d31", 700);
     });
-  });
-  if (visit.notes) {
-    context.font = `650 ${Math.max(13, baseFont - 1)}px Arial, sans-serif`;
-    context.fillStyle = "#52675d";
-    wrapLines(context, `Observación: ${String(visit.notes).replace(/\s+/g, " ").slice(0, 240)}`, width - padding * 2).slice(0, 2).forEach((line) => {
-      context.fillText(line, padding, y);
-      y += baseFont * 1.35;
-    });
+    y += technicalRows * Math.round(baseFont * 2.35);
+    divider();
+  }
+  if (observationLines.length) {
+    context.font = `800 ${smallFont}px Arial, sans-serif`; context.fillStyle = "#0b7f3a";
+    context.fillText("OBSERVACIÓN", padding, y + smallFont); y += Math.round(smallFont * 1.35);
+    context.font = `500 ${smallFont}px Arial, sans-serif`; context.fillStyle = "#344b40";
+    observationLines.forEach((line) => { context.fillText(line, padding, y + smallFont); y += Math.round(smallFont * 1.35); });
+    y += gap; divider();
+  }
+  if (model.footer.length) {
+    context.font = `600 ${smallFont}px Arial, sans-serif`; context.fillStyle = "#5a6b62";
+    context.fillText(model.footer.join(" · "), padding, y + smallFont);
   }
   return canvasBlob(canvas, "image/png");
 }
@@ -253,14 +312,14 @@ export function createVisitsWorkbookBlob(visits = []) {
   if (!globalThis.XLSX) throw new Error("No se cargó el componente Excel.");
   const headers = [
     "ID visita", "Fecha", "Hora", "Técnico", "Zona", "Código hacienda", "Hacienda", "Suerte", "Código suerte", "Área (ha)", "Variedad",
-    "Motivo", "Condición general", "Estado hídrico", "Nivel malezas", "Nivel plagas", "Acame (%)", "Fuente TCH", "TCH visita", "TCH estimado 26/27", "Fotos",
-    "Latitud", "Longitud", "Precisión GPS (m)", "Fecha/hora GPS", "Observaciones", "Creado",
+    "Motivo", "Condición general", "Estado hídrico", "Nivel malezas", "Nivel plagas", "Acame (%)", "Descripción acame", "Fuente TCH", "TCH visita", "Descripción TCH", "Biometría vinculada", "TCH ESTIMADO Z26/27", "Fotos",
+    "Latitud", "Longitud", "Precisión GPS (m)", "Fecha/hora GPS", "Observaciones", "Creado", "Actualizado", "Revisión",
   ];
   const rows = visits.slice().sort((a, b) => `${b.date}${b.time || ""}`.localeCompare(`${a.date}${a.time || ""}`)).map((visit) => [
     visit.id, visit.date, visit.time, visit.technician, visit.zone, visit.farmCode, visit.producer, visit.lot, visit.lotId, visit.area, visit.variety,
-    visit.purpose, visit.overallCondition, visit.waterStatus, visit.weedLevel, visit.pestLevel, visit.lodgingPct,
-    visit.tchSourceLabel || visit.tchSource, visit.estimatedTch || null, visit.estimatedTch2627 || null, visit.photos?.length || 0,
-    visit.latitude, visit.longitude, visit.gpsAccuracyM, visit.capturedAt, visit.notes, visit.createdAt,
+    visit.purpose, visit.overallCondition, visit.waterStatus, visit.weedLevel, visit.pestLevel, visit.lodgingPct, visit.lodgingDescription,
+    visit.tchSourceLabel || visit.tchSource, visit.estimatedTch || null, visit.tchDescription, visit.linkedBiometryId, visit.estimatedTch2627 || null, visit.photos?.length || 0,
+    visit.latitude, visit.longitude, visit.gpsAccuracyM, visit.capturedAt, visit.notes, visit.createdAt, visit.updatedAt, visit.revision || 0,
   ]);
   const worksheet = XLSX.utils.aoa_to_sheet([[], [], [], headers, ...rows]);
   addWorkbookTitle(worksheet, headers.length);

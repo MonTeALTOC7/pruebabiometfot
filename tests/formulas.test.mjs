@@ -6,7 +6,7 @@ import {
 } from "../js/tch-engine.js";
 import {
   isOperationalLot, masterFingerprint, masterSuggestions, masterToEmbeddedRows, normalizeEmbeddedMaster,
-  parseSeasonEstimateWorkbook,
+  parseMasterWorkbook, parseSeasonEstimateWorkbook,
 } from "../js/master.js";
 
 test("fórmula oficial H(m) y D(mm) reproduce 162.916 TCH", () => {
@@ -142,5 +142,28 @@ test("actualizador 26/27 vincula por código hacienda + suerte normalizada", asy
     assert.equal(result.report.canApply, true);
     assert.equal(result.lots[0].estimatedTch2627, 65);
     assert.equal(result.lots[0].estimatedTch2627UpdatedAt, "2026-07-17");
+  } finally { globalThis.XLSX = originalXlsx; }
+});
+
+test("cronológico oficial detecta REPORTE y encabezados flexibles", async () => {
+  const originalXlsx = globalThis.XLSX;
+  const matrix = [
+    ["Hac-Sue", "Cod", "Hacienda", "Suerte", "Area", "Variedad", "TCH_Z2526", "TCH_Estimado_Z2627", "#_de_Corte", "Tipo_de_Riego", "#_de_Riegos", "Tenencia", "ZONA", "Estado", "Observación"],
+    ["60303", "603", "Freddy Sovalvarro", "3", 4.53, "RB 84-5210", 72.5, 78.4, "2", "Gravedad", 3, "Compra Venta", "5-Productores", "Mantener activo", "Validar población"],
+  ];
+  globalThis.XLSX = {
+    read: () => ({ SheetNames: ["Hoja auxiliar", "REPORTE"], Sheets: { "Hoja auxiliar": [["nada"]], REPORTE: matrix } }),
+    utils: { sheet_to_json: (sheet, options) => options?.header === 1 ? sheet : [] },
+  };
+  try {
+    const result = await parseMasterWorkbook({ arrayBuffer: async () => new ArrayBuffer(0) }, []);
+    assert.equal(result.sheetName, "REPORTE");
+    assert.equal(result.report.headerRow, 1);
+    assert.equal(result.lots[0].id, "60303");
+    assert.equal(result.lots[0].latestSeasonTch, 72.5);
+    assert.equal(result.lots[0].estimatedTch2627, 78.4);
+    assert.equal(result.lots[0].irrigationCount, 3);
+    assert.equal(result.lots[0].tenureCode, "CV");
+    assert.equal(result.lots[0].masterStatus, "Mantener activo");
   } finally { globalThis.XLSX = originalXlsx; }
 });

@@ -1,7 +1,7 @@
 import { repository } from "./storage.js";
 import {
   parseMasterWorkbook, masterSuggestions, auditChange, normalizeEmbeddedMaster,
-  masterFingerprint, masterToEmbeddedRows, parseSeasonEstimateWorkbook,
+  masterFingerprint, masterToEmbeddedRows, parseSeasonEstimateWorkbook, normalizeText,
 } from "./master.js";
 import {
   ageFromLot, averageStalkWeightKg, comparisonPct, createId, finiteNumber, formatNumber,
@@ -42,6 +42,7 @@ const state = {
   pendingMaster: null,
   pendingEstimateImport: null,
   editingLot: null,
+  editingBiometryId: "",
   biometry: null,
   weighing: null,
   visit: null,
@@ -51,8 +52,12 @@ const state = {
   visitDateTo: "",
   visitProducer: "",
   selectedVisitIds: new Set(),
+  editingVisitId: "",
+  visitReturnFromBiometry: false,
   historyQuery: "",
   masterQuery: "",
+  consultationQuery: "",
+  consultationLotId: "",
   embeddedMasterError: "",
   masterSync: { status: "idle", message: "", checkedAt: "" },
   storageEstimate: null,
@@ -70,7 +75,14 @@ function photoPreview(photo) {
 const TARGET_AGES = [9, 9.5, 10, 10.5, 11];
 const ROW_SPACING_PRESETS = [1.5, 1.65, 1.75, 1.8, 2.2];
 const SAMPLE_LENGTH_PRESETS = [3, 5, 10];
-const VISIT_PURPOSES = ["Inspección general", "Validación de TCH", "Aforo / biometría", "Seguimiento hídrico", "Malezas o plagas", "Pre-cosecha", "Otra visita técnica"];
+const VISIT_PURPOSES = ["Inspección general", "Validación de TCH", "Aforo / biometría", "Seguimiento hídrico", "Malezas o plagas", "Pre-cosecha"];
+const VISIT_CATEGORIES = {
+  purpose: VISIT_PURPOSES,
+  overallCondition: ["Excelente", "Buena", "Regular", "Crítica"],
+  waterStatus: ["Adecuado", "Estrés leve", "Estrés moderado", "Estrés severo", "Encharcamiento"],
+  weedLevel: ["Bajo", "Medio", "Alto"],
+  pestLevel: ["Sin evidencia", "Leve", "Moderado", "Severo"],
+};
 const TCH_SOURCES = {
   none: "Sin estimación de TCH",
   visual: "Estimación visual",
@@ -115,6 +127,22 @@ function notify(message) {
 
 function field(label, input, help = "") {
   return `<label class="field"><span>${label}</span>${input}${help ? `<small class="help">${help}</small>` : ""}</label>`;
+}
+
+function categoryField(label, id, fieldName) {
+  const options = VISIT_CATEGORIES[fieldName];
+  const value = state.visit[fieldName] || "";
+  const customName = `${fieldName}Custom`;
+  const isCustom = value === "__other__" || (!options.includes(value) && Boolean(value));
+  const selectValue = isCustom ? "__other__" : value;
+  const customValue = state.visit[customName] || (isCustom && value !== "__other__" ? value : "");
+  return field(label, `<select id="${id}" data-visit-category="${fieldName}"><option value="" ${selectValue === "" ? "selected" : ""}>Sin registrar</option>${options.map((item) => `<option value="${escapeHtml(item)}" ${selectValue === item ? "selected" : ""}>${escapeHtml(item)}</option>`).join("")}<option value="__other__" ${selectValue === "__other__" ? "selected" : ""}>Otro / escribir personalizado</option></select>${selectValue === "__other__" ? `<input class="custom-category-input" id="visitCustom_${fieldName}" data-visit-custom="${fieldName}" value="${escapeHtml(customValue)}" placeholder="Escribí el valor personalizado">` : ""}`);
+}
+
+function resolvedCategory(visit, fieldName) {
+  const value = visit[fieldName] || "";
+  if (value === "__other__") return String(visit[`${fieldName}Custom`] || "").trim();
+  return String(value).trim();
 }
 
 function pageHead(title, subtitle) {
@@ -272,6 +300,7 @@ function newSample(index, sampleLengthM = 5) {
 
 function resetBiometry() {
   state.selectedLot = null;
+  state.editingBiometryId = "";
   const first = newSample(0, 5);
   state.biometry = {
     date: todayISO(),
@@ -312,18 +341,27 @@ function resetWeighing() {
 
 function resetVisit() {
   state.selectedLot = null;
+  state.editingVisitId = "";
   state.visit = {
     date: todayISO(),
     technician: state.settings.technician || "",
     search: "",
-    purpose: VISIT_PURPOSES[0],
+    purpose: "",
+    purposeCustom: "",
     overallCondition: "",
+    overallConditionCustom: "",
     waterStatus: "",
+    waterStatusCustom: "",
     weedLevel: "",
+    weedLevelCustom: "",
     pestLevel: "",
+    pestLevelCustom: "",
     lodgingPct: "",
+    lodgingDescription: "",
     tchSource: "none",
     estimatedTch: "",
+    tchDescription: "",
+    linkedBiometryId: "",
     latitude: null,
     longitude: null,
     gpsAccuracyM: null,
@@ -407,7 +445,7 @@ function renderHome() {
       <button class="module-card primary-module" data-route="biometry"><span class="module-icon">🌱</span><span><small>OPERACIÓN PRINCIPAL</small><strong>Nueva Biometría</strong><p>Iniciá con P01 y agregá solamente los puntos que necesités.</p></span><b>›</b></button>
       <button class="module-card visit-main-module" data-route="visits"><span class="module-icon blue">📷</span><span><small>EVIDENCIA PRINCIPAL</small><strong>Visita de campo</strong><p>Fotos libres, GPS, condición agronómica, PNG etiquetado y Excel.</p></span><b>›</b></button>
       <button class="module-card" data-route="history"><span class="module-icon gold">▤</span><span><small>CONSULTA</small><strong>Historial</strong><p>Biometrías, contrastes por peso, pesajes anteriores y TCH real.</p></span><b>›</b></button>
-      <button class="module-card" data-route="analytics"><span class="module-icon blue">◫</span><span><small>ANÁLISIS</small><strong>Estimados y avance</strong><p>Consolidado de última evaluación por hacienda y área.</p></span><b>›</b></button>
+      <button class="module-card" data-route="analytics"><span class="module-icon blue">⌕</span><span><small>CONSULTA OPERATIVA</small><strong>Cronológico de suertes</strong><p>Ficha maestra, TCH estimado Z26/27, biometrías y visitas vinculadas.</p></span><b>›</b></button>
       <button class="module-card" data-route="export"><span class="module-icon">⇩</span><span><small>ADMINISTRACIÓN</small><strong>Exportar y respaldar</strong><p>XLSX general, JSON de respaldo e información técnica.</p></span><b>›</b></button>
       <button class="module-card" data-route="master"><span class="module-icon purple">▦</span><span><small>ADMINISTRACIÓN PROTEGIDA</small><strong>Maestro General CASUR</strong><p>Actualizar desde la hoja REPORTE o editar una suerte.</p></span><b>›</b></button>
     </section>
@@ -457,7 +495,7 @@ function selectedLotPanel(lot, date) {
       <div class="lot-fact fact-age"><span>Edad actual</span><strong>${formatNumber(age.months, 2)} meses</strong></div>
       <div class="lot-fact fact-date"><span>Fecha base</span><strong>${escapeHtml(formatDateShort(age.baseDate))}</strong></div>
       <div class="lot-fact fact-season"><span>TCH zafra 25/26</span><strong>${formatNumber(lot.latestSeasonTch, 1)}</strong><small>Resultado real más reciente</small></div>
-      <div class="lot-fact fact-estimate"><span>Estimado zafra 26/27</span><strong>${formatNumber(lot.estimatedTch2627, 1)}</strong><small>${lot.estimatedTch2627UpdatedAt ? `Fuente ${escapeHtml(formatDateShort(lot.estimatedTch2627UpdatedAt))}` : "Sin estimación oficial"}</small></div>
+      <div class="lot-fact fact-estimate"><span>TCH ESTIMADO Z26/27</span><strong>${formatNumber(lot.estimatedTch2627, 1)}</strong><small>${lot.estimatedTch2627UpdatedAt ? `Fuente ${escapeHtml(formatDateShort(lot.estimatedTch2627UpdatedAt))}` : "Sin estimación oficial"}</small></div>
       <div class="lot-fact fact-history"><span>TCH histórico promedio</span><strong>${formatNumber(lot.historicalTch, 1)}</strong><small>Referencia secundaria</small></div>
     </div>
   </section>`;
@@ -693,7 +731,33 @@ function renderCalculateStage() {
 }
 
 function renderBiometry() {
-  return `${pageHead("Nueva biometría", "Flujo por etapas: medí los puntos necesarios y pasá luego al cálculo del TCH proyectado.")}${state.biometry.phase === "calculate" ? renderCalculateStage() : renderMeasureStage()}`;
+  return `${pageHead(state.editingBiometryId ? "Editar biometría" : "Nueva biometría", "Flujo por etapas: medí los puntos necesarios y pasá luego al cálculo del TCH proyectado.")}${state.editingBiometryId ? `<div class="editing-banner"><div><b>Editando una biometría guardada</b><span>Los cálculos se actualizarán al guardar esta revisión.</span></div><button class="btn btn-light" id="cancelBiometryEdit">Cancelar edición</button></div>` : ""}${state.biometry.phase === "calculate" ? renderCalculateStage() : renderMeasureStage()}`;
+}
+
+function editBiometry(record) {
+  const lot = state.master.find((item) => item.id === record.lotId);
+  if (!lot) return notify("La suerte de esta biometría ya no está disponible en el maestro.");
+  const samples = (record.samples || []).map((sample, index) => ({
+    ...sample,
+    id: sample.id || createId("point"),
+    pointCode: sample.pointCode || `P${String(index + 1).padStart(2, "0")}`,
+    countMode: sample.countMode || (sample.directStalksPerMeter ? "direct" : "count"),
+    weighingEnabled: Boolean(sample.weighingEnabled || sample.weighedStalkCount || sample.weighedTotalKg),
+  }));
+  if (!samples.length) samples.push(newSample(0, record.sampleLengthM || 5));
+  state.selectedLot = lot;
+  state.editingBiometryId = record.id;
+  state.biometry = {
+    date: record.date || todayISO(), technician: record.technician || "", rowSpacingM: record.rowSpacingM || lot.rowSpacingM || 1.65,
+    sampleLengthM: record.sampleLengthM || 5, targetAgeMonths: record.targetAgeMonths || 10,
+    adjustmentPct: record.adjustmentPct ?? 5, adjustmentReason: record.adjustmentReason || "Criterio técnico",
+    notes: record.notes || "", search: `${lot.id} · ${lot.producer} · Suerte ${lot.lot}`,
+    phase: "measure", samples, activeSampleId: samples[0].id,
+    validation: record.validation || { validated: Boolean(record.validated), validatedAt: record.validatedAt || "", validatedBy: record.validatedBy || "" },
+  };
+  state.route = "biometry";
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function latestBiometryForLot(lotId) {
@@ -723,10 +787,12 @@ function renderVisitPhotos() {
 
 function renderVisitNew() {
   const visit = state.visit;
-  const linked = state.selectedLot ? latestBiometryForLot(state.selectedLot.id) : null;
+  const availableBiometries = state.selectedLot ? state.biometries.filter((record) => record.lotId === state.selectedLot.id)
+    .sort((a, b) => `${b.date}${b.createdAt || ""}`.localeCompare(`${a.date}${a.createdAt || ""}`)) : [];
   const showTch = visit.tchSource !== "none";
   return `${pageHead("Visita de campo", "Documentá el estado de la caña aunque no realicés aforo o biometría.")}
     ${renderVisitTabs()}
+    ${state.editingVisitId ? `<div class="editing-banner"><div><b>Editando una visita guardada</b><span>Corregí cualquier dato y actualizá para regenerar los PNG.</span></div><button class="btn btn-light" id="cancelVisitEdit">Cancelar edición</button></div>` : ""}
     <section class="card search-card">
       <div class="card-head"><span class="step">1</span><div><strong>Seleccionar suerte</strong><small>La hacienda, el código, el área y la variedad pasarán automáticamente a la evidencia.</small></div></div>
       <div class="card-body">${searchBox(visit.search, "visits")}<div class="form-grid two" style="margin-top:12px">
@@ -738,19 +804,21 @@ function renderVisitNew() {
     <section class="card">
       <div class="card-head"><span class="step blue">2</span><div><strong>Condición observada</strong><small>Clasificá de forma breve lo visible; la fotografía y la observación conservan el detalle técnico.</small></div></div>
       <div class="card-body"><div class="form-grid three">
-        ${field("Motivo de la visita", `<select id="visitPurpose">${VISIT_PURPOSES.map((item) => `<option ${visit.purpose === item ? "selected" : ""}>${escapeHtml(item)}</option>`).join("")}</select>`)}
-        ${field("Condición general", `<select id="visitCondition"><option value="">Sin registrar</option>${["Excelente", "Buena", "Regular", "Crítica"].map((item) => `<option ${visit.overallCondition === item ? "selected" : ""}>${item}</option>`).join("")}</select>`)}
-        ${field("Estado hídrico", `<select id="visitWater"><option value="">Sin registrar</option>${["Adecuado", "Estrés leve", "Estrés moderado", "Estrés severo", "Encharcamiento"].map((item) => `<option ${visit.waterStatus === item ? "selected" : ""}>${item}</option>`).join("")}</select>`)}
-        ${field("Nivel de malezas", `<select id="visitWeeds"><option value="">Sin registrar</option>${["Bajo", "Medio", "Alto"].map((item) => `<option ${visit.weedLevel === item ? "selected" : ""}>${item}</option>`).join("")}</select>`)}
-        ${field("Plagas / daño", `<select id="visitPests"><option value="">Sin registrar</option>${["Sin evidencia", "Leve", "Moderado", "Severo"].map((item) => `<option ${visit.pestLevel === item ? "selected" : ""}>${item}</option>`).join("")}</select>`)}
-        ${field("Acame observado", `<div class="input-unit"><input id="visitLodging" type="number" inputmode="decimal" min="0" max="100" step="1" value="${escapeHtml(visit.lodgingPct)}"><b>%</b></div>`)}
+        ${categoryField("Motivo de la visita", "visitPurpose", "purpose")}
+        ${categoryField("Condición general", "visitCondition", "overallCondition")}
+        ${categoryField("Estado hídrico", "visitWater", "waterStatus")}
+        ${categoryField("Nivel de malezas", "visitWeeds", "weedLevel")}
+        ${categoryField("Plagas / daño", "visitPests", "pestLevel")}
+        ${field("Acame observado", `<div class="input-unit"><input id="visitLodging" type="number" inputmode="decimal" min="0" max="100" step="1" value="${escapeHtml(visit.lodgingPct)}"><b>%</b></div><input class="custom-category-input" id="visitLodgingDescription" value="${escapeHtml(visit.lodgingDescription)}" placeholder="Descripción opcional">`)}
       </div></div>
     </section>
     <section class="card">
       <div class="card-head"><span class="step gold">3</span><div><strong>TCH de referencia en la visita</strong><small>Puede quedar sin estimación. Un TCH visual se identifica claramente y no se presenta como biometría.</small></div></div>
       <div class="card-body"><div class="form-grid two">
         ${field("Fuente del TCH", `<select id="visitTchSource">${Object.entries(TCH_SOURCES).map(([value, label]) => `<option value="${value}" ${visit.tchSource === value ? "selected" : ""}>${label}</option>`).join("")}</select>`)}
-        ${showTch ? field("TCH registrado", `<div class="input-unit"><input id="visitEstimatedTch" type="number" inputmode="decimal" min="1" max="300" step="0.1" value="${escapeHtml(visit.estimatedTch)}"><b>TCH</b></div>`, visit.tchSource === "biometry" && linked ? `Última biometría guardada: ${formatNumber(linked.projectedTch, 1)} TCH del ${formatDateShort(linked.date)}.` : "Registralo solamente si existe una estimación o aforo en esta visita.") : `<div class="info-note">Esta visita quedará como evidencia del estado del cultivo, sin asignar un TCH.</div>`}
+        ${showTch && visit.tchSource !== "biometry" ? field("TCH registrado", `<div class="input-unit"><input id="visitEstimatedTch" type="number" inputmode="decimal" min="1" max="300" step="0.1" value="${escapeHtml(visit.estimatedTch)}"><b>TCH</b></div><input class="custom-category-input" id="visitTchDescription" value="${escapeHtml(visit.tchDescription)}" placeholder="Descripción técnica opcional">`, "Registralo solamente si existe una estimación o aforo en esta visita.") : ""}
+        ${visit.tchSource === "biometry" ? `<div class="linked-biometry-panel"><strong>Biometría vinculada</strong>${availableBiometries.length ? `<select id="visitBiometryId"><option value="">Seleccioná una biometría guardada</option>${availableBiometries.map((record) => `<option value="${escapeHtml(record.id)}" ${visit.linkedBiometryId === record.id ? "selected" : ""}>${formatDateShort(record.date)} · ${formatNumber(record.projectedTch, 1)} TCH · ${record.pointCount || record.samples?.length || 0} puntos · ${escapeHtml(record.technician || "Sin técnico")}</option>`).join("")}</select>` : `<div class="info-note">Esta suerte todavía no tiene biometrías guardadas.</div>`}<button type="button" class="btn btn-green" id="newBiometryForVisit">＋ Realizar nueva biometría en campo</button></div>` : ""}
+        ${!showTch ? `<div class="info-note">Esta visita quedará como evidencia del estado del cultivo, sin asignar un TCH.</div>` : ""}
       </div></div>
     </section>
     <section class="card visit-camera-card">
@@ -762,18 +830,20 @@ function renderVisitNew() {
       <div class="card-body">
         <button class="gps-button ${visit.latitude ? "captured" : ""}" id="visitGps">${visit.latitude ? `✓ GPS capturado · ${Number(visit.latitude).toFixed(6)}, ${Number(visit.longitude).toFixed(6)} · ±${formatNumber(visit.gpsAccuracyM, 0)} m` : "⌖ CAPTURAR GPS DE LA VISITA"}</button>
         ${field("Observación técnica", `<textarea id="visitNotes" placeholder="Describí la condición de la caña, uniformidad, espacios, sequía, acame, malezas, plagas o cualquier detalle relevante.">${escapeHtml(visit.notes)}</textarea>`)}
-        <div class="visit-save-actions"><button class="btn btn-green btn-wide" id="saveVisit" ${visit.photoProcessing || visit.saving ? "disabled" : ""}>${visit.saving ? "… Guardando" : "▣ Guardar visita"}</button></div>
+        <div class="visit-save-actions"><button class="btn btn-green btn-wide" id="saveVisit" ${visit.photoProcessing || visit.saving ? "disabled" : ""}>${visit.saving ? "… Guardando" : state.editingVisitId ? "▣ Actualizar visita y regenerar PNG" : "▣ Guardar visita"}</button></div>
         <div class="info-note">Primero guardá la visita. Después podrás descargar cada PNG directamente o compartirlo por WhatsApp; el ZIP queda reservado para exportaciones masivas.</div>
       </div>
     </section>`;
 }
 
 function filteredVisits() {
-  const query = state.visitQuery.toLowerCase().trim();
-  return state.visits.filter((visit) => (!query || [visit.producer, visit.farmCode, visit.lot, visit.lotId, visit.date, visit.technician, visit.purpose, visit.overallCondition]
-    .some((value) => String(value || "").toLowerCase().includes(query))) &&
+  const terms = normalizeText(state.visitQuery).split(" ").filter(Boolean);
+  return state.visits.filter((visit) => {
+    const haystack = normalizeText([visit.producer, visit.farmCode, visit.lot, visit.lotId, visit.date, visit.technician, visit.purpose, visit.overallCondition, visit.waterStatus, visit.weedLevel, visit.pestLevel, visit.notes].join(" "));
+    return terms.every((term) => haystack.includes(term)) &&
     (!state.visitDateFrom || visit.date >= state.visitDateFrom) && (!state.visitDateTo || visit.date <= state.visitDateTo) &&
-    (!state.visitProducer || visit.farmCode === state.visitProducer))
+    (!state.visitProducer || String(visit.farmCode) === String(state.visitProducer));
+  })
     .sort((a, b) => `${b.date}${b.createdAt || ""}`.localeCompare(`${a.date}${a.createdAt || ""}`));
 }
 
@@ -782,17 +852,20 @@ function renderVisitHistory() {
   const producers = [...new Map(state.visits.map((visit) => [visit.farmCode, `${visit.farmCode} · ${visit.producer}`])).entries()].sort((a, b) => a[1].localeCompare(b[1], "es"));
   return `${pageHead("Visitas de campo", "Consultá y exportá las evidencias organizadas por hacienda y suerte.")}
     ${renderVisitTabs()}
-    <section class="card"><div class="card-body">${field("Buscar visitas", `<input id="visitHistorySearch" value="${escapeHtml(state.visitQuery)}" placeholder="Hacienda, suerte, técnico o motivo…">`)}
-      <div class="form-grid three visit-filters">${field("Desde", `<input id="visitDateFrom" type="date" value="${escapeHtml(state.visitDateFrom)}">`)}${field("Hasta", `<input id="visitDateTo" type="date" value="${escapeHtml(state.visitDateTo)}">`)}${field("Productor / hacienda", `<select id="visitProducer"><option value="">Todos</option>${producers.map(([code, label]) => `<option value="${escapeHtml(code)}" ${state.visitProducer === code ? "selected" : ""}>${escapeHtml(label)}</option>`).join("")}</select>`)}</div>
-      <div class="visit-export-actions"><button class="btn btn-blue" id="exportVisitsExcel" ${visits.length ? "" : "disabled"}>⇩ Excel filtrado</button><button class="btn btn-gold" id="openBulkVisitExport" ${visits.length ? "" : "disabled"}>🗂 Exportación masiva ZIP</button></div>
-      <div class="info-note">${visits.length} visita(s) en el filtro. El Excel se descarga directamente; el ZIP agrupa únicamente lo que seleccionés.</div>
+    <section class="card visit-search-compact"><div class="card-body">${field("Buscar visitas", `<div class="search-inline"><input id="visitHistorySearch" value="${escapeHtml(state.visitQuery)}" placeholder="Hacienda, código, suerte, técnico o motivo…"><button class="btn btn-light" id="clearVisitFilters" type="button">Limpiar</button></div>`)}
+      <div class="filter-summary"><b>${visits.length}</b> de ${state.visits.length} visita(s) visibles</div>
+      <details class="visit-tools"><summary>⚙ Filtros y exportación</summary><div class="visit-tools-body">
+        <div class="form-grid three visit-filters">${field("Desde", `<input id="visitDateFrom" type="date" value="${escapeHtml(state.visitDateFrom)}">`)}${field("Hasta", `<input id="visitDateTo" type="date" value="${escapeHtml(state.visitDateTo)}">`)}${field("Productor / hacienda", `<select id="visitProducer"><option value="">Todos</option>${producers.map(([code, label]) => `<option value="${escapeHtml(code)}" ${String(state.visitProducer) === String(code) ? "selected" : ""}>${escapeHtml(label)}</option>`).join("")}</select>`)}</div>
+        <div class="visit-export-actions"><button class="btn btn-blue" id="exportVisitsExcel" ${visits.length ? "" : "disabled"}>⇩ Excel filtrado</button><button class="btn btn-gold" id="openBulkVisitExport" ${visits.length ? "" : "disabled"}>🗂 Exportación masiva ZIP</button></div>
+        <div class="info-note">El Excel se descarga directamente. El ZIP se reserva para agrupar visitas filtradas o seleccionadas.</div>
+      </div></details>
     </div></section>
     ${visits.length ? `<section class="history-list visit-history-list">${visits.map((visit) => `<article class="record visit-record">
-      <div class="record-head"><label class="visit-select"><input type="checkbox" data-select-visit="${escapeHtml(visit.id)}" ${state.selectedVisitIds.has(visit.id) ? "checked" : ""}> Seleccionar</label><div><h3>${escapeHtml(visit.producer)} · Suerte ${escapeHtml(visit.lot)}</h3><p>${formatDateShort(visit.date)} · ${escapeHtml(visit.purpose)} · ${escapeHtml(visit.technician)}</p></div><span class="code-pill">${escapeHtml(visit.lotId)}</span></div>
+      <div class="record-head"><label class="visit-select"><input type="checkbox" data-select-visit="${escapeHtml(visit.id)}" ${state.selectedVisitIds.has(visit.id) ? "checked" : ""}> Seleccionar</label><div><h3>${escapeHtml(visit.producer)} · Suerte ${escapeHtml(visit.lot)}</h3><p>${[formatDateShort(visit.date), visit.purpose, visit.technician].filter(Boolean).map(escapeHtml).join(" · ")}</p></div><span class="code-pill">${escapeHtml(visit.lotId)}</span></div>
       <div class="record-meta">${escapeHtml(visit.zone || "")}${visit.overallCondition ? ` · Condición ${escapeHtml(visit.overallCondition)}` : ""} · GPS ${visit.latitude ? `±${formatNumber(visit.gpsAccuracyM, 0)} m` : "sin captura"}</div>
       <div class="visit-thumbs">${(visit.photos || []).map((photo, index) => `<img src="${photoPreview(photo)}" alt="Foto ${index + 1}">`).join("")}</div>
-      <div class="record-metrics"><div><span>Fotografías</span><strong>${visit.photos?.length || 0}</strong></div><div><span>TCH visita</span><strong>${visit.estimatedTch ? formatNumber(visit.estimatedTch, 1) : "—"}</strong></div><div><span>Estado hídrico</span><strong>${escapeHtml(visit.waterStatus || "N/E")}</strong></div></div>
-      <div class="record-actions"><button class="btn btn-green" data-open-visit="${escapeHtml(visit.id)}">Ver y compartir fotos</button><button class="btn btn-danger" data-delete-visit="${escapeHtml(visit.id)}">Eliminar</button></div>
+      <div class="record-metrics"><div><span>Fotografías</span><strong>${visit.photos?.length || 0}</strong></div>${visit.estimatedTch ? `<div><span>TCH visita</span><strong>${formatNumber(visit.estimatedTch, 1)}</strong></div>` : ""}${visit.waterStatus ? `<div><span>Estado hídrico</span><strong>${escapeHtml(visit.waterStatus)}</strong></div>` : ""}</div>
+      <div class="record-actions"><button class="btn btn-green" data-open-visit="${escapeHtml(visit.id)}">Ver y compartir fotos</button><button class="btn btn-blue" data-edit-visit="${escapeHtml(visit.id)}">Editar</button><button class="btn btn-danger" data-delete-visit="${escapeHtml(visit.id)}">Eliminar</button></div>
     </article>`).join("")}</section>` : emptyState("📷", "Sin visitas", "Todavía no hay visitas que coincidan con el filtro.", `<button class="btn btn-green" data-visit-tab="new">Registrar la primera visita</button>`)}`;
 }
 
@@ -801,7 +874,38 @@ function renderVisits() {
 }
 
 function openVisitDetail(visit) {
-  openModal(`<div class="visit-detail"><h2>${escapeHtml(visit.producer)} · Suerte ${escapeHtml(visit.lot)}</h2><p>${escapeHtml(visit.lotId)} · ${formatDateShort(visit.date)} · ${visit.photos?.length || 0} fotografía(s)</p><div class="visit-detail-grid">${(visit.photos || []).map((photo, index) => `<article><img src="${photoPreview(photo)}" alt="Foto ${index + 1}"><strong>Foto ${String(index + 1).padStart(2, "0")}</strong><div class="actions"><button class="btn btn-green" data-share-visit-photo="${escapeHtml(visit.id)}" data-photo-index="${index}">Compartir PNG</button><button class="btn btn-blue" data-download-visit-photo="${escapeHtml(visit.id)}" data-photo-index="${index}">Descargar PNG</button><button class="btn btn-light" data-download-original="${escapeHtml(visit.id)}" data-photo-index="${index}">Original</button></div></article>`).join("")}</div><button class="btn btn-light btn-wide" data-close-modal>Cerrar</button></div>`);
+  openModal(`<div class="visit-detail"><h2>${escapeHtml(visit.producer)} · Suerte ${escapeHtml(visit.lot)}</h2><p>${escapeHtml(visit.lotId)} · ${formatDateShort(visit.date)} · ${visit.photos?.length || 0} fotografía(s)</p><div class="visit-detail-grid">${(visit.photos || []).map((photo, index) => `<article><img src="${photoPreview(photo)}" alt="Foto ${index + 1}"><strong>Foto ${String(index + 1).padStart(2, "0")}</strong><div class="actions"><button class="btn btn-green" data-share-visit-photo="${escapeHtml(visit.id)}" data-photo-index="${index}">Compartir PNG</button><button class="btn btn-blue" data-download-visit-photo="${escapeHtml(visit.id)}" data-photo-index="${index}">Descargar PNG</button><button class="btn btn-light" data-download-original="${escapeHtml(visit.id)}" data-photo-index="${index}">Original</button></div></article>`).join("")}</div><div class="actions"><button class="btn btn-blue" data-edit-visit="${escapeHtml(visit.id)}">✎ Editar visita completa</button><button class="btn btn-light" data-close-modal>Cerrar</button></div></div>`);
+}
+
+function editVisit(visit) {
+  const lot = state.master.find((item) => item.id === visit.lotId);
+  if (!lot) return notify("La suerte de esta visita ya no está disponible en el maestro.");
+  const customState = {};
+  for (const [fieldName, options] of Object.entries(VISIT_CATEGORIES)) {
+    const value = String(visit[fieldName] || "");
+    customState[fieldName] = !value || options.includes(value) ? value : "__other__";
+    customState[`${fieldName}Custom`] = !value || options.includes(value) ? "" : value;
+  }
+  state.selectedLot = lot;
+  state.editingVisitId = visit.id;
+  state.visit = {
+    ...visit,
+    ...customState,
+    search: `${lot.id} · ${lot.producer} · Suerte ${lot.lot}`,
+    lodgingPct: visit.lodgingPct ?? "",
+    lodgingDescription: visit.lodgingDescription || "",
+    tchDescription: visit.tchDescription || "",
+    linkedBiometryId: visit.linkedBiometryId || "",
+    photos: [...(visit.photos || [])],
+    photoProcessing: false,
+    photoProgress: "",
+    saving: false,
+  };
+  state.route = "visits";
+  state.visitView = "new";
+  closeModal();
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 async function labeledVisitFile(visit, photoIndex) {
@@ -826,14 +930,18 @@ async function saveVisit() {
   if (!visit.technician.trim()) return notify("Ingresá el técnico responsable.");
   if (!visit.photos.length) return notify("Tomá por lo menos una fotografía de evidencia.");
   if (visit.latitude === null || visit.longitude === null) return notify("Capturá el GPS para que la evidencia quede georreferenciada.");
+  if (visit.tchSource === "biometry" && !visit.linkedBiometryId) return notify("Seleccioná una biometría guardada o realizá una nueva.");
   if (visit.tchSource !== "none" && finiteNumber(visit.estimatedTch) <= 0) return notify("Ingresá un TCH válido o seleccioná Sin estimación.");
   const lot = state.selectedLot;
   const now = new Date();
+  const previous = state.editingVisitId ? state.visits.find((item) => item.id === state.editingVisitId) : null;
   const record = {
-    id: createId("visit"),
-    createdAt: now.toISOString(),
+    id: previous?.id || createId("visit"),
+    createdAt: previous?.createdAt || now.toISOString(),
+    updatedAt: now.toISOString(),
+    revision: (previous?.revision || 0) + (previous ? 1 : 0),
     date: visit.date,
-    time: now.toLocaleTimeString("es-NI", { hour: "2-digit", minute: "2-digit" }),
+    time: previous?.time || now.toLocaleTimeString("es-NI", { hour: "2-digit", minute: "2-digit" }),
     technician: visit.technician.trim(),
     lotId: lot.id,
     farmCode: lot.farmCode,
@@ -845,15 +953,18 @@ async function saveVisit() {
     area: lot.area,
     variety: lot.variety,
     irrigation: lot.irrigation,
-    purpose: visit.purpose,
-    overallCondition: visit.overallCondition,
-    waterStatus: visit.waterStatus,
-    weedLevel: visit.weedLevel,
-    pestLevel: visit.pestLevel,
+    purpose: resolvedCategory(visit, "purpose"),
+    overallCondition: resolvedCategory(visit, "overallCondition"),
+    waterStatus: resolvedCategory(visit, "waterStatus"),
+    weedLevel: resolvedCategory(visit, "weedLevel"),
+    pestLevel: resolvedCategory(visit, "pestLevel"),
     lodgingPct: String(visit.lodgingPct).trim() === "" ? null : Math.min(100, Math.max(0, finiteNumber(visit.lodgingPct))),
+    lodgingDescription: visit.lodgingDescription.trim(),
     tchSource: visit.tchSource,
     tchSourceLabel: TCH_SOURCES[visit.tchSource] || visit.tchSource,
     estimatedTch: visit.tchSource === "none" ? null : finiteNumber(visit.estimatedTch),
+    tchDescription: visit.tchDescription.trim(),
+    linkedBiometryId: visit.tchSource === "biometry" ? visit.linkedBiometryId : "",
     estimatedTch2627: lot.estimatedTch2627 || null,
     latitude: visit.latitude,
     longitude: visit.longitude,
@@ -877,13 +988,14 @@ async function saveVisit() {
       : "No se pudo guardar la visita. Las fotos siguen cargadas para volver a intentar.");
     return;
   }
-  state.visits.push(record);
+  if (previous) state.visits = state.visits.map((item) => item.id === record.id ? record : item);
+  else state.visits.push(record);
   await refreshStorageEstimate();
   resetVisit();
   state.visitView = "history";
   render();
   openVisitDetail(record);
-  notify("Visita guardada con fotografías y GPS.");
+  notify(previous ? "Visita actualizada. Los PNG se regenerarán con la información corregida." : "Visita guardada con fotografías y GPS.");
 }
 
 function updateActivePointResult() {
@@ -926,6 +1038,7 @@ async function saveBiometry(download = false) {
   if (finiteNumber(b.targetAgeMonths) < summary.age.months) return notify("La edad de referencia no puede ser menor que la edad actual.");
   if (!summary.projected) return notify("Revisá la edad y el ajuste de proyección.");
   const now = new Date();
+  const previousRecord = state.editingBiometryId ? state.biometries.find((item) => item.id === state.editingBiometryId) : null;
   const samples = b.samples.map((sample) => {
     const normalized = normalizedSample(sample);
     const population = stalksPerMeter(normalized);
@@ -949,10 +1062,12 @@ async function saveBiometry(download = false) {
   }).filter((sample) => sample.tch);
   const lot = state.selectedLot;
   const record = {
-    id: createId("bio"),
+    id: previousRecord?.id || createId("bio"),
     method: "Biometría",
     formulaVersion: "TCHe-mm-m-v2.4",
-    createdAt: now.toISOString(),
+    createdAt: previousRecord?.createdAt || now.toISOString(),
+    updatedAt: now.toISOString(),
+    revision: (previousRecord?.revision || 0) + (previousRecord ? 1 : 0),
     date: b.date,
     time: now.toLocaleTimeString("es-NI", { hour: "2-digit", minute: "2-digit" }),
     technician: b.technician || "Sin registrar",
@@ -997,8 +1112,9 @@ async function saveBiometry(download = false) {
     notes: b.notes,
   };
   await repository.put("biometries", record);
-  state.biometries.push(record);
-  notify(summary.count < 3 ? "Biometría guardada. Muestreo corto marcado como calidad baja." : "Biometría guardada en el teléfono.");
+  if (previousRecord) state.biometries = state.biometries.map((item) => item.id === record.id ? record : item);
+  else state.biometries.push(record);
+  notify(previousRecord ? "Biometría actualizada y recalculada." : summary.count < 3 ? "Biometría guardada. Muestreo corto marcado como calidad baja." : "Biometría guardada en el teléfono.");
   if (download) {
     downloadWorkbook({
       master: state.master,
@@ -1006,6 +1122,17 @@ async function saveBiometry(download = false) {
       weighings: state.weighings.filter((w) => w.lotId === record.lotId),
       harvests: state.harvests.filter((h) => h.lotId === record.lotId),
     }, `Biometria_TCH_${record.lotId}_${record.date}.xlsx`);
+  }
+  if (state.visitReturnFromBiometry && state.visit) {
+    state.visitReturnFromBiometry = false;
+    state.visit.tchSource = "biometry";
+    state.visit.linkedBiometryId = record.id;
+    state.visit.estimatedTch = record.projectedTch;
+    state.selectedLot = lot;
+    state.route = "visits";
+    state.visitView = "new";
+    render();
+    notify(`Biometría vinculada a la visita: ${formatNumber(record.projectedTch, 1)} TCH.`);
   }
 }
 
@@ -1097,47 +1224,25 @@ function renderHistory() {
       return `<article class="record"><div class="record-head"><div><h3>${escapeHtml(record.producer)} · Suerte ${escapeHtml(record.lot)}</h3><p>${escapeHtml(record.kind)} · ${escapeHtml(formatDateShort(record.date))} · ${escapeHtml(record.technician)}</p></div><span class="code-pill">${escapeHtml(record.lotId)}</span></div>
         <div class="record-meta">${escapeHtml(record.zone || "")}${record.tenureLabel ? ` · ${escapeHtml(record.tenureLabel)}` : ""}${record.validated ? " · ✓ Validado" : ""}</div>
         <div class="record-metrics"><div><span>${isBio ? "TCHe actual" : "TCH pesaje"}</span><strong>${formatNumber(record.secondary, 1)}</strong></div><div><span>${isBio ? "TCH proyectado" : "Edad"}</span><strong>${isBio ? formatNumber(record.result, 1) : `${formatNumber(record.ageMonths, 1)} m`}</strong></div><div><span>${isBio && record.weightTch ? "Contraste peso" : "Área"}</span><strong>${isBio && record.weightTch ? formatNumber(record.weightTch, 1) : `${formatNumber(record.area, 2)} ha`}</strong></div></div>
-        <div class="record-actions"><button class="btn btn-light" data-real-harvest="${escapeHtml(record.lotId)}">Registrar TCH real</button><button class="btn btn-danger" data-delete-record="${escapeHtml(record.id)}" data-record-kind="${isBio ? "biometries" : "weighings"}">Eliminar</button></div>
+        <div class="record-actions">${isBio ? `<button class="btn btn-blue" data-edit-biometry="${escapeHtml(record.id)}">Editar biometría</button>` : ""}<button class="btn btn-light" data-real-harvest="${escapeHtml(record.lotId)}">Registrar TCH real</button><button class="btn btn-danger" data-delete-record="${escapeHtml(record.id)}" data-record-kind="${isBio ? "biometries" : "weighings"}">Eliminar</button></div>
       </article>`;
     }).join("")}</section>` : emptyState("▤", "Sin registros", "Todavía no hay evaluaciones que coincidan con el filtro.")}`;
 }
 
 function renderAnalytics() {
-  const latest = latestByLot(state.biometries);
-  const totalMasterArea = state.master.reduce((sum, lot) => sum + finiteNumber(lot.area), 0);
-  const evaluatedArea = latest.reduce((sum, record) => sum + finiteNumber(record.area), 0);
-  const projectedTons = latest.reduce((sum, record) => sum + finiteNumber(record.projectedTons), 0);
-  const weighted = weightedMean(latest, "projectedTch", "area");
-  const farms = [...new Set(state.master.map((lot) => lot.farmCode))];
-  const groups = new Map();
-  latest.forEach((r) => {
-    if (!groups.has(r.farmCode)) groups.set(r.farmCode, []);
-    groups.get(r.farmCode).push(r);
-  });
-  const farmRows = farms.map((farmCode) => {
-    const rows = groups.get(farmCode) || [];
-    const masterLots = state.master.filter((lot) => lot.farmCode === farmCode);
-    const totalArea = masterLots.reduce((sum, lot) => sum + finiteNumber(lot.area), 0);
-    const area = rows.reduce((sum, row) => sum + finiteNumber(row.area), 0);
-    return {
-      farmCode,
-      producer: masterLots[0]?.producer || rows[0]?.producer || "—",
-      zone: masterLots[0]?.zone || rows[0]?.zone || "",
-      rows,
-      masterLots,
-      totalArea,
-      area,
-      advance: totalArea ? area / totalArea * 100 : 0,
-    };
-  }).sort((a, b) => {
-    const ap = a.zone === "5-Productores" ? 0 : 1;
-    const bp = b.zone === "5-Productores" ? 0 : 1;
-    return ap - bp || a.producer.localeCompare(b.producer, "es");
-  });
-  return `${pageHead("Estimados y análisis", "Consolidado del Maestro General con Productores priorizado visualmente.")}
-    <section class="kpi-grid"><article class="kpi"><span>Haciendas</span><strong>${farms.length}</strong><small>maestro operativo</small></article><article class="kpi blue"><span>Área evaluada</span><strong>${formatNumber(evaluatedArea, 1)}</strong><small>de ${formatNumber(totalMasterArea, 1)} ha</small></article><article class="kpi gold"><span>TCH proyectado</span><strong>${formatNumber(weighted, 1)}</strong><small>ponderado por área</small></article><article class="kpi red"><span>Producción</span><strong>${formatNumber(projectedTons, 0)}</strong><small>toneladas proyectadas</small></article></section>
-    <section class="card"><div class="card-head"><span class="step">%</span><div><strong>Avance por área</strong><small>${formatNumber(evaluatedArea, 2)} de ${formatNumber(totalMasterArea, 2)} ha evaluadas</small></div></div><div class="card-body"><div class="progress"><b style="width:${Math.min(100, totalMasterArea ? evaluatedArea / totalMasterArea * 100 : 0)}%"></b></div></div></section>
-    <section class="card"><div class="card-head"><span class="step blue">▦</span><div><strong>Avance por hacienda</strong><small>Productores aparece primero, sin excluir las demás haciendas.</small></div></div><div class="card-body"><div class="table-wrap"><table><thead><tr><th>Código</th><th>Hacienda</th><th>Zona</th><th>Suertes</th><th>Área evaluada / total</th><th>Avance</th><th>TCH proyectado</th><th>Toneladas</th></tr></thead><tbody>${farmRows.map((farm) => `<tr class="${farm.zone === "5-Productores" ? "producer-row" : ""}"><td><b>${escapeHtml(farm.farmCode)}</b></td><td>${farm.zone === "5-Productores" ? "⭐ " : ""}${escapeHtml(farm.producer)}</td><td>${escapeHtml(farm.zone)}</td><td>${farm.rows.length}/${farm.masterLots.length}</td><td>${formatNumber(farm.area, 2)} / ${formatNumber(farm.totalArea, 2)} ha</td><td><div class="table-progress"><b style="width:${Math.min(100, farm.advance)}%"></b></div><small>${formatNumber(farm.advance, 1)}%</small></td><td>${formatNumber(weightedMean(farm.rows, "projectedTch", "area"), 1)}</td><td>${formatNumber(farm.rows.reduce((s, r) => s + finiteNumber(r.projectedTons), 0), 0)}</td></tr>`).join("")}</tbody></table></div></div></section>`;
+  const lot = state.master.find((item) => item.id === state.consultationLotId) || null;
+  const biometries = (lot ? state.biometries.filter((item) => item.lotId === lot.id) : state.biometries)
+    .slice().sort((a, b) => `${b.date}${b.createdAt || ""}`.localeCompare(`${a.date}${a.createdAt || ""}`)).slice(0, 20);
+  const visits = lot ? state.visits.filter((item) => item.lotId === lot.id).slice().sort((a, b) => `${b.date}${b.createdAt || ""}`.localeCompare(`${a.date}${a.createdAt || ""}`)) : [];
+  return `${pageHead("Consulta de suertes y registros", "Buscá el cronológico maestro, el TCH estimado Z26/27 y las evaluaciones realizadas.")}
+    <section class="card search-card"><div class="card-head"><span class="step blue">⌕</span><div><strong>Buscar suerte en el cronológico</strong><small>Código, hacienda o número de suerte.</small></div></div><div class="card-body">${searchBox(state.consultationQuery, "consultation")}</div></section>
+    ${lot ? `${selectedLotPanel(lot, todayISO())}
+      <section class="card consultation-detail"><div class="card-head"><span class="step">▦</span><div><strong>Ficha del cronológico maestro</strong><small>Información vigente de la hoja REPORTE.</small></div></div><div class="card-body"><dl class="master-facts">
+        ${[["Código integrado", lot.id], ["Código hacienda", lot.farmCode], ["Área", `${formatNumber(lot.area, 2)} ha`], ["Variedad", lot.variety], ["Corte", lot.cutNumber], ["Surco", lot.rowSpacingM ? `${formatNumber(lot.rowSpacingM, 2)} m` : ""], ["Textura", lot.texture], ["Último corte", formatDateShort(lot.lastCutDate)], ["Siembra", formatDateShort(lot.plantingDate)], ["Destino", lot.destination], ["Tenencia", lot.tenureLabel || lot.tenureCode], ["Riego", lot.irrigation], ["Número de riegos", lot.irrigationCount], ["ERP", lot.erp], ["Zona", lot.zone], ["Estado", lot.masterStatus], ["Observación maestro", lot.masterObservation]].filter(([, value]) => value !== "" && value !== null && value !== undefined && value !== "—").map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}
+      </dl><div class="actions"><button class="btn btn-green" data-consult-action="biometry">＋ Nueva biometría</button><button class="btn btn-blue" data-consult-action="visit">📷 Nueva visita</button><button class="btn btn-light" data-consult-action="master">✎ Editar en Maestro</button></div></div></section>
+      <section class="consultation-columns"><div><h2>Biometrías de la suerte <span>${biometries.length}</span></h2>${biometries.length ? biometries.map((record) => `<article class="mini-record"><div><b>${formatDateShort(record.date)} · ${escapeHtml(record.technician || "Sin técnico")}</b><span>${record.pointCount || record.samples?.length || 0} puntos · ${record.validated ? "Validada" : "Sin validar"} · ${formatNumber(record.projectedTch, 1)} TCH</span></div><button class="btn btn-light" data-edit-biometry="${escapeHtml(record.id)}">Editar</button></article>`).join("") : `<p class="info-note">No hay biometrías guardadas para esta suerte.</p>`}</div><div><h2>Visitas de campo <span>${visits.length}</span></h2>${visits.length ? visits.map((visit) => `<article class="mini-record"><div><b>${formatDateShort(visit.date)} · ${escapeHtml(visit.technician || "Sin técnico")}</b><span>${visit.photos?.length || 0} fotos${visit.purpose ? ` · ${escapeHtml(visit.purpose)}` : ""}</span></div><button class="btn btn-light" data-open-visit="${escapeHtml(visit.id)}">Abrir</button></article>`).join("") : `<p class="info-note">No hay visitas guardadas para esta suerte.</p>`}</div></section>`
+      : `<section class="card"><div class="card-body">${emptyState("⌕", "Seleccioná una suerte", "La consulta mostrará su cronológico, estimado Z26/27, biometrías y visitas vinculadas.")}</div></section>
+      <section><h2 class="section-title">Biometrías guardadas recientemente</h2>${biometries.length ? biometries.map((record) => `<article class="mini-record"><div><b>${escapeHtml(record.producer)} · Suerte ${escapeHtml(record.lot)}</b><span>${formatDateShort(record.date)} · ${escapeHtml(record.technician || "Sin técnico")}</span></div><strong>${formatNumber(record.projectedTch, 1)} TCH</strong></article>`).join("") : emptyState("🌱", "Sin biometrías", "Todavía no hay registros biométricos guardados.")}</section>`}`;
 }
 
 function renderExport() {
@@ -1191,14 +1296,17 @@ function renderMaster() {
       ${field("Último corte", `<input data-master-field="lastCutDate" type="date" value="${escapeHtml(lot.lastCutDate)}">`)}
       ${field("Número de corte", `<input data-master-field="cutNumber" value="${escapeHtml(lot.cutNumber)}">`)}
       ${field("Tipo de riego", `<input data-master-field="irrigation" value="${escapeHtml(lot.irrigation)}">`)}
+      ${field("Número de riegos", `<input data-master-field="irrigationCount" type="number" step="0.1" value="${escapeHtml(lot.irrigationCount)}">`)}
       ${field("TCH histórico promedio", `<input data-master-field="historicalTch" type="number" step="0.01" value="${escapeHtml(lot.historicalTch)}">`)}
       ${field("TCH zafra 25/26", `<input data-master-field="latestSeasonTch" type="number" step="0.01" value="${escapeHtml(lot.latestSeasonTch)}">`)}
-      ${field("TCH estimado 26/27", `<input data-master-field="estimatedTch2627" type="number" step="0.01" value="${escapeHtml(lot.estimatedTch2627)}">`)}
+      ${field("TCH ESTIMADO Z26/27", `<input data-master-field="estimatedTch2627" type="number" step="0.01" value="${escapeHtml(lot.estimatedTch2627)}">`)}
+      ${field("Estado cronológico", `<input data-master-field="masterStatus" value="${escapeHtml(lot.masterStatus)}">`)}
+      ${field("Observación del maestro", `<input data-master-field="masterObservation" value="${escapeHtml(lot.masterObservation)}">`)}
       ${field("Zona", `<input data-master-field="zone" value="${escapeHtml(lot.zone)}">`)}
       ${field("Tenencia código", `<select data-master-field="tenureCode"><option value="PR" ${lot.tenureCode === "PR" ? "selected" : ""}>PR · Propio</option><option value="CA" ${lot.tenureCode === "CA" ? "selected" : ""}>CA · Arriendo</option><option value="CV" ${lot.tenureCode === "CV" ? "selected" : ""}>CV · Compra Venta</option></select>`)}
       </div><button class="btn btn-blue btn-wide" id="saveManualLot" style="margin-top:12px">▣ Guardar cambios de la suerte</button>` : `<p class="help">Seleccioná una sugerencia para editar la suerte.</p>`}</div></section>
     <section class="card"><div class="card-head"><span class="step gold">4</span><div><strong>Auditoría reciente</strong><small>Valor anterior, valor nuevo, fecha y usuario.</small></div></div><div class="card-body"><div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Suerte</th><th>Campo</th><th>Anterior</th><th>Nuevo</th></tr></thead><tbody>${state.audit.slice().sort((a, b) => b.changedAt.localeCompare(a.changedAt)).slice(0, 50).map((a) => `<tr><td>${escapeHtml(formatDateShort(a.changedAt))}</td><td>${escapeHtml(a.lotId)}</td><td>${escapeHtml(a.field)}</td><td>${escapeHtml(a.oldValue)}</td><td>${escapeHtml(a.newValue)}</td></tr>`).join("")}</tbody></table></div></div></section>
-    <section class="publish-panel"><h3>5. Publicar la actualización para todos</h3><p>Descargá <b>suertes.json</b> y reemplazalo dentro de <b>data/</b> en el repositorio. La v2.6 consulta este archivo primero y mantiene compatibilidad con productores.json.</p><div class="publish-steps"><div class="publish-step"><b>1</b><span>Aplicar y revisar los cambios.</span></div><div class="publish-step"><b>2</b><span>Descargar suertes.json actualizado.</span></div><div class="publish-step"><b>3</b><span>Publicar el archivo en GitHub cuando esté aprobado.</span></div></div><div class="publish-actions"><button class="btn btn-green" id="downloadMasterJson">⇩ Descargar suertes.json actualizado</button><button class="btn btn-light" id="openGitHubData" ${githubAvailable ? "" : "disabled"}>↗ Abrir carpeta data en GitHub</button></div></section>`;
+    <section class="publish-panel"><h3>5. Publicar la actualización para todos</h3><p>Descargá <b>suertes.json</b> y reemplazalo dentro de <b>data/</b> en el repositorio. La v2.7 consulta este archivo primero y mantiene compatibilidad con productores.json.</p><div class="publish-steps"><div class="publish-step"><b>1</b><span>Aplicar y revisar los cambios.</span></div><div class="publish-step"><b>2</b><span>Descargar suertes.json actualizado.</span></div><div class="publish-step"><b>3</b><span>Publicar el archivo en GitHub cuando esté aprobado.</span></div></div><div class="publish-actions"><button class="btn btn-green" id="downloadMasterJson">⇩ Descargar suertes.json actualizado</button><button class="btn btn-light" id="openGitHubData" ${githubAvailable ? "" : "disabled"}>↗ Abrir carpeta data en GitHub</button></div></section>`;
 }
 
 function render() {
@@ -1254,10 +1362,33 @@ function selectLot(id, context) {
   if (context === "visits") {
     state.visit.search = `${lot.id} · ${lot.producer} · Suerte ${lot.lot}`;
     if (state.visit.tchSource === "biometry") {
-      state.visit.estimatedTch = latestBiometryForLot(lot.id)?.projectedTch || "";
+      const latest = latestBiometryForLot(lot.id);
+      state.visit.linkedBiometryId = latest?.id || "";
+      state.visit.estimatedTch = latest?.projectedTch || "";
     }
   }
+  if (context === "consultation") {
+    state.consultationLotId = lot.id;
+    state.consultationQuery = `${lot.id} · ${lot.producer} · Suerte ${lot.lot}`;
+  }
   render();
+}
+
+function startBiometryForVisit() {
+  if (!state.selectedLot) return notify("Seleccioná primero la suerte de la visita.");
+  const lot = state.selectedLot;
+  state.visitReturnFromBiometry = true;
+  resetBiometry();
+  state.selectedLot = lot;
+  state.biometry.search = `${lot.id} · ${lot.producer} · Suerte ${lot.lot}`;
+  state.biometry.rowSpacingM = lot.rowSpacingM || 1.65;
+  const age = ageFromLot(lot, state.biometry.date);
+  if (age.months && finiteNumber(state.biometry.targetAgeMonths) < age.months) {
+    state.biometry.targetAgeMonths = TARGET_AGES.find((target) => target >= age.months) || Math.ceil(age.months * 2) / 2;
+  }
+  state.route = "biometry";
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function addSampleAndOpen() {
@@ -1272,6 +1403,34 @@ document.addEventListener("click", async (event) => {
   const button = event.target.closest("button");
   if (!button) return;
   if (button.dataset.route) return go(button.dataset.route);
+
+  if (button.dataset.consultAction && state.selectedLot) {
+    const lot = state.selectedLot;
+    if (button.dataset.consultAction === "biometry") {
+      resetBiometry(); state.selectedLot = lot; selectLot(lot.id, "biometry"); state.route = "biometry"; render();
+    }
+    if (button.dataset.consultAction === "visit") {
+      resetVisit(); state.selectedLot = lot; selectLot(lot.id, "visits"); state.route = "visits"; state.visitView = "new"; render();
+    }
+    if (button.dataset.consultAction === "master") {
+      state.route = "master"; state.editingLot = structuredClone(lot); state.masterQuery = `${lot.id} · ${lot.producer} · Suerte ${lot.lot}`; render();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+
+  if (button.dataset.editBiometry) {
+    const record = state.biometries.find((item) => item.id === button.dataset.editBiometry);
+    if (record) editBiometry(record);
+    return;
+  }
+  if (button.id === "cancelBiometryEdit") {
+    resetBiometry();
+    state.route = "history";
+    render();
+    notify("Edición cancelada. La biometría original no cambió.");
+    return;
+  }
 
   if (button.dataset.visitTab) {
     state.visitView = button.dataset.visitTab;
@@ -1329,6 +1488,16 @@ document.addEventListener("click", async (event) => {
 
   if (button.id === "visitGps") captureGps(state.visit);
   if (button.id === "saveVisit") await saveVisit();
+  if (button.id === "newBiometryForVisit") startBiometryForVisit();
+  if (button.id === "cancelVisitEdit") {
+    resetVisit();
+    render();
+    notify("Edición cancelada. El registro original no cambió.");
+  }
+  if (button.id === "clearVisitFilters") {
+    state.visitQuery = ""; state.visitDateFrom = ""; state.visitDateTo = ""; state.visitProducer = "";
+    render();
+  }
 
   if (button.id === "exportVisitsExcel") {
     const visits = filteredVisits();
@@ -1360,6 +1529,11 @@ document.addEventListener("click", async (event) => {
   if (button.dataset.openVisit) {
     const visit = state.visits.find((item) => item.id === button.dataset.openVisit);
     if (visit) openVisitDetail(visit);
+  }
+
+  if (button.dataset.editVisit) {
+    const visit = state.visits.find((item) => item.id === button.dataset.editVisit);
+    if (visit) editVisit(visit);
   }
 
   if (button.dataset.downloadVisitPhoto || button.dataset.shareVisitPhoto) {
@@ -1711,6 +1885,7 @@ document.addEventListener("input", (event) => {
     if (context === "weighing") state.weighing.search = input.value;
     if (context === "visits") state.visit.search = input.value;
     if (context === "master") state.masterQuery = input.value;
+    if (context === "consultation") state.consultationQuery = input.value;
     renderSuggestions(input.value);
   }
 
@@ -1735,10 +1910,13 @@ document.addEventListener("input", (event) => {
   const visitMap = {
     visitTechnician: "technician",
     visitLodging: "lodgingPct",
+    visitLodgingDescription: "lodgingDescription",
     visitEstimatedTch: "estimatedTch",
+    visitTchDescription: "tchDescription",
     visitNotes: "notes",
   };
   if (visitMap[input.id]) state.visit[visitMap[input.id]] = input.value;
+  if (input.dataset.visitCustom) state.visit[`${input.dataset.visitCustom}Custom`] = input.value;
 
   if (input.dataset.sampleField) {
     const sample = state.biometry.samples.find((s) => s.id === input.dataset.sample);
@@ -1800,19 +1978,27 @@ document.addEventListener("change", (event) => {
 
   if (input.id === "visitDate") state.visit.date = input.value;
 
-  const visitSelectMap = {
-    visitPurpose: "purpose",
-    visitCondition: "overallCondition",
-    visitWater: "waterStatus",
-    visitWeeds: "weedLevel",
-    visitPests: "pestLevel",
-  };
-  if (visitSelectMap[input.id]) state.visit[visitSelectMap[input.id]] = input.value;
+  if (input.dataset.visitCategory) {
+    state.visit[input.dataset.visitCategory] = input.value;
+    if (input.value !== "__other__") state.visit[`${input.dataset.visitCategory}Custom`] = "";
+    render();
+  }
 
   if (input.id === "visitTchSource") {
     state.visit.tchSource = input.value;
     if (input.value === "none") state.visit.estimatedTch = "";
-    if (input.value === "biometry" && state.selectedLot) state.visit.estimatedTch = latestBiometryForLot(state.selectedLot.id)?.projectedTch || "";
+    if (input.value === "biometry" && state.selectedLot) {
+      const latest = latestBiometryForLot(state.selectedLot.id);
+      state.visit.linkedBiometryId = latest?.id || "";
+      state.visit.estimatedTch = latest?.projectedTch || "";
+    }
+    render();
+  }
+
+  if (input.id === "visitBiometryId") {
+    const record = state.biometries.find((item) => item.id === input.value);
+    state.visit.linkedBiometryId = record?.id || "";
+    state.visit.estimatedTch = record?.projectedTch || "";
     render();
   }
 

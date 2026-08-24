@@ -1,7 +1,7 @@
 import { createId, dateISO, finiteNumber } from "./tch-engine.js";
 
 const aliases = {
-  farmCode: ["cod hacienda", "codigo hacienda", "codigo finca", "cod finca", "cod hac", "hacienda codigo"],
+  farmCode: ["cod", "codigo", "cod hacienda", "codigo hacienda", "codigo finca", "cod finca", "cod hac", "hacienda codigo"],
   producer: ["nombre hacienda", "productor", "hacienda", "nombre productor", "finca"],
   lot: ["ste", "suerte", "lote"],
   id: ["hac sue", "hac-sue", "codigo suerte", "cod suerte", "codigo lote"],
@@ -11,8 +11,9 @@ const aliases = {
   rowSpacingM: ["surco", "distancia surco", "distancia entre surcos"],
   cutNumber: ["de corte", "numero de corte", "corte", "num corte"],
   historicalTch: ["tch historico promedio", "promedio historico", "tch promedio historico", "tch historico", "tch"],
-  latestSeasonTch: ["tch 25 26", "tch zafra 25 26", "tch ultima zafra", "ultimo tch 25 26"],
-  estimatedTch2627: ["tch estimado 26 27", "tch est 26 27", "tch est 170726", "tch estimado zafra 26 27"],
+  latestSeasonTch: ["tch z2526", "tch 25 26", "tch zafra 25 26", "tch ultima zafra", "ultimo tch 25 26"],
+  estimatedTch2627: ["tch estimado z2627", "tch estimado 26 27", "tch est 26 27", "tch est 170726", "tch estimado zafra 26 27"],
+  estimatedTons2627: ["ton estimadas z2627", "ton estimadas 26 27", "toneladas estimadas 26 27"],
   texture: ["nombre textura", "textura"],
   distanceKm: ["distancia km", "km", "distancia"],
   initialTch: ["tch inic", "tch inicial"],
@@ -22,10 +23,13 @@ const aliases = {
   destination: ["nombre destino del cultivo", "destino"],
   cropType: ["nombre tipo de cultivo", "tipo de cana", "tipo cultivo"],
   tenureCode: ["tn", "tenencia"],
-  irrigation: ["tipo riego", "tiporiego", "riego", "secano riego"],
+  irrigation: ["tipo de riego", "tipo riego", "tiporiego", "riego", "secano riego"],
+  irrigationCount: ["de riegos", "numero de riegos", "cantidad de riegos", "riegos"],
   nr: ["nr"],
   erp: ["erp"],
   zone: ["zona"],
+  masterStatus: ["estado", "estado suerte", "estatus"],
+  masterObservation: ["observacion", "observaciones", "nota", "notas"],
 };
 
 const TENURE_LABELS = { CA: "Arriendo", CV: "Compra Venta", PR: "Propio" };
@@ -55,8 +59,24 @@ function normalizedLotNumber(value) {
   return /^\d$/.test(raw) ? raw.padStart(2, "0") : raw;
 }
 
+function referenceAge(value) {
+  if (value instanceof Date) return null;
+  const age = finiteNumber(value);
+  return age > 0 && age <= 36 ? age : null;
+}
+
 function tenureLabel(code) {
   return TENURE_LABELS[text(code).toUpperCase()] || "";
+}
+
+function normalizeTenure(value) {
+  const raw = text(value);
+  const normalized = normalizeText(raw);
+  if (["CA", "CV", "PR"].includes(raw.toUpperCase())) return raw.toUpperCase();
+  if (normalized.includes("arriendo") || normalized.includes("alquiler")) return "CA";
+  if (normalized.includes("compra venta") || normalized.includes("compraventa")) return "CV";
+  if (normalized.includes("propio") || normalized.includes("propiedad")) return "PR";
+  return raw.toUpperCase();
 }
 
 export function isOperationalLot(lot) {
@@ -72,7 +92,7 @@ function normalizeLot(row, map, index) {
   const lot = normalizedLotNumber(row[map.lot]);
   const suppliedId = text(row[map.id]);
   const id = farmCode && lot ? `${farmCode}${lot}` : suppliedId;
-  const tenureCode = text(row[map.tenureCode]).toUpperCase();
+  const tenureCode = normalizeTenure(row[map.tenureCode]);
   return {
     id,
     legacyId: suppliedId && suppliedId !== id ? suppliedId : "",
@@ -81,14 +101,15 @@ function normalizeLot(row, map, index) {
     lot,
     area: finiteNumber(row[map.area]),
     variety: text(row[map.variety]),
-    referenceAge: finiteNumber(row[map.referenceAge]) || null,
+    referenceAge: referenceAge(row[map.referenceAge]),
     rowSpacingM: finiteNumber(row[map.rowSpacingM]) || null,
     cutNumber: text(row[map.cutNumber]),
     historicalTch: finiteNumber(row[map.historicalTch]) || null,
     latestSeasonTch: finiteNumber(row[map.latestSeasonTch]) || null,
     estimatedTch2627: finiteNumber(row[map.estimatedTch2627]) || null,
-    estimatedTch2627UpdatedAt: "",
-    estimatedTch2627Source: "",
+    estimatedTch2627UpdatedAt: map.estimatedTch2627 ? dateISO(new Date()) : "",
+    estimatedTch2627Source: map.estimatedTch2627 ? "Cronológico maestro · hoja REPORTE" : "",
+    estimatedTons2627: finiteNumber(row[map.estimatedTons2627]) || null,
     texture: text(row[map.texture]),
     distanceKm: finiteNumber(row[map.distanceKm]) || null,
     initialTch: finiteNumber(row[map.initialTch]) || null,
@@ -100,9 +121,12 @@ function normalizeLot(row, map, index) {
     tenureCode,
     tenureLabel: tenureLabel(tenureCode),
     irrigation: text(row[map.irrigation]),
+    irrigationCount: finiteNumber(row[map.irrigationCount]) || null,
     nr: text(row[map.nr]),
     erp: text(row[map.erp]),
     zone: text(row[map.zone]),
+    masterStatus: text(row[map.masterStatus]),
+    masterObservation: text(row[map.masterObservation]),
     sourceRow: index + 2,
     importedAt: new Date().toISOString(),
   };
@@ -115,7 +139,7 @@ export function normalizeEmbeddedMaster(rows) {
     const lot = normalizedLotNumber(row.suerte ?? row.lot);
     const suppliedId = text(row.hacSue ?? row.legacyId ?? row.id);
     const id = farmCode && lot ? `${farmCode}${lot}` : suppliedId;
-    const tenureCode = text(row.tenenciaCode ?? row.tn ?? row.tenureCode).toUpperCase();
+    const tenureCode = normalizeTenure(row.tenenciaCode ?? row.tn ?? row.tenureCode ?? row.tenencia);
     return {
       id,
       legacyId: suppliedId && suppliedId !== id ? suppliedId : "",
@@ -124,7 +148,7 @@ export function normalizeEmbeddedMaster(rows) {
       lot,
       area: finiteNumber(row.area),
       variety: text(row.variedad ?? row.variety),
-      referenceAge: finiteNumber(row.edadReferencia ?? row.referenceAge) || null,
+      referenceAge: referenceAge(row.edadReferencia ?? row.referenceAge),
       rowSpacingM: finiteNumber(row.surco ?? row.rowSpacingM) || null,
       cutNumber: text(row.corte ?? row.cutNumber),
       historicalTch: finiteNumber(Object.hasOwn(row, "tchHistoricoPromedio") ? row.tchHistoricoPromedio : row.historicalTch) || null,
@@ -135,6 +159,7 @@ export function normalizeEmbeddedMaster(rows) {
       estimatedTch2627: finiteNumber(row.tchEstimado2627 ?? row.estimatedTch2627) || null,
       estimatedTch2627UpdatedAt: text(row.tchEstimado2627Fecha ?? row.estimatedTch2627UpdatedAt),
       estimatedTch2627Source: text(row.tchEstimado2627Fuente ?? row.estimatedTch2627Source),
+      estimatedTons2627: finiteNumber(row.tonEstimadas2627 ?? row.estimatedTons2627) || null,
       texture: text(row.textura ?? row.texture),
       distanceKm: finiteNumber(row.km ?? row.distanceKm) || null,
       initialTch: finiteNumber(row.tchInicial ?? row.initialTch) || null,
@@ -146,9 +171,12 @@ export function normalizeEmbeddedMaster(rows) {
       tenureCode,
       tenureLabel: text(row.tenenciaLabel ?? row.tenureLabel) || tenureLabel(tenureCode),
       irrigation: text(row.tipoRiego ?? row.irrigation),
+      irrigationCount: finiteNumber(row.numeroRiegos ?? row.irrigationCount) || null,
       nr: text(row.nr),
       erp: text(row.erp),
       zone: text(row.zona ?? row.zone),
+      masterStatus: text(row.estado ?? row.masterStatus),
+      masterObservation: text(row.observacion ?? row.masterObservation),
       sourceRow: index + 2,
       importedAt: text(row.importedAt) || "2026-07-27T00:00:00.000Z",
     };
@@ -181,6 +209,7 @@ export function masterToEmbeddedRows(lots) {
       tchEstimado2627: finiteNumber(lot.estimatedTch2627) || null,
       tchEstimado2627Fecha: text(lot.estimatedTch2627UpdatedAt),
       tchEstimado2627Fuente: text(lot.estimatedTch2627Source),
+      tonEstimadas2627: finiteNumber(lot.estimatedTons2627) || null,
       textura: text(lot.texture),
       km: finiteNumber(lot.distanceKm) || null,
       tchInicial: finiteNumber(lot.initialTch) || null,
@@ -192,9 +221,12 @@ export function masterToEmbeddedRows(lots) {
       tenenciaCode: text(lot.tenureCode),
       tenenciaLabel: text(lot.tenureLabel) || tenureLabel(lot.tenureCode),
       tipoRiego: text(lot.irrigation),
+      numeroRiegos: finiteNumber(lot.irrigationCount) || null,
       nr: text(lot.nr),
       erp: text(lot.erp),
       zona: text(lot.zone),
+      estado: text(lot.masterStatus),
+      observacion: text(lot.masterObservation),
     }));
 }
 
@@ -215,16 +247,32 @@ export async function masterFingerprint(lots) {
 export async function parseMasterWorkbook(file, currentMaster = []) {
   if (!globalThis.XLSX) throw new Error("No se cargó el componente Excel.");
   const workbook = XLSX.read(await file.arrayBuffer(), { type: "array", cellDates: true });
-  const reportSheet = workbook.SheetNames.find((name) => normalizeText(name) === "reporte");
-  const producerSheet = workbook.SheetNames.find((name) => normalizeText(name) === "productores");
-  const sheetName = reportSheet || producerSheet || workbook.SheetNames[0];
-  const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: "", raw: true });
+  const orderedSheets = workbook.SheetNames.slice().sort((a, b) => {
+    const rank = (name) => normalizeText(name) === "reporte" ? 0 : normalizeText(name) === "productores" ? 1 : 2;
+    return rank(a) - rank(b);
+  });
+  let sheetName = "", headerRow = 0, matrix = [], map = {};
+  for (const candidate of orderedSheets) {
+    const candidateMatrix = XLSX.utils.sheet_to_json(workbook.Sheets[candidate], { header: 1, defval: "", raw: true });
+    const max = Math.min(20, candidateMatrix.length);
+    for (let index = 0; index < max; index += 1) {
+      const headers = candidateMatrix[index];
+      const object = Object.fromEntries(headers.map((header) => [text(header), ""]));
+      const candidateMap = headerMap(object);
+      if (["farmCode", "producer", "lot", "area"].every((field) => candidateMap[field])) {
+        sheetName = candidate; headerRow = index; matrix = candidateMatrix; map = candidateMap; break;
+      }
+    }
+    if (sheetName) break;
+  }
+  if (!sheetName) throw new Error("No se encontró una tabla válida. Se requieren Código, Hacienda, Suerte y Área.");
+  const headers = matrix[headerRow].map(text);
+  const rows = matrix.slice(headerRow + 1).filter((row) => row.some((value) => text(value))).map((row) => Object.fromEntries(headers.map((header, index) => [header, row[index] ?? ""])));
   if (!rows.length) throw new Error(`La hoja ${sheetName} está vacía.`);
-  const map = headerMap(rows[0]);
   const required = ["farmCode", "producer", "lot", "area"];
   const missingHeaders = required.filter((field) => !map[field]);
   if (missingHeaders.length) throw new Error(`Faltan columnas obligatorias: ${missingHeaders.join(", ")}.`);
-  const normalized = rows.map((row, index) => normalizeLot(row, map, index)).filter((lot) => lot.id || lot.producer || lot.lot);
+  const normalized = rows.map((row, index) => normalizeLot(row, map, index + headerRow)).filter((lot) => lot.id || lot.producer || lot.lot);
   const excluded = normalized.filter((lot) => !isOperationalLot(lot));
   const lots = normalized.filter(isOperationalLot);
   const errors = [];
@@ -241,10 +289,11 @@ export async function parseMasterWorkbook(file, currentMaster = []) {
   uniqueLots.forEach((lot) => {
     const previous = current.get(lot.id);
     if (!lot.historicalTch && previous?.historicalTch) lot.historicalTch = previous.historicalTch;
+    if (!lot.referenceAge && previous?.referenceAge) lot.referenceAge = previous.referenceAge;
     if (!lot.latestSeasonTch && previous?.latestSeasonTch) lot.latestSeasonTch = previous.latestSeasonTch;
-    if (!lot.estimatedTch2627 && previous?.estimatedTch2627) lot.estimatedTch2627 = previous.estimatedTch2627;
-    if (!lot.estimatedTch2627UpdatedAt && previous?.estimatedTch2627UpdatedAt) lot.estimatedTch2627UpdatedAt = previous.estimatedTch2627UpdatedAt;
-    if (!lot.estimatedTch2627Source && previous?.estimatedTch2627Source) lot.estimatedTch2627Source = previous.estimatedTch2627Source;
+    if (!map.estimatedTch2627 && !lot.estimatedTch2627 && previous?.estimatedTch2627) lot.estimatedTch2627 = previous.estimatedTch2627;
+    if (!map.estimatedTch2627 && !lot.estimatedTch2627UpdatedAt && previous?.estimatedTch2627UpdatedAt) lot.estimatedTch2627UpdatedAt = previous.estimatedTch2627UpdatedAt;
+    if (!map.estimatedTch2627 && !lot.estimatedTch2627Source && previous?.estimatedTch2627Source) lot.estimatedTch2627Source = previous.estimatedTch2627Source;
     if (!lot.initialTch && previous?.initialTch) lot.initialTch = previous.initialTch;
     if (!lot.currentMasterTch && previous?.currentMasterTch) lot.currentMasterTch = previous.currentMasterTch;
   });
@@ -263,6 +312,7 @@ export async function parseMasterWorkbook(file, currentMaster = []) {
     lots: uniqueLots,
     report: {
       analyzed: rows.length,
+      headerRow: headerRow + 1,
       valid: uniqueLots.length,
       added,
       modified,
@@ -270,7 +320,7 @@ export async function parseMasterWorkbook(file, currentMaster = []) {
       duplicates,
       errors,
       excluded: excluded.length,
-      excludedReason: reportSheet ? "Zona 0 / Sucuya" : "",
+      excludedReason: normalizeText(sheetName) === "reporte" ? "Zona 0 / Sucuya" : "",
       producers: uniqueLots.filter((lot) => normalizeText(lot.zone) === "5 productores").length,
     },
   };

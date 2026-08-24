@@ -2,9 +2,9 @@
 
 ## Estado actual
 
-Versión de trabajo: **v2.6.0**.
+Versión de trabajo: **v2.7.0**.
 
-Versión: **2.6.0**
+Versión: **2.7.0**
 Destino normal: repositorio existente `MonTeALTOC7/Estimado_TCH_APP_CT`.
 Publicación: GitHub Pages / Android PWA.
 
@@ -17,12 +17,10 @@ Conservar lo que funciona y modificar únicamente lo necesario. La instrucción 
 Fuente oficial de actualización: hoja `REPORTE`.
 
 Universo operativo validado:
-- 1-Sur: 240 suertes
-- 2-Centro: 256
-- 3-Norte: 296
+- La distribución por zona se toma del cronológico oficial vigente.
 - 5-Productores: 262
-- Total: 1,054 suertes
-- Área: 10,030.06 ha
+- Total: 1,053 suertes
+- Área: 10,030.65 ha
 
 Zona 0 / Sucuya se excluye completamente.
 
@@ -68,7 +66,7 @@ No borrar IndexedDB. Stores actuales:
 - 262 filas vinculadas; 245 con TCH y 17 vacías en la fuente.
 - La actualización es protegida, independiente y solo modifica la referencia 26/27.
 
-## Visitas de campo v2.6.0
+## Visitas de campo v2.7.0
 
 - Módulo principal independiente de la biometría.
 - Requiere suerte, técnico, al menos una fotografía y GPS para guardar evidencia georreferenciada; no existe máximo artificial de fotos.
@@ -77,6 +75,15 @@ No borrar IndexedDB. Stores actuales:
 - El ZIP se reserva para exportación masiva filtrada o seleccionada.
 - Las nuevas fotografías se optimizan y guardan como Blob; Base64 legado continúa legible.
 - El PNG mantiene la fotografía intacta y agrega un panel externo dinámico sin campos vacíos.
+- Los campos categóricos permiten `Sin registrar`, opciones predefinidas y valor personalizado.
+- Una visita guardada se puede editar completa y sus PNG se regeneran sin duplicar el registro.
+- `Biometría de la app` permite elegir un registro existente o iniciar una nueva biometría vinculada.
+- Los filtros y exportaciones masivas permanecen contraídos hasta que el usuario los necesite.
+
+## Consulta operativa
+
+El acceso inferior `Consulta` reemplaza el antiguo consolidado de estimados y avance. Permite buscar cualquier suerte y revisar su ficha cronológica, TCH ESTIMADO Z26/27, biometrías y visitas vinculadas.
+Las biometrías se visualizan en Consulta e Historial y pueden reabrirse para corregir puntos y recalcular el mismo registro.
 
 Los campos legacy `lengthCm` y `diameterCm` siguen siendo legibles. Los pesajes antiguos del store `weighings` permanecen disponibles.
 

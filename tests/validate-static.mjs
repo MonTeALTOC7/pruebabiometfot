@@ -51,6 +51,12 @@ assert.doesNotMatch(source, /Guardar \+ carpeta ZIP/);
 assert.match(source, /snapshotPhotoFiles\(visitCameraFile\.files\)/, "Cámara debe copiar FileList antes de limpiar el input");
 assert.match(source, /snapshotPhotoFiles\(visitGalleryFile\.files\)/, "Galería debe copiar FileList antes de limpiar el input");
 assert.doesNotMatch(source, /máximo de 3 fotografías|3 - state\.visit\.photos\.length|slice\(0, remaining\)/, "Visitas no debe limitar la cantidad de fotos");
+assert.match(source, /data-edit-visit/, "El historial debe permitir editar una visita");
+assert.match(source, /newBiometryForVisit/, "La visita debe enlazar una nueva biometría");
+assert.match(source, /visitBiometryId/, "La visita debe permitir elegir una biometría guardada");
+assert.match(source, /data-edit-biometry/, "Las biometrías guardadas deben poder reabrirse y editarse");
+assert.match(source, /Cronológico de suertes/, "Análisis debe convertirse en consulta cronológica");
+assert.match(source, /Filtros y exportación/, "La exportación debe quedar contraída en un desplegable");
 
 const storageSource = fs.readFileSync(path.join(root, "js/storage.js"), "utf8");
 assert.match(storageSource, /DB_VERSION = 3/);
@@ -61,8 +67,10 @@ assert.match(visitSource, /createLabeledVisitPhotoBlob/);
 assert.match(visitSource, /Originales_para_IA/);
 assert.match(visitSource, /Historial_Visitas_Campo_CASUR\.xlsx/);
 assert.match(visitSource, /export function snapshotPhotoFiles/);
-assert.match(visitSource, /canvas\.height = height \+ Math\.round\(panelHeight\)/, "La etiqueta debe crecer fuera de la foto");
+assert.match(visitSource, /canvas\.height = height \+ panelHeight/, "La etiqueta debe crecer fuera de la foto");
 assert.doesNotMatch(visitSource, /gradientBottom|fillRect\(0, height - footerHeight/, "No debe cubrirse la foto con una franja inferior");
+assert.match(visitSource, /TCH ESTIMADO Z26\/27/);
+assert.doesNotMatch(visitSource, /slice\(0, 240\)|slice\(0, 2\)/, "La observación no debe truncarse");
 
 const masterSource = fs.readFileSync(path.join(root, "js/master.js"), "utf8");
 assert.match(masterSource, /reporte/);
@@ -71,23 +79,24 @@ assert.match(masterSource, /tenureCode/);
 assert.match(masterSource, /parseSeasonEstimateWorkbook/);
 
 const master = JSON.parse(fs.readFileSync(path.join(root, "data/suertes.json"), "utf8"));
-assert.equal(master.length, 1054, "El Maestro General debe contener 1,054 suertes operativas");
-assert.equal(new Set(master.map((row) => `${row.codigoHacienda}${row.suerte}`)).size, 1054, "Los códigos de suerte deben ser únicos");
+assert.equal(master.length, 1053, "El cronológico oficial 2026-08-24 contiene 1,053 suertes operativas");
+assert.equal(new Set(master.map((row) => `${row.codigoHacienda}${row.suerte}`)).size, 1053, "Los códigos de suerte deben ser únicos");
 assert.equal(master.filter((row) => row.zona === "5-Productores").length, 262, "Zona 5 debe conservar 262 suertes");
-assert.equal(master.filter((row) => row.tchEstimado2627Fecha).length, 262, "Las 262 suertes de Productores deben quedar vinculadas a la fuente 26/27");
+assert.equal(master.filter((row) => row.tchEstimado2627Fecha).length, 1053, "Todo el cronológico debe conservar la fecha de la fuente oficial");
 assert.equal(master.filter((row) => row.tchEstimado2627 !== null).length, 245, "La fuente 26/27 contiene 245 TCH numéricos");
-assert.equal(master.filter((row) => row.tchEstimado2627Fecha && row.tchEstimado2627 === null).length, 17, "Los 17 vacíos oficiales deben conservarse como vacíos");
+assert.equal(master.filter((row) => row.tchEstimado2627Fecha && row.tchEstimado2627 === null).length, 808, "Los vacíos oficiales deben conservarse como vacíos");
 assert.equal(master.filter((row) => row.zona === "0-Sin Definir" || /sucuya/i.test(row.productor)).length, 0, "Sucuya debe estar excluida");
-assert.ok(Math.abs(master.reduce((sum, row) => sum + Number(row.area || 0), 0) - 10030.06) < 0.01, "Área operativa debe ser 10,030.06 ha");
+assert.ok(Math.abs(master.reduce((sum, row) => sum + Number(row.area || 0), 0) - 10030.65) < 0.01, "Área oficial debe ser 10,030.65 ha");
+assert.equal(new Set(master.map((row) => row.estado)).size, 6, "El cronológico conserva sus seis estados oficiales");
 
 const tenure = master.reduce((acc, row) => {
   acc[row.tenenciaCode] = (acc[row.tenenciaCode] || 0) + 1;
   return acc;
 }, {});
-assert.deepEqual(tenure, { CA: 327, PR: 464, CV: 263 });
+assert.deepEqual(tenure, { CA: 326, PR: 464, CV: 263 });
 
 const producers = JSON.parse(fs.readFileSync(path.join(root, "data/productores.json"), "utf8"));
 assert.equal(producers.length, 262, "productores.json se conserva como compatibilidad de Zona 5");
 assert.ok(producers.every((row) => row.zona === "5-Productores"));
 
-console.log("Estructura estática PWA v2.6.0 validada.");
+console.log("Estructura estática PWA v2.7.0 validada.");

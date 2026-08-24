@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## 2.7.0 — 2026-08-24
+
+### Etiqueta fotográfica gerencial
+- La fotografía se conserva completa y sin superposiciones; toda la información se dibuja en un panel blanco independiente.
+- Orientación horizontal/vertical, fuente, columnas y altura se ajustan dinámicamente; la observación se exporta completa.
+- Código, hacienda/productor y suerte forman un encabezado único. Los resultados técnicos se presentan en bloques y se usa exactamente `TCH ESTIMADO Z26/27`.
+- Campos vacíos, no evaluados o sin estimación se omiten sin dejar espacios. Categorías con valor personalizado y descripciones técnicas opcionales.
+
+### Visitas, filtros y biometría vinculada
+- El buscador normaliza mayúsculas, acentos y varios términos; cubre hacienda, código, suerte, técnico, motivo, condiciones y observación.
+- Fechas, productor, Excel y ZIP quedan dentro de `Filtros y exportación`, contraído por defecto.
+- Las visitas pueden reabrirse, corregirse y actualizarse; conservan ID/fecha de creación y registran revisión/fecha de actualización.
+- Las biometrías guardadas también pueden reabrirse, corregir sus puntos y recalcularse conservando el mismo ID.
+- `Biometría de la app` permite seleccionar una biometría de la suerte o iniciar una nueva y volver automáticamente a la visita con el TCH vinculado.
+
+### Cronológico y consulta
+- Maestro actualizado desde `Cronologico_Maestro_CASUR_2026-08-24.xlsx`: 1,053 suertes únicas, 10,030.65 ha, 262 de Productores y 245 TCH estimados Z26/27.
+- Importador flexible que prefiere `REPORTE`, detecta la fila de encabezado y reconoce nombres oficiales o equivalentes.
+- Se incorporan número de riegos, estado, observación y toneladas estimadas Z26/27; la tenencia textual se convierte a CA/CV/PR.
+- `Consulta` reemplaza el módulo de avance: muestra ficha cronológica, TCH ESTIMADO Z26/27, biometrías y visitas por suerte.
+
+### Calidad
+- 22 pruebas automatizadas y validación estática de la PWA, el cronológico oficial y el nuevo modelo de etiqueta.
+
 ## 2.6.0 — 2026-08-24
 
 ### Estimado oficial 26/27
