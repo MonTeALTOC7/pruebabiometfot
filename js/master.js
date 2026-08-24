@@ -107,8 +107,9 @@ function normalizeLot(row, map, index) {
     historicalTch: finiteNumber(row[map.historicalTch]) || null,
     latestSeasonTch: finiteNumber(row[map.latestSeasonTch]) || null,
     estimatedTch2627: finiteNumber(row[map.estimatedTch2627]) || null,
-    estimatedTch2627UpdatedAt: map.estimatedTch2627 ? dateISO(new Date()) : "",
-    estimatedTch2627Source: map.estimatedTch2627 ? "Cronológico maestro · hoja REPORTE" : "",
+    // La fecha de importación del cronológico no es la fecha de emisión del estimado.
+    estimatedTch2627UpdatedAt: "",
+    estimatedTch2627Source: "",
     estimatedTons2627: finiteNumber(row[map.estimatedTons2627]) || null,
     texture: text(row[map.texture]),
     distanceKm: finiteNumber(row[map.distanceKm]) || null,
@@ -286,14 +287,35 @@ export async function parseMasterWorkbook(file, currentMaster = []) {
   const validLots = lots.filter((lot) => lot.id && lot.farmCode && lot.producer && lot.lot && lot.area > 0);
   const uniqueLots = validLots.filter((lot, index, all) => all.findIndex((item) => item.id === lot.id) === index);
   const current = new Map(currentMaster.map((lot) => [lot.id, lot]));
+  const estimateSourceDate = map.estimatedTch2627 ? seasonEstimateSourceDate(map.estimatedTch2627) : "";
+  const estimateSourceLabel = map.estimatedTch2627
+    ? `${file.name || "Cronológico maestro"} · ${sheetName} · ${map.estimatedTch2627}`
+    : "";
   uniqueLots.forEach((lot) => {
     const previous = current.get(lot.id);
     if (!lot.historicalTch && previous?.historicalTch) lot.historicalTch = previous.historicalTch;
     if (!lot.referenceAge && previous?.referenceAge) lot.referenceAge = previous.referenceAge;
     if (!lot.latestSeasonTch && previous?.latestSeasonTch) lot.latestSeasonTch = previous.latestSeasonTch;
     if (!map.estimatedTch2627 && !lot.estimatedTch2627 && previous?.estimatedTch2627) lot.estimatedTch2627 = previous.estimatedTch2627;
-    if (!map.estimatedTch2627 && !lot.estimatedTch2627UpdatedAt && previous?.estimatedTch2627UpdatedAt) lot.estimatedTch2627UpdatedAt = previous.estimatedTch2627UpdatedAt;
-    if (!map.estimatedTch2627 && !lot.estimatedTch2627Source && previous?.estimatedTch2627Source) lot.estimatedTch2627Source = previous.estimatedTch2627Source;
+    if (!map.estimatedTch2627) {
+      lot.estimatedTch2627UpdatedAt = previous?.estimatedTch2627UpdatedAt || "";
+      lot.estimatedTch2627Source = previous?.estimatedTch2627Source || "";
+    } else {
+      const sameEstimate = Number(previous?.estimatedTch2627 || 0) === Number(lot.estimatedTch2627 || 0);
+      if (estimateSourceDate) {
+        lot.estimatedTch2627UpdatedAt = estimateSourceDate;
+        lot.estimatedTch2627Source = estimateSourceLabel;
+      } else if (sameEstimate && previous?.estimatedTch2627UpdatedAt) {
+        lot.estimatedTch2627UpdatedAt = previous.estimatedTch2627UpdatedAt;
+        lot.estimatedTch2627Source = previous.estimatedTch2627Source || estimateSourceLabel;
+      } else if (!lot.estimatedTch2627 && !previous?.estimatedTch2627UpdatedAt) {
+        lot.estimatedTch2627UpdatedAt = "";
+        lot.estimatedTch2627Source = "";
+      } else {
+        lot.estimatedTch2627UpdatedAt = "";
+        lot.estimatedTch2627Source = estimateSourceLabel ? `${estimateSourceLabel} · fecha del estimado no indicada` : "";
+      }
+    }
     if (!lot.initialTch && previous?.initialTch) lot.initialTch = previous.initialTch;
     if (!lot.currentMasterTch && previous?.currentMasterTch) lot.currentMasterTch = previous.currentMasterTch;
   });
@@ -334,6 +356,14 @@ function seasonEstimateSourceDate(header) {
   return `20${year}-${month}-${day}`;
 }
 
+function estimateDateFromFilename(filename) {
+  const value = String(filename || "");
+  const iso = value.match(/(?:^|\D)(20\d{2})[-_]?([01]\d)[-_]?([0-3]\d)(?:\D|$)/);
+  if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
+  const short = value.match(/(?:^|\D)([0-3]\d)([01]\d)(\d{2})(?:\D|$)/);
+  return short ? `20${short[3]}-${short[2]}-${short[1]}` : "";
+}
+
 function seasonEstimateSheet(workbook) {
   const candidates = workbook.SheetNames.map((sheetName) => {
     const matrix = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: "", raw: true });
@@ -353,7 +383,7 @@ function seasonEstimateSheet(workbook) {
   return candidates.find((candidate) => normalizeText(candidate.sheetName) === "productores v3") || candidates[0] || null;
 }
 
-export async function parseSeasonEstimateWorkbook(file, currentMaster = []) {
+export async function parseSeasonEstimateWorkbook(file, currentMaster = [], { declaredSourceDate = "", requireDeclaredDate = false } = {}) {
   if (!globalThis.XLSX) throw new Error("No se cargó el componente Excel.");
   const workbook = XLSX.read(await file.arrayBuffer(), { type: "array", cellDates: true });
   const selected = seasonEstimateSheet(workbook);
@@ -374,7 +404,9 @@ export async function parseSeasonEstimateWorkbook(file, currentMaster = []) {
   const unknown = [];
   const rows = matrix.slice(headerRowIndex + 1).filter((row) => row.some((value) => value !== "" && value !== null));
   const sourceColumn = headers[estimateIndex];
-  const sourceDate = seasonEstimateSourceDate(sourceColumn) || new Date().toISOString().slice(0, 10);
+  const detectedSourceDate = seasonEstimateSourceDate(sourceColumn) || estimateDateFromFilename(file.name);
+  const sourceDate = dateISO(declaredSourceDate) || detectedSourceDate;
+  const dateMismatch = Boolean(declaredSourceDate && detectedSourceDate && dateISO(declaredSourceDate) !== detectedSourceDate);
   const importedAt = new Date().toISOString();
   let matched = 0;
   let updated = 0;
@@ -409,9 +441,10 @@ export async function parseSeasonEstimateWorkbook(file, currentMaster = []) {
     }
     if (Number(target.estimatedTch2627 || 0) === Number(nextEstimate || 0)) unchanged += 1;
     else updated += 1;
+    const sameEstimate = Number(target.estimatedTch2627 || 0) === Number(nextEstimate || 0);
     target.estimatedTch2627 = nextEstimate;
-    target.estimatedTch2627UpdatedAt = sourceDate;
-    target.estimatedTch2627Source = `${file.name} · ${sheetName} · ${sourceColumn}`;
+    target.estimatedTch2627UpdatedAt = sourceDate || (sameEstimate ? target.estimatedTch2627UpdatedAt : "");
+    target.estimatedTch2627Source = `${file.name} · ${sheetName} · ${sourceColumn}${declaredSourceDate ? ` · fecha declarada ${dateISO(declaredSourceDate)}` : ""}`;
   });
 
   return {
@@ -420,6 +453,9 @@ export async function parseSeasonEstimateWorkbook(file, currentMaster = []) {
       sheetName,
       sourceColumn,
       sourceDate,
+      declaredSourceDate: dateISO(declaredSourceDate),
+      detectedSourceDate,
+      dateMismatch,
       importedAt,
       analyzed: rows.length,
       matched,
@@ -431,7 +467,7 @@ export async function parseSeasonEstimateWorkbook(file, currentMaster = []) {
       withoutEstimateOther: withoutEstimate - seedWithoutEstimate,
       duplicates,
       unknown,
-      canApply: duplicates.length === 0 && unknown.length === 0 && matched > 0,
+      canApply: duplicates.length === 0 && unknown.length === 0 && matched > 0 && (!requireDeclaredDate || Boolean(dateISO(declaredSourceDate))) && !dateMismatch,
     },
   };
 }

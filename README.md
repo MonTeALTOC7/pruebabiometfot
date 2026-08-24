@@ -1,8 +1,15 @@
-# Estimador TCH CASUR — v2.7.0
+# Estimador TCH CASUR — v2.7.2
 
 PWA estática para GitHub Pages orientada a trabajo de campo de Negocios de Caña CASUR.
 
-## Mejoras principales v2.7.0
+## Mejoras principales v2.7.2
+
+- Antes de seleccionar el Excel de estimados, el usuario debe declarar obligatoriamente su fecha efectiva.
+- Si la fecha declarada contradice la fecha detectada en el encabezado o nombre del archivo, la aplicación bloquea la actualización.
+- Una modificación manual del TCH también exige indicar su fecha efectiva; ya no se asigna automáticamente la fecha del día.
+
+- Corrige la trazabilidad temporal: el TCH estimado conserva su fecha real `17-jul-2026`; `24-ago-2026` identifica únicamente la actualización del cronológico maestro.
+- Una importación del cronológico sin fecha explícita del estimado nunca reemplaza esa fecha con el día de carga.
 
 - Cronológico oficial `REPORTE` del 24-ago-2026 incorporado: 1,053 suertes únicas, 10,030.65 ha, 262 de Productores y 245 TCH estimados Z26/27.
 - Importador de maestro con detección de hoja, fila de encabezado y aliases de columnas; reconoce los encabezados oficiales y variantes equivalentes.
@@ -83,7 +90,7 @@ Destino previsto, una vez aprobada la versión:
 
 `MonTeALTOC7/Estimado_TCH_APP_CT`
 
-La v2.7.0 consulta primero `data/suertes.json` y mantiene `data/productores.json` como compatibilidad para Zona 5.
+La v2.7.2 consulta primero `data/suertes.json` y mantiene `data/productores.json` como compatibilidad para Zona 5.
 
 No contiene claves privadas ni requiere ChatGPT para funcionar.
 

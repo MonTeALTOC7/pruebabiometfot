@@ -136,12 +136,18 @@ test("actualizador 26/27 vincula por código hacienda + suerte normalizada", asy
   };
   try {
     const current = normalizeEmbeddedMaster([{ codigoHacienda: "993", productor: "Pansaco", suerte: "02", area: 9.87, zona: "5-Productores" }]);
-    const result = await parseSeasonEstimateWorkbook({ name: "fuente.xlsx", arrayBuffer: async () => new ArrayBuffer(0) }, current);
+    const withoutDeclaration = await parseSeasonEstimateWorkbook({ name: "fuente.xlsx", arrayBuffer: async () => new ArrayBuffer(0) }, current, { requireDeclaredDate: true });
+    assert.equal(withoutDeclaration.report.canApply, false, "La actualización debe exigir fecha declarada por el usuario");
+    const result = await parseSeasonEstimateWorkbook({ name: "fuente.xlsx", arrayBuffer: async () => new ArrayBuffer(0) }, current, { declaredSourceDate: "2026-07-17", requireDeclaredDate: true });
     assert.equal(result.report.matched, 1);
     assert.equal(result.report.withEstimate, 1);
     assert.equal(result.report.canApply, true);
+    assert.equal(result.report.dateMismatch, false);
     assert.equal(result.lots[0].estimatedTch2627, 65);
     assert.equal(result.lots[0].estimatedTch2627UpdatedAt, "2026-07-17");
+    const mismatch = await parseSeasonEstimateWorkbook({ name: "fuente.xlsx", arrayBuffer: async () => new ArrayBuffer(0) }, current, { declaredSourceDate: "2026-07-18", requireDeclaredDate: true });
+    assert.equal(mismatch.report.canApply, false, "Una fecha declarada distinta de la fecha detectada debe bloquearse");
+    assert.equal(mismatch.report.dateMismatch, true);
   } finally { globalThis.XLSX = originalXlsx; }
 });
 
@@ -156,12 +162,18 @@ test("cronológico oficial detecta REPORTE y encabezados flexibles", async () =>
     utils: { sheet_to_json: (sheet, options) => options?.header === 1 ? sheet : [] },
   };
   try {
-    const result = await parseMasterWorkbook({ arrayBuffer: async () => new ArrayBuffer(0) }, []);
+    const current = normalizeEmbeddedMaster([{
+      codigoHacienda: "603", productor: "Freddy Sovalvarro", suerte: "03", area: 4.53,
+      zona: "5-Productores", tchEstimado2627: 78.4, tchEstimado2627Fecha: "2026-07-17",
+      tchEstimado2627Fuente: "Estimado oficial 17-jul-2026",
+    }]);
+    const result = await parseMasterWorkbook({ name: "Cronologico_2026-08-24.xlsx", arrayBuffer: async () => new ArrayBuffer(0) }, current);
     assert.equal(result.sheetName, "REPORTE");
     assert.equal(result.report.headerRow, 1);
     assert.equal(result.lots[0].id, "60303");
     assert.equal(result.lots[0].latestSeasonTch, 72.5);
     assert.equal(result.lots[0].estimatedTch2627, 78.4);
+    assert.equal(result.lots[0].estimatedTch2627UpdatedAt, "2026-07-17", "Actualizar el cronológico no debe fechar de nuevo el estimado");
     assert.equal(result.lots[0].irrigationCount, 3);
     assert.equal(result.lots[0].tenureCode, "CV");
     assert.equal(result.lots[0].masterStatus, "Mantener activo");

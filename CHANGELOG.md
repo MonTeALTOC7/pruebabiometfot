@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 2.7.2 — 2026-08-24
+
+- La fecha efectiva del TCH estimado pasa a ser obligatoria antes de seleccionar el Excel.
+- La aplicación compara la fecha declarada con la fecha detectada en el encabezado o nombre del archivo.
+- Si ambas fechas difieren, la actualización queda bloqueada hasta que el usuario corrija la declaración.
+- La trazabilidad registra explícitamente la fecha declarada junto con archivo, hoja y columna.
+- La edición manual protegida del TCH también exige su fecha efectiva y deja de asignar automáticamente la fecha del día.
+
+## 2.7.1 — 2026-08-24
+
+- Se separa la fecha de emisión del TCH estimado (`17-jul-2026`) de la fecha de actualización del cronológico (`24-ago-2026`).
+- El importador general ya no usa automáticamente el día de carga como fecha del estimado.
+- Si el encabezado o archivo de estimaciones declara una fecha, se registra; si no la declara, se conserva la fecha previa cuando el valor no cambió o se muestra `Fecha del estimado no indicada`.
+- La ficha de suerte ahora dice `Estimado al 17-jul-2026`, evitando la etiqueta ambigua `Fuente 24-ago-2026`.
+
 ## 2.7.0 — 2026-08-24
 
 ### Etiqueta fotográfica gerencial

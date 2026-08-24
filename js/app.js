@@ -41,6 +41,7 @@ const state = {
   installPrompt: null,
   pendingMaster: null,
   pendingEstimateImport: null,
+  pendingEstimateSourceDate: "",
   editingLot: null,
   editingBiometryId: "",
   biometry: null,
@@ -495,7 +496,7 @@ function selectedLotPanel(lot, date) {
       <div class="lot-fact fact-age"><span>Edad actual</span><strong>${formatNumber(age.months, 2)} meses</strong></div>
       <div class="lot-fact fact-date"><span>Fecha base</span><strong>${escapeHtml(formatDateShort(age.baseDate))}</strong></div>
       <div class="lot-fact fact-season"><span>TCH zafra 25/26</span><strong>${formatNumber(lot.latestSeasonTch, 1)}</strong><small>Resultado real más reciente</small></div>
-      <div class="lot-fact fact-estimate"><span>TCH ESTIMADO Z26/27</span><strong>${formatNumber(lot.estimatedTch2627, 1)}</strong><small>${lot.estimatedTch2627UpdatedAt ? `Fuente ${escapeHtml(formatDateShort(lot.estimatedTch2627UpdatedAt))}` : "Sin estimación oficial"}</small></div>
+      <div class="lot-fact fact-estimate"><span>TCH ESTIMADO Z26/27</span><strong>${formatNumber(lot.estimatedTch2627, 1)}</strong><small>${lot.estimatedTch2627UpdatedAt ? `Estimado al ${escapeHtml(formatDateShort(lot.estimatedTch2627UpdatedAt))}` : lot.estimatedTch2627 ? "Fecha del estimado no indicada" : "Sin estimación oficial"}</small></div>
       <div class="lot-fact fact-history"><span>TCH histórico promedio</span><strong>${formatNumber(lot.historicalTch, 1)}</strong><small>Referencia secundaria</small></div>
     </div>
   </section>`;
@@ -1284,7 +1285,7 @@ function renderMaster() {
       <article class="kpi red"><span>Tenencia</span><strong>${tenureCounts.PR}/${tenureCounts.CA}/${tenureCounts.CV}</strong><small>PR / CA / CV</small></article>
     </section>
     <section class="card"><div class="card-head"><span class="step">1</span><div><strong>Actualizar y sincronizar</strong><small>Al cargar el cronológico se busca REPORTE, se descarta Sucuya y se valida antes de reemplazar.</small></div></div><div class="card-body"><div class="form-grid two"><button class="btn btn-green btn-wide" id="chooseMasterFile">⬆ Seleccionar Excel de actualización</button><button class="btn btn-blue btn-wide" id="syncMasterGitHub">↻ Sincronizar desde GitHub</button></div><div class="sync-status"><b>${syncIcon}</b><div><strong>${escapeHtml(syncMessage)}</strong><small>${escapeHtml(pendingMessage)}${state.masterSync.checkedAt ? ` Última comprobación: ${escapeHtml(new Date(state.masterSync.checkedAt).toLocaleString("es-NI"))}.` : ""}</small></div></div></div></section>
-    <section class="card estimate-update-card"><div class="card-head"><span class="step gold">2</span><div><strong>Actualizar TCH estimado 26/27</strong><small>Módulo independiente y protegido. Valida Código hacienda + Suerte antes de modificar únicamente esta referencia.</small></div></div><div class="card-body"><button class="btn btn-gold btn-wide" id="chooseEstimateFile">⬆ Seleccionar Excel oficial 26/27</button><div class="info-note">Fuente esperada: hoja <b>Productores_V3</b>, columna <b>TCH_Est_170726</b>. No modifica áreas, fechas, variedades ni TCH históricos.</div></div></section>
+    <section class="card estimate-update-card"><div class="card-head"><span class="step gold">2</span><div><strong>Actualizar TCH estimado 26/27</strong><small>Módulo independiente y protegido. Valida Código hacienda + Suerte y exige declarar la fecha efectiva del estimado.</small></div></div><div class="card-body"><button class="btn btn-gold btn-wide" id="chooseEstimateFile">⬆ Fecha del estimado + seleccionar Excel</button><div class="info-note">La fecha del estimado es obligatoria y no se sustituye por la fecha de carga ni por la fecha del cronológico. Si el archivo contiene otra fecha, la actualización se bloquea.</div></div></section>
     <section class="card search-card"><div class="card-head"><span class="step blue">3</span><div><strong>Editar suerte manualmente</strong><small>El buscador cubre todo el Maestro General.</small></div></div><div class="card-body">${searchBox(state.masterQuery, "master")}${lot ? `<div class="form-grid three" style="margin-top:12px">
       ${field("Código hacienda", `<input data-master-field="farmCode" value="${escapeHtml(lot.farmCode)}">`)}
       ${field("Hacienda", `<input data-master-field="producer" value="${escapeHtml(lot.producer)}">`)}
@@ -1300,6 +1301,7 @@ function renderMaster() {
       ${field("TCH histórico promedio", `<input data-master-field="historicalTch" type="number" step="0.01" value="${escapeHtml(lot.historicalTch)}">`)}
       ${field("TCH zafra 25/26", `<input data-master-field="latestSeasonTch" type="number" step="0.01" value="${escapeHtml(lot.latestSeasonTch)}">`)}
       ${field("TCH ESTIMADO Z26/27", `<input data-master-field="estimatedTch2627" type="number" step="0.01" value="${escapeHtml(lot.estimatedTch2627)}">`)}
+      ${field("Fecha efectiva del nuevo estimado", `<input id="manualEstimateDate" type="date" max="${todayISO()}">`, `Obligatoria únicamente si cambiás el TCH ESTIMADO Z26/27. Fecha vigente: ${lot.estimatedTch2627UpdatedAt ? formatDateShort(lot.estimatedTch2627UpdatedAt) : "no indicada"}.`)}
       ${field("Estado cronológico", `<input data-master-field="masterStatus" value="${escapeHtml(lot.masterStatus)}">`)}
       ${field("Observación del maestro", `<input data-master-field="masterObservation" value="${escapeHtml(lot.masterObservation)}">`)}
       ${field("Zona", `<input data-master-field="zone" value="${escapeHtml(lot.zone)}">`)}
@@ -1767,7 +1769,17 @@ document.addEventListener("click", async (event) => {
   }
 
   if (button.id === "chooseMasterFile") masterFile.click();
-  if (button.id === "chooseEstimateFile") estimateFile.click();
+  if (button.id === "chooseEstimateFile") {
+    openModal(`<h2>Fecha efectiva del TCH estimado</h2><p>Indicá la fecha a la que corresponden los valores del Excel. Esta fecha quedará vinculada a todos los TCH importados.</p>${field("Fecha del estimado (obligatoria)", `<input id="estimateDeclaredDate" type="date" max="${todayISO()}" value="${escapeHtml(state.pendingEstimateSourceDate || "")}">`, "No ingresés la fecha de carga ni la fecha del cronológico, salvo que realmente sea la fecha de emisión del estimado.")}<div class="actions"><button class="btn btn-green" id="confirmEstimateDate">Continuar y seleccionar Excel</button><button class="btn btn-light" data-close-modal>Cancelar</button></div>`);
+  }
+  if (button.id === "confirmEstimateDate") {
+    const value = document.querySelector("#estimateDeclaredDate")?.value;
+    if (!value) return notify("La fecha del estimado es obligatoria.");
+    if (value > todayISO()) return notify("La fecha del estimado no puede estar en el futuro.");
+    state.pendingEstimateSourceDate = value;
+    closeModal();
+    estimateFile.click();
+  }
   if (button.id === "syncMasterGitHub") await syncPublishedMaster({ force: true, userInitiated: true });
 
   if (button.id === "downloadMasterJson") {
@@ -1806,6 +1818,7 @@ document.addEventListener("click", async (event) => {
     state.audit.push(...auditRows);
     state.settings.estimate2627LastImport = pending.report;
     state.pendingEstimateImport = null;
+    state.pendingEstimateSourceDate = "";
     markMasterPendingPublish();
     await persistSettings();
     closeModal();
@@ -1823,10 +1836,18 @@ document.addEventListener("click", async (event) => {
       if (String(original[fieldName] ?? "") !== String(next ?? "")) changes.push({ fieldName, oldValue: original[fieldName], newValue: next });
     });
     if (!changes.length) return notify("No hay cambios para guardar.");
+    const estimateChanged = changes.some((change) => change.fieldName === "estimatedTch2627");
+    if (estimateChanged) {
+      const effectiveDate = document.querySelector("#manualEstimateDate")?.value || "";
+      if (!effectiveDate) return notify("Indicá la fecha efectiva del nuevo TCH estimado.");
+      if (effectiveDate > todayISO()) return notify("La fecha del estimado no puede estar en el futuro.");
+      if (String(original.estimatedTch2627UpdatedAt || "") !== effectiveDate) {
+        changes.push({ fieldName: "estimatedTch2627UpdatedAt", oldValue: original.estimatedTch2627UpdatedAt || "", newValue: effectiveDate });
+      }
+    }
     changes.forEach((change) => { original[change.fieldName] = change.newValue; });
-    if (changes.some((change) => change.fieldName === "estimatedTch2627")) {
-      original.estimatedTch2627UpdatedAt = todayISO();
-      original.estimatedTch2627Source = "Edición manual protegida";
+    if (estimateChanged) {
+      original.estimatedTch2627Source = `Edición manual protegida · fecha declarada ${original.estimatedTch2627UpdatedAt}`;
     }
     if (changes.some((change) => change.fieldName === "tenureCode")) {
       original.tenureLabel = original.tenureCode === "CA" ? "Arriendo" : original.tenureCode === "CV" ? "Compra Venta" : original.tenureCode === "PR" ? "Propio" : "";
@@ -2111,9 +2132,13 @@ estimateFile.addEventListener("change", async () => {
   if (!file) return;
   try {
     notify("Validando TCH estimado 26/27 por hacienda y suerte…");
-    state.pendingEstimateImport = await parseSeasonEstimateWorkbook(file, state.master);
+    if (!state.pendingEstimateSourceDate) throw new Error("Primero debés declarar la fecha efectiva del estimado.");
+    state.pendingEstimateImport = await parseSeasonEstimateWorkbook(file, state.master, {
+      declaredSourceDate: state.pendingEstimateSourceDate,
+      requireDeclaredDate: true,
+    });
     const r = state.pendingEstimateImport.report;
-    openModal(`<h2>Validación TCH estimado 26/27</h2><p><b>${escapeHtml(r.sheetName)}</b> · columna <b>${escapeHtml(r.sourceColumn)}</b> · fecha de fuente ${escapeHtml(formatDateShort(r.sourceDate))}.</p><div class="kpi-grid"><article class="kpi"><span>Analizados</span><strong>${r.analyzed}</strong></article><article class="kpi blue"><span>Vinculados</span><strong>${r.matched}</strong></article><article class="kpi gold"><span>Con TCH</span><strong>${r.withEstimate}</strong></article><article class="kpi red"><span>Vacíos oficiales</span><strong>${r.withoutEstimate}</strong></article></div><div class="${r.canApply ? "success" : "warning"}">${r.updated} cambio(s) · ${r.unchanged} sin cambio · ${r.duplicates.length} duplicado(s) · ${r.unknown.length} no encontrado(s). De los vacíos, ${r.seedWithoutEstimate} corresponden a semilla y ${r.withoutEstimateOther} a otros registros.</div><p class="help">Esta operación actualiza solamente el TCH estimado 26/27 y conserva intactos los demás datos del Maestro.</p><div class="actions"><button class="btn btn-green" id="confirmEstimateImport" ${r.canApply ? "" : "disabled"}>Aplicar actualización 26/27</button><button class="btn btn-light" data-close-modal>Cancelar</button></div>`);
+    openModal(`<h2>Validación TCH estimado 26/27</h2><p><b>${escapeHtml(r.sheetName)}</b> · columna <b>${escapeHtml(r.sourceColumn)}</b> · fecha declarada <b>${escapeHtml(formatDateShort(r.declaredSourceDate))}</b>.</p>${r.dateMismatch ? `<div class="warning"><b>Fechas incompatibles.</b> El archivo indica ${escapeHtml(formatDateShort(r.detectedSourceDate))}, pero declaraste ${escapeHtml(formatDateShort(r.declaredSourceDate))}. Cancelá y confirmá la fecha correcta antes de aplicar.</div>` : `<div class="success">✓ Fecha del estimado validada: ${escapeHtml(formatDateShort(r.sourceDate))}.</div>`}<div class="kpi-grid"><article class="kpi"><span>Analizados</span><strong>${r.analyzed}</strong></article><article class="kpi blue"><span>Vinculados</span><strong>${r.matched}</strong></article><article class="kpi gold"><span>Con TCH</span><strong>${r.withEstimate}</strong></article><article class="kpi red"><span>Vacíos oficiales</span><strong>${r.withoutEstimate}</strong></article></div><div class="${r.canApply ? "success" : "warning"}">${r.updated} cambio(s) · ${r.unchanged} sin cambio · ${r.duplicates.length} duplicado(s) · ${r.unknown.length} no encontrado(s). De los vacíos, ${r.seedWithoutEstimate} corresponden a semilla y ${r.withoutEstimateOther} a otros registros.</div><p class="help">Esta operación actualiza solamente el TCH estimado 26/27 y conserva intactos los demás datos del Maestro.</p><div class="actions"><button class="btn btn-green" id="confirmEstimateImport" ${r.canApply ? "" : "disabled"}>Aplicar actualización 26/27</button><button class="btn btn-light" data-close-modal>Cancelar</button></div>`);
   } catch (error) {
     notify(error.message || "No se pudo validar el TCH estimado 26/27.");
   }

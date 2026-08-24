@@ -1,9 +1,9 @@
 @echo off
 setlocal
-title Estimador TCH CASUR v2.7.0
+title Estimador TCH CASUR v2.7.2
 cd /d "%~dp0"
 echo ============================================================
-echo     ESTIMADOR TCH CASUR v2.7.0 - PRUEBA LOCAL
+echo     ESTIMADOR TCH CASUR v2.7.2 - PRUEBA LOCAL
 echo ============================================================
 echo.
 echo No cierres esta ventana mientras probas la aplicacion.

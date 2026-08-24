@@ -45,6 +45,11 @@ assert.match(source, /renderVisits/);
 assert.match(source, /saveVisit/);
 assert.match(source, /createVisitsPackageBlob/);
 assert.match(source, /parseSeasonEstimateWorkbook/);
+assert.match(source, /Fecha del estimado \(obligatoria\)/, "La actualización debe pedir la fecha efectiva antes del Excel");
+assert.match(source, /requireDeclaredDate: true/, "La validación debe exigir la fecha declarada");
+assert.match(source, /Fechas incompatibles/, "La app debe advertir y bloquear fechas contradictorias");
+assert.match(source, /Fecha efectiva del nuevo estimado/, "La edición manual debe solicitar la fecha efectiva del TCH");
+assert.match(source, /Indicá la fecha efectiva del nuevo TCH estimado/, "La edición manual debe bloquear un TCH nuevo sin fecha");
 assert.match(source, /Compartir PNG/);
 assert.match(source, /Exportación masiva de visitas/);
 assert.doesNotMatch(source, /Guardar \+ carpeta ZIP/);
@@ -82,9 +87,10 @@ const master = JSON.parse(fs.readFileSync(path.join(root, "data/suertes.json"), 
 assert.equal(master.length, 1053, "El cronológico oficial 2026-08-24 contiene 1,053 suertes operativas");
 assert.equal(new Set(master.map((row) => `${row.codigoHacienda}${row.suerte}`)).size, 1053, "Los códigos de suerte deben ser únicos");
 assert.equal(master.filter((row) => row.zona === "5-Productores").length, 262, "Zona 5 debe conservar 262 suertes");
-assert.equal(master.filter((row) => row.tchEstimado2627Fecha).length, 1053, "Todo el cronológico debe conservar la fecha de la fuente oficial");
+assert.equal(master.filter((row) => row.tchEstimado2627Fecha === "2026-07-17").length, 262, "Las 262 filas de la fuente de estimados conservan la fecha real 17-jul-2026");
 assert.equal(master.filter((row) => row.tchEstimado2627 !== null).length, 245, "La fuente 26/27 contiene 245 TCH numéricos");
-assert.equal(master.filter((row) => row.tchEstimado2627Fecha && row.tchEstimado2627 === null).length, 808, "Los vacíos oficiales deben conservarse como vacíos");
+assert.equal(master.filter((row) => row.tchEstimado2627Fecha && row.tchEstimado2627 === null).length, 17, "Los 17 vacíos oficiales conservan su trazabilidad del 17-jul-2026");
+assert.equal(master.filter((row) => row.tchEstimado2627Fecha === "2026-08-24").length, 0, "La fecha del cronológico no debe atribuirse al estimado TCH");
 assert.equal(master.filter((row) => row.zona === "0-Sin Definir" || /sucuya/i.test(row.productor)).length, 0, "Sucuya debe estar excluida");
 assert.ok(Math.abs(master.reduce((sum, row) => sum + Number(row.area || 0), 0) - 10030.65) < 0.01, "Área oficial debe ser 10,030.65 ha");
 assert.equal(new Set(master.map((row) => row.estado)).size, 6, "El cronológico conserva sus seis estados oficiales");
@@ -99,4 +105,4 @@ const producers = JSON.parse(fs.readFileSync(path.join(root, "data/productores.j
 assert.equal(producers.length, 262, "productores.json se conserva como compatibilidad de Zona 5");
 assert.ok(producers.every((row) => row.zona === "5-Productores"));
 
-console.log("Estructura estática PWA v2.7.0 validada.");
+console.log("Estructura estática PWA v2.7.2 validada.");

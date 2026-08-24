@@ -4,7 +4,7 @@ Fuente de referencia validada: `Cronologico_Maestro_CASUR_2026-08-24.xlsx`, hoja
 
 ## Columnas reconocidas
 
-La v2.7.0 no depende de una posición fija. Normaliza mayúsculas, tildes, guiones, puntos y guiones bajos; además busca la fila de encabezado dentro de las primeras 20 filas.
+La v2.7.2 no depende de una posición fija. Normaliza mayúsculas, tildes, guiones, puntos y guiones bajos; además busca la fila de encabezado dentro de las primeras 20 filas.
 
 Encabezados oficiales:
 
@@ -23,9 +23,10 @@ Son obligatorias las columnas equivalentes a Código, Hacienda, Suerte y Área. 
 - Zona 0 y Sucuya permanecen excluidas.
 - `Arriendo`, `Compra Venta` y `Propio` se normalizan respectivamente a `CA`, `CV` y `PR`.
 - Si el Excel contiene explícitamente `TCH_Estimado_Z2627`, sus vacíos siguen vacíos y no se restauran estimados antiguos.
+- La fecha del archivo cronológico no se considera fecha del estimado. Si la columna no incorpora una fecha, se conserva la trazabilidad anterior cuando el valor no cambió.
 - Valores de `Edad` con formato de fecha no se interpretan como meses; la edad operativa se calcula con las fechas base.
 
-## Base integrada v2.7.0
+## Base integrada v2.7.2
 
 - 1,053 suertes únicas.
 - 10,030.65 ha.

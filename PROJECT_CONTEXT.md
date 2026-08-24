@@ -2,9 +2,9 @@
 
 ## Estado actual
 
-Versión de trabajo: **v2.7.0**.
+Versión de trabajo: **v2.7.2**.
 
-Versión: **2.7.0**
+Versión: **2.7.2**
 Destino normal: repositorio existente `MonTeALTOC7/Estimado_TCH_APP_CT`.
 Publicación: GitHub Pages / Android PWA.
 
@@ -64,9 +64,11 @@ No borrar IndexedDB. Stores actuales:
 - Fuente auditada: `Productores_V3`, columna `TCH_Est_170726`.
 - Vinculación canónica: `CodHacienda + Suerte normalizada`.
 - 262 filas vinculadas; 245 con TCH y 17 vacías en la fuente.
+- Fecha real de emisión del estimado: 17-jul-2026. La actualización del cronológico al 24-ago-2026 no modifica esta fecha.
+- Toda actualización del estimado exige una fecha declarada por el usuario; una contradicción con la fecha detectada bloquea la aplicación.
 - La actualización es protegida, independiente y solo modifica la referencia 26/27.
 
-## Visitas de campo v2.7.0
+## Visitas de campo v2.7.2
 
 - Módulo principal independiente de la biometría.
 - Requiere suerte, técnico, al menos una fotografía y GPS para guardar evidencia georreferenciada; no existe máximo artificial de fotos.

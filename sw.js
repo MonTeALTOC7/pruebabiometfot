@@ -1,4 +1,4 @@
-const CACHE = "estimador-tch-casur-v2.7.0";
+const CACHE = "estimador-tch-casur-v2.7.2";
 const CORE = [
   "./", "./index.html", "./css/casur.css", "./js/app.js", "./js/tch-engine.js", "./js/storage.js",
   "./js/master.js", "./js/excel.js", "./js/result-image.js", "./js/visit-evidence.js", "./vendor/xlsx.bundle.js",
